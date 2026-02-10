@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-gray-300 font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-indigo-500/30 text-white;
+  }
+
+  h1, h2, h3, h4 {
+    @apply text-white font-semibold;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-violet-400;
+  }
+
+  .card {
+    @apply bg-surface border border-border rounded-xl p-6 transition-all duration-300 hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/5;
+  }
+
+  .tag {
+    @apply text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20;
+  }
+
+  .link {
+    @apply text-indigo-400 hover:text-indigo-300 transition-colors;
+  }
+
+  .section-heading {
+    @apply text-2xl font-semibold text-white mb-8;
+  }
+}
