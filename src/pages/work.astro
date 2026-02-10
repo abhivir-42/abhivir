@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { work } from '../data/work';
+---
+
+<BaseLayout title="Work — Abhivir Singh" description="Projects, research, and experience by Abhivir Singh.">
+  <section>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-3">Work</h1>
+    <p class="text-gray-400 mb-10 max-w-2xl">
+      A collection of projects, research, and professional experience — spanning AI/ML research,
+      quantitative finance, and systems programming.
+    </p>
+
+    <div class="grid gap-4">
+      {work.map((item) => (
+        <WorkCard item={item} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

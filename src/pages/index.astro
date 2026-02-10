@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { work } from '../data/work';
+import { reading } from '../data/reading';
+
+const featuredWork = work.filter((w) => w.featured);
+---
+
+<BaseLayout title="Abhivir Singh — AI & ML at Imperial College London">
+  <!-- Hero -->
+  <section class="py-12 sm:py-20">
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4">
+      Abhivir Singh
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-400 mb-6">
+      AI &amp; ML at <span class="text-white">Imperial College London</span>
+    </p>
+    <p class="text-gray-400 leading-relaxed max-w-2xl">
+      Final-year MEng Computing (AI &amp; ML) student at Imperial. I work on deep learning for medical imaging,
+      build ML systems, and occasionally trade derivatives. Currently writing my thesis on AI-guided fetal
+      ultrasound analysis.
+    </p>
+  </section>
+
+  <!-- About -->
+  <section class="pb-16">
+    <h2 class="section-heading">About</h2>
+    <div class="space-y-4 text-gray-400 leading-relaxed max-w-2xl">
+      <p>
+        I'm studying at Imperial College London, having transferred from IIT Delhi after my first year.
+        My focus is on machine learning research — particularly deep learning for medical applications
+        and natural language processing.
+      </p>
+      <p>
+        Before university, I was a <span class="text-white">KVPY Fellow</span>, qualified the
+        <span class="text-white">Regional Math Olympiad</span>, and scored
+        <span class="text-white">9.0/9.0 on the ENGAA</span> (Cambridge Engineering Admissions Assessment).
+        I've received multiple <span class="text-white">Gold Medals</span> for academic performance.
+      </p>
+      <p>
+        Outside of research, I'm interested in quantitative finance, systems programming, and building
+        things that work well.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Work -->
+  <section class="pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-semibold text-white">Featured Work</h2>
+      <a href="/work" class="link text-sm">See all work &rarr;</a>
+    </div>
+    <div class="grid gap-4">
+      {featuredWork.map((item) => (
+        <WorkCard item={item} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Reading / Blog Preview -->
+  <section class="pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-semibold text-white">Reading</h2>
+      <a href="/blog" class="link text-sm">See more &rarr;</a>
+    </div>
+    <div class="grid gap-3">
+      {reading.slice(0, 3).map((item) => (
+        <div class="card">
+          <div class="flex items-start justify-between gap-4 mb-1">
+            <h3 class="font-medium text-white">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-indigo-400 transition-colors">
+                  {item.title} <span class="text-gray-600">&nearr;</span>
+                </a>
+              ) : (
+                item.title
+              )}
+            </h3>
+            <span class="tag">{item.type}</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-1">{item.author}</p>
+          <p class="text-sm text-gray-400">{item.description}</p>
+        </div>
+      ))}
+    </div>
+    <p class="text-sm text-gray-500 mt-6">
+      I've been writing — more blog posts coming soon.
+    </p>
+  </section>
+</BaseLayout>
