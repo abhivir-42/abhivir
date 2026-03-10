@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Now — Abhivir Singh" description="What Abhivir is doing right now.">
+  <div class="editorial-container">
+    <section class="pt-20 pb-12 border-b border-border">
+      <h1 class="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+        Now
+      </h1>
+      <p class="text-base text-muted-foreground max-w-2xl">
+        What I'm currently working on, reading, and thinking about.
+        <span class="text-xs text-muted-foreground block mt-2 font-mono">
+          Last updated: March 2026
+        </span>
+      </p>
+    </section>
+
+    <section class="pt-8 pb-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div>
+          <p class="section-label">Building</p>
+          <ul class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <li>
+              <span class="text-foreground font-medium">MEng Thesis</span> — Wrapping up AI for Fetal Heart Ultrasound at Imperial. MobileUNet, AutoFHR, and L-FUSION.
+            </li>
+            <li>
+              <span class="text-foreground font-medium">This website</span> — Building abhivir.com as a programmable digital home, not just a portfolio.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="section-label">Reading</p>
+          <ul class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <li>
+              <span class="text-foreground font-medium">Designing Data-Intensive Applications</span> — Martin Kleppmann. The distributed systems bible.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="section-label">Thinking About</p>
+          <ul class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <li>How to make personal websites more than static brochures</li>
+            <li>The intersection of AI agents and quantitative finance</li>
+            <li>What comes after graduation</li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="section-label">Location</p>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            London, UK — Imperial College London
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

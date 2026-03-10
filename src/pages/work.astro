@@ -1,21 +1,32 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import WorkCard from '../components/WorkCard.astro';
-import { work } from '../data/work';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { work } from "../data/work";
 ---
 
-<BaseLayout title="Work — Abhivir Singh" description="Projects, research, and experience by Abhivir Singh.">
-  <section>
-    <h1 class="text-3xl sm:text-4xl font-bold mb-3">Work</h1>
-    <p class="text-gray-400 mb-10 max-w-2xl">
-      A collection of projects, research, and professional experience — spanning AI/ML research,
-      quantitative finance, and systems programming.
-    </p>
+<BaseLayout title="Work — Abhivir Singh">
+  <div class="editorial-container">
+    <section class="pt-20 pb-12 border-b border-border">
+      <h1 class="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+        Work
+      </h1>
+      <p class="text-base text-muted-foreground max-w-2xl">
+        Research, engineering, and projects across machine learning, medical imaging, and systems.
+      </p>
+    </section>
 
-    <div class="grid gap-4">
-      {work.map((item) => (
-        <WorkCard item={item} />
-      ))}
-    </div>
-  </section>
+    <section class="pt-12 pb-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {work.map((project) => (
+          <ProjectCard
+            title={project.title}
+            date={project.date}
+            description={project.description}
+            tags={project.tags}
+            href={project.href}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
 </BaseLayout>
