@@ -1,45 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  :root {
+    --background: 40 20% 97%;
+    --foreground: 220 20% 10%;
+
+    --card: 40 15% 95%;
+    --card-foreground: 220 20% 10%;
+
+    --primary: 220 20% 10%;
+    --primary-foreground: 40 20% 97%;
+
+    --secondary: 40 10% 90%;
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 40 10% 90%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 12 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 40 10% 85%;
+    --input: 40 10% 85%;
+    --ring: 220 20% 10%;
+
+    --radius: 0.25rem;
+
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  .dark {
+    --background: 220 20% 7%;
+    --foreground: 40 15% 90%;
+
+    --card: 220 18% 11%;
+    --card-foreground: 40 15% 90%;
+
+    --primary: 40 15% 90%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 40 15% 90%;
+
+    --muted: 220 15% 15%;
+    --muted-foreground: 40 10% 55%;
+
+    --accent: 12 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 40 15% 90%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
 
   body {
-    @apply bg-bg text-gray-300 font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
   }
 
-  ::selection {
-    @apply bg-indigo-500/30 text-white;
-  }
-
-  h1, h2, h3, h4 {
-    @apply text-white font-semibold;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
   }
 }
 
 @layer components {
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-violet-400;
+  .editorial-container {
+    @apply mx-auto max-w-5xl px-6;
   }
 
-  .card {
-    @apply bg-surface border border-border rounded-xl p-6 transition-all duration-300 hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/5;
+  .section-label {
+    @apply text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6;
+    font-family: var(--font-sans);
+    letter-spacing: 0.2em;
   }
 
-  .tag {
-    @apply text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20;
+  .editorial-link {
+    @apply text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-accent;
   }
 
-  .link {
-    @apply text-indigo-400 hover:text-indigo-300 transition-colors;
+  .tag-pill {
+    @apply inline-block text-xs px-2.5 py-1 rounded-sm bg-secondary text-muted-foreground;
+    font-family: var(--font-mono);
   }
 
-  .section-heading {
-    @apply text-2xl font-semibold text-white mb-8;
+  .grid-line {
+    @apply border-t border-border;
   }
+
+  .editorial-card {
+    @apply border border-border p-6 transition-colors hover:bg-card;
+  }
+}
+
+/* Prose styles for blog posts */
+.prose {
+  @apply text-foreground leading-relaxed;
+  font-family: var(--font-sans);
+}
+.prose h1, .prose h2, .prose h3 {
+  font-family: var(--font-serif);
+  @apply font-bold tracking-tight text-foreground;
+}
+.prose h1 { @apply text-3xl mt-12 mb-4; }
+.prose h2 { @apply text-2xl mt-10 mb-3; }
+.prose h3 { @apply text-xl mt-8 mb-2; }
+.prose p { @apply mb-4 text-muted-foreground; }
+.prose ul, .prose ol { @apply mb-4 pl-6 text-muted-foreground; }
+.prose li { @apply mb-1; }
+.prose strong { @apply text-foreground font-medium; }
+.prose a { @apply editorial-link; }
+.prose code {
+  @apply text-sm px-1.5 py-0.5 rounded-sm bg-secondary;
+  font-family: var(--font-mono);
+}
+.prose blockquote {
+  @apply border-l-2 border-accent pl-4 italic text-muted-foreground my-6;
 }
