@@ -8,9 +8,6 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  image: {
-    service: { entrypoint: "astro/assets/services/noop" },
-  },
   integrations: [
     react(),
     tailwind(),
