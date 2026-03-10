@@ -5,7 +5,12 @@ import mdx from "@astrojs/mdx";
 import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: "compile",
+  }),
+  image: {
+    service: { entrypoint: "astro/assets/services/noop" },
+  },
   integrations: [
     react(),
     tailwind(),
