@@ -5,82 +5,143 @@ export interface WorkItem {
   date: string;
   href?: string;
   featured?: boolean;
+  slug?: string;
+  tier: "flagship" | "notable" | "other";
 }
 
 export const work: WorkItem[] = [
+  // Flagship
+  {
+    title: "AI Data Science Platform",
+    slug: "data-pilot",
+    tier: "flagship",
+    featured: true,
+    date: "2024 — 2025",
+    tags: ["AI Agents", "LangChain", "FastAPI", "AutoML"],
+    description:
+      "Solo-built platform with 8+ specialised AI agents coordinating across the full data science pipeline — cleaning, visualisation, feature engineering, training, prediction. Humans in the loop at every decision point. Live with data scientists at Bosch and Fetch.ai. Won the UK AI Agent Hackathon.",
+    href: "https://github.com/abhivir-42/fetchfund",
+  },
   {
     title: "AI for Fetal Heart Ultrasound",
-    description:
-      "Ongoing MEng thesis at Imperial College London. Developing MobileUNet for real-time fetal heart segmentation, AutoFHR for automated heart rate estimation, and L-FUSION for landmark-guided probe navigation. Targeting deployment on portable ultrasound devices for low-resource settings.",
-    tags: ["Deep Learning", "Medical Imaging", "PyTorch", "Ultrasound"],
-    date: "2024 — Present",
+    tier: "flagship",
     featured: true,
+    date: "2025 — Present",
+    tags: ["Deep Learning", "Medical Imaging", "PyTorch"],
+    description:
+      "MEng thesis at Imperial. Developing MobileUNet for real-time fetal heart segmentation, AutoFHR for automated heart rate estimation, and L-FUSION for landmark-guided probe navigation. Targeting deployment on portable ultrasound devices for low-resource settings.",
   },
   {
-    title: "Automated ML Platform",
-    description:
-      "Built an end-to-end automated machine learning platform at Fetch.ai using LangChain agents for intelligent pipeline orchestration. Implemented stacked ensemble methods with automated hyperparameter tuning, feature engineering, and model selection.",
-    tags: ["LangChain", "AutoML", "Python", "Ensembles"],
-    date: "Summer 2025",
-    href: "https://fetch.ai",
+    title: "Pintos OS & WACC Compiler",
+    slug: "pintos-wacc",
+    tier: "flagship",
     featured: true,
+    date: "2023 — 2024",
+    tags: ["C", "ARM Assembly", "Systems Programming"],
+    description:
+      "Built an operating system and a compiler from scratch. Best in cohort of 230 students at Imperial. Led the team, took ownership, and built deep friendships with potential co-founders along the way.",
+  },
+
+  // Notable
+  {
+    title: "FetchFund — Hackathon Winner",
+    tier: "notable",
+    date: "Spring 2024",
+    tags: ["Fetch.ai", "DeFi", "AI Agents", "Winner"],
+    description:
+      "Won IC Hack / UK AI Agent Hackathon. Built an automated crypto trading engine on Fetch.ai's uAgents framework — multi-agent coordination for market analysis, signal generation, and trade execution.",
+    href: "https://dorahacks.io/buidl/25727",
   },
   {
-    title: "AI-Powered Text-to-Speech for Ads",
-    description:
-      "Developed production voice synthesis at DeepSearch Labs using MaskCycleGAN-TTS for voice conversion and VITS for end-to-end speech synthesis. Enabled personalised ad audio generation at scale.",
-    tags: ["TTS", "GANs", "VITS", "Speech Synthesis"],
+    title: "AdCraft — AI Radio Ad Generation",
+    tier: "notable",
     date: "Winter 2024/25",
-    featured: true,
+    tags: ["TTS", "CrewAI", "Parler-TTS", "Next.js"],
+    description:
+      "AI-powered radio ad platform at DeepSearch Labs. Fine-tuned Parler-TTS for emotional expressiveness, built voice consistency via SpeechBrain classifier, orchestrated with CrewAI agents. 1000+ HuggingFace downloads.",
+    href: "https://github.com/abhivir-42/marketing-app-ad-gen",
+  },
+  {
+    title: "MEGA — Multilingual LLM Evaluation",
+    tier: "notable",
+    date: "Winter 2024",
+    tags: ["NLP", "Multilingual", "Research"],
+    description:
+      "Research paper benchmarking LLMs across 70+ languages. Evaluated compression parity metrics, identified data contamination issues in existing benchmarks, and proposed directions for fairer multilingual evaluation.",
   },
   {
     title: "GPT-2 from Scratch",
-    description:
-      "Implemented GPT-2 (124M parameters) from scratch as part of Eureka Labs. Built the full transformer decoder architecture including multi-head self-attention, positional encoding, and byte-pair encoding tokenizer. Trained on OpenWebText.",
-    tags: ["Transformers", "NLP", "PyTorch", "LLMs"],
-    date: "Summer 2024",
+    tier: "notable",
     featured: true,
-  },
-  {
-    title: "MEGA: Multilingual LLM Evaluation",
+    date: "Summer 2024",
+    tags: ["Transformers", "PyTorch", "LLMs"],
     description:
-      "Research project benchmarking large language models across 70+ languages on diverse NLP tasks. Evaluated multilingual performance gaps and contributed to understanding of cross-lingual transfer in generative AI.",
-    tags: ["NLP", "Benchmarking", "Multilingual", "Research"],
-    date: "Winter 2024",
+      "Implemented GPT-2 (124M parameters) from scratch — full transformer decoder, multi-head self-attention, BPE tokenizer. Trained on OpenWebText.",
   },
   {
     title: "Statistical Arbitrage Framework",
-    description:
-      "Built a cryptocurrency pairs trading system using cointegration analysis, Kalman filters for dynamic hedge ratios, and mean-reversion signals. Backtested across multiple exchange pairs with transaction cost modelling.",
-    tags: ["Quant", "Python", "Statistics", "Crypto"],
+    tier: "notable",
     date: "2024",
+    tags: ["Quant", "Python", "Crypto"],
+    description:
+      "Cryptocurrency pairs trading system using cointegration analysis, Kalman filters for dynamic hedge ratios, and mean-reversion signals.",
   },
   {
-    title: "Options Market-Making",
+    title: "Optiver Trading Academy",
+    tier: "notable",
+    date: "Sep — Nov 2023",
+    tags: ["Options", "Market-Making", "Trading"],
     description:
-      "Competed in Optiver's trading academy, developing options market-making strategies with risk-adjusted position management. Achieved 3rd place out of 100 participants through dynamic delta hedging and volatility modelling.",
-    tags: ["Options", "Market-Making", "Trading", "Risk Management"],
-    date: "Winter 2023/24",
-  },
-  {
-    title: "Pintos Operating System",
-    description:
-      "Built a teaching operating system in C at Imperial, implementing thread scheduling, user programs, virtual memory, and a file system. Scored 95%, placing in the top 5 out of 200 students.",
-    tags: ["C", "Operating Systems", "Systems Programming"],
-    date: "Fall 2023",
-  },
-  {
-    title: "UK AI Agent Hackathon Winner",
-    description:
-      "Won a national AI hackathon by building an automated trading system using AI agents. Designed multi-agent coordination for market analysis, signal generation, and trade execution.",
-    tags: ["AI Agents", "Hackathon", "Trading", "Winner"],
-    date: "Spring 2024",
+      "Built a high-performance options market-making algorithm. 3rd out of 100 in the trading challenge, awarded by the head of Optiver's London office.",
   },
   {
     title: "Morgan Stanley Arbitrage Challenge",
-    description:
-      "Secured 1st position in Morgan Stanley's arbitrage challenge, competing across manual trading and quantitative reasoning rounds. Demonstrated strong market intuition and analytical problem-solving under pressure.",
-    tags: ["Trading", "Arbitrage", "Competition", "1st Place"],
+    tier: "notable",
     date: "Winter 2025",
+    tags: ["Trading", "Arbitrage", "1st Place"],
+    description:
+      "1st place in Morgan Stanley's arbitrage challenge across manual trading and quantitative reasoning rounds.",
+  },
+  {
+    title: "NLP — Top Submission at Imperial",
+    tier: "notable",
+    date: "2024",
+    tags: ["NLP", "ML", "Python"],
+    description:
+      "Top submission in Imperial's NLP coursework. Key insight: AI platform + human beat all students, but platform alone didn't beat careful manual work. Harness engineering matters.",
+  },
+  {
+    title: "CUDA Kernel Optimization",
+    tier: "notable",
+    date: "2024",
+    tags: ["CUDA", "GPU", "Performance"],
+    description:
+      "5th fastest CUDA kernel in the cohort at Imperial.",
+  },
+  {
+    title: "Wintermute Crypto CTF — Winner",
+    tier: "notable",
+    date: "2024",
+    tags: ["Cryptography", "ZKP", "CTF"],
+    description:
+      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win the UK Crypto Capture The Flag.",
+  },
+
+  // Other
+  {
+    title: "Imperial Cricket Captain",
+    tier: "other",
+    date: "2023 — 2025",
+    tags: ["Cricket", "Leadership"],
+    description:
+      "Captained Imperial College London cricket team. Led the side from second division to top division in the UK.",
+  },
+  {
+    title: "AI Club at Imperial",
+    tier: "other",
+    date: "2023 — Present",
+    tags: ["AI", "Leadership", "Community"],
+    description:
+      "Co-founded and led as Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",
   },
 ];
