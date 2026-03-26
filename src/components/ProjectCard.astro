@@ -5,21 +5,28 @@ interface Props {
   description: string;
   tags: string[];
   href?: string;
+  slug?: string;
+  tier?: "flagship" | "notable" | "other";
 }
 
-const { title, date, description, tags, href } = Astro.props;
-const isExternal = href?.startsWith("http");
-const Tag = href ? "a" : "div";
+const { title, date, description, tags, href, slug, tier } = Astro.props;
+const resolvedHref = slug ? `/work/${slug}` : href;
+const isExternal = resolvedHref?.startsWith("http");
+const Tag = resolvedHref ? "a" : "div";
 ---
 
 <Tag
-  {...(href ? { href, ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {}) } : {})}
-  class="editorial-card group block"
+  {...(resolvedHref ? { href: resolvedHref, ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {}) } : {})}
+  class:list={[
+    "editorial-card group block",
+    tier === "flagship" && "border-l-2 border-accent",
+  ]}
 >
   <div class="flex items-start justify-between mb-3">
     <h3 class="font-serif text-lg font-semibold text-foreground group-hover:text-accent transition-colors">
       {title}
-      {href && <span class="ml-1.5 text-muted-foreground text-sm">&nearr;</span>}
+      {resolvedHref && !slug && <span class="ml-1.5 text-muted-foreground text-sm">&nearr;</span>}
+      {slug && <span class="ml-1.5 text-muted-foreground text-sm">&rarr;</span>}
     </h3>
     <span class="text-xs text-muted-foreground whitespace-nowrap ml-4 mt-1 font-mono">
       {date}
