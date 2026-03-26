@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HighlightCard from "../components/HighlightCard.astro";
+import { highlights } from "../data/highlights";
+---
+
+<BaseLayout title="Highlights — Abhivir Singh">
+  <div class="editorial-container">
+    <section class="pt-20 pb-12 border-b border-border">
+      <h1
+        class="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4"
+      >
+        Highlights
+      </h1>
+      <p class="text-base text-muted-foreground max-w-2xl">
+        Proof that I do things, not just talk about them. Photos coming soon.
+      </p>
+    </section>
+
+    <section class="pt-12 pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {highlights.map((item) => (
+          <HighlightCard
+            title={item.title}
+            caption={item.caption}
+            date={item.date}
+            category={item.category}
+            image={item.image}
+            placeholder={item.placeholder}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

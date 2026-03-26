@@ -13,4 +13,8 @@ export default defineConfig({
     tailwind(),
     mdx(),
   ],
+  redirects: {
+    "/zai": "/work/data-pilot",
+    "/papers": "/work",
+  },
 });
