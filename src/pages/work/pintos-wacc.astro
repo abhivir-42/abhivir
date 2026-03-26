@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Pintos OS & WACC Compiler — Abhivir Singh"
+  description="Built an operating system and compiler from scratch. Best in cohort of 230 at Imperial College London."
+>
+  <div class="editorial-container">
+
+    <!-- Hero -->
+    <section class="pt-20 pb-16 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="tag-pill">C</span>
+        <span class="tag-pill">ARM Assembly</span>
+        <span class="tag-pill">Systems Programming</span>
+        <span class="tag-pill">Best in Cohort</span>
+      </div>
+      <h1 class="font-serif text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
+        Pintos OS & WACC Compiler
+      </h1>
+      <p class="text-lg text-muted-foreground mb-6">
+        Built an <span class="text-foreground font-medium">operating system</span> and a
+        <span class="text-foreground font-medium">compiler</span> from scratch.
+        Best in cohort of 230 students at Imperial.
+      </p>
+      <p class="text-base text-muted-foreground leading-relaxed max-w-2xl">
+        These two projects were the hardest and most rewarding things I did at university.
+        Not just technically — they taught me how to lead a team under extreme pressure,
+        how to build deep trust with collaborators, and why Paul Graham says doing hard
+        projects is the precursor to doing a startup.
+      </p>
+    </section>
+
+    <!-- Pintos -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">Pintos — Operating System</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            Pintos is a teaching operating system written in C. We implemented it from
+            the ground up: thread scheduling, user program execution, virtual memory with
+            page fault handling, and a file system with buffer caching.
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            Every component had to work together — a bug in the scheduler could crash the
+            filesystem, a memory leak in the VM would corrupt user programs. Building
+            something where <span class="text-foreground font-medium">every layer depends
+            on every other layer</span> teaches you systems thinking that no course can.
+          </p>
+        </div>
+      </div>
+      <div class="space-y-0">
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">threads</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Priority scheduling with donation, alarm clock, multi-level feedback queue</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">userprog</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Argument passing, system calls, process execution and termination</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">vm</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Supplemental page table, frame table, swap partition, memory-mapped files</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">filesys</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Indexed and extensible files, subdirectories, buffer cache</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WACC -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">WACC — Compiler</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            WACC is a simple imperative language. We built a compiler that takes WACC source
+            code and produces ARM assembly — lexer, parser, semantic analyser, and code
+            generator. Every stage hand-written, no parser generators.
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            The compiler handles expressions, control flow, functions, arrays, pairs,
+            heap allocation, and register allocation. Getting the code generator right —
+            where abstract syntax becomes real machine instructions — is where the deep
+            learning happens.
+          </p>
+        </div>
+      </div>
+      <div class="space-y-0">
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">frontend</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Lexer, recursive descent parser, AST construction, type checking and semantic analysis</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">backend</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">ARM assembly code generation, register allocation, stack frame management</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">target</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">WACC source &rarr; ARM assembly &rarr; executable binary</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why This Matters -->
+    <section class="pt-12 pb-16">
+      <p class="section-label">Why This Matters</p>
+      <div class="max-w-2xl">
+        <p class="text-sm text-muted-foreground leading-relaxed mb-6">
+          Paul Graham writes that doing hard projects with talented people is the best
+          precursor to doing a startup. These projects were exactly that. The people I
+          built these with are now potential co-founders — we've been through the kind
+          of pressure that reveals what someone is actually like to work with.
+        </p>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          Top marks out of 230 students. But the real output wasn't the grade — it was
+          learning that I can lead a team through something genuinely hard, that I can
+          hold the whole system in my head, and that I'm at my best when the stakes are high.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
