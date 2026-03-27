@@ -8,12 +8,12 @@ export interface HighlightItem {
 }
 
 export const highlights: HighlightItem[] = [
-  // Academic
+  // Academic — strong signal
   {
-    title: "JEE Advanced — 99th Percentile",
+    title: "Pintos & WACC — Best in Cohort",
     caption:
-      "All India Rank 723 out of ~200,000. Got admitted to IIT Delhi.",
-    date: "2021",
+      "Operating system and compiler from scratch. Top marks out of 230 at Imperial.",
+    date: "2024",
     category: "academic",
     placeholder: true,
   },
@@ -21,6 +21,14 @@ export const highlights: HighlightItem[] = [
     title: "Cambridge ENGAA — 9.0/9.0",
     caption:
       "Perfect score. Unconditional offer from Trinity College, Cambridge University.",
+    date: "2021",
+    category: "academic",
+    placeholder: true,
+  },
+  {
+    title: "IIT Delhi",
+    caption:
+      "Admitted through JEE Advanced, top 0.4% nationally.",
     date: "2021",
     category: "academic",
     placeholder: true,
@@ -41,16 +49,16 @@ export const highlights: HighlightItem[] = [
     category: "academic",
     placeholder: true,
   },
+
+  // Building — shipped work
   {
-    title: "Pintos & WACC — Best in Cohort",
+    title: "Emotional TTS — 1000+ HuggingFace Downloads",
     caption:
-      "Operating system and compiler from scratch. Top marks out of 230 at Imperial.",
-    date: "2024",
-    category: "academic",
+      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 1000 downloads.",
+    date: "2025",
+    category: "building",
     placeholder: true,
   },
-
-  // Competition
   {
     title: "IC Hack Winner",
     caption:
@@ -60,14 +68,15 @@ export const highlights: HighlightItem[] = [
     placeholder: true,
   },
   {
-    title: "Wintermute Crypto CTF",
+    title: "COVID App for Gurdwara",
     caption:
-      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
-    date: "2024",
-    category: "competition",
+      "Built a supply chain management app during COVID for a local Gurdwara.",
+    date: "2021",
+    category: "building",
     placeholder: true,
-    image: undefined,
   },
+
+  // Competition
   {
     title: "Morgan Stanley — 1st Place",
     caption:
@@ -84,8 +93,35 @@ export const highlights: HighlightItem[] = [
     category: "competition",
     placeholder: true,
   },
+  {
+    title: "Wintermute Crypto CTF",
+    caption:
+      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
+    date: "2024",
+    category: "competition",
+    placeholder: true,
+    image: undefined,
+  },
 
-  // Event
+  // Leadership
+  {
+    title: "Hosting Thomas Wolf & Peter Steinberger",
+    caption:
+      "Hugging Face CEO and Peter Steinberger at the AI Club at Imperial. Head of Data.",
+    date: "2024",
+    category: "leadership",
+    placeholder: true,
+  },
+  {
+    title: "Imperial Cricket Captain",
+    caption:
+      "Captained the team in BUCS (British Universities & Colleges Sport).",
+    date: "2023 — 2025",
+    category: "leadership",
+    placeholder: true,
+  },
+
+  // Events — last
   {
     title: "India AI Summit — With Demis Hassabis",
     caption:
@@ -114,42 +150,6 @@ export const highlights: HighlightItem[] = [
     caption: "Met at the India AI Summit.",
     date: "Feb 2026",
     category: "event",
-    placeholder: true,
-  },
-
-  // Leadership
-  {
-    title: "Imperial Cricket Captain",
-    caption:
-      "Captained the team in BUCS (British Universities & Colleges Sport).",
-    date: "2023 — 2025",
-    category: "leadership",
-    placeholder: true,
-  },
-  {
-    title: "Hosting Thomas Wolf & Peter Steinberger",
-    caption:
-      "Hugging Face CEO and Peter Steinberger at the AI Club at Imperial. Head of Data.",
-    date: "2024",
-    category: "leadership",
-    placeholder: true,
-  },
-
-  // Building
-  {
-    title: "COVID App for Gurdwara",
-    caption:
-      "Built a supply chain management app during COVID for a local Gurdwara.",
-    date: "2021",
-    category: "building",
-    placeholder: true,
-  },
-  {
-    title: "Emotional TTS — 1000+ HuggingFace Downloads",
-    caption:
-      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 1000 downloads.",
-    date: "2025",
-    category: "building",
     placeholder: true,
   },
 ];
