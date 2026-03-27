@@ -59,7 +59,7 @@ export const work: WorkItem[] = [
     date: "Summer 2024",
     tags: ["Transformers", "PyTorch", "LLMs"],
     description:
-      "Full GPT-2 implementation. Transformer decoder, multi-head self-attention, BPE tokenizer. Trained on OpenWebText.",
+      "Transformer language model built from scratch, following Karpathy's NanoGPT. Multi-head self-attention, BPE tokenizer, training and inference.",
   },
   {
     title: "MEGA: Multilingual LLM Evaluation",
