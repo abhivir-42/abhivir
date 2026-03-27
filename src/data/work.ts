@@ -49,7 +49,7 @@ export const work: WorkItem[] = [
     date: "Winter 2024/25",
     tags: ["TTS", "CrewAI", "Parler-TTS", "SpeechBrain"],
     description:
-      "Fine-tuned open-source TTS to express emotion. Built a voice consistency system via SpeechBrain. 1000+ HuggingFace downloads.",
+      "Fine-tuned open-source TTS to express emotion. Compiled an emotional audio dataset with 2,000+ HuggingFace downloads.",
     href: "https://github.com/abhivir-42/marketing-app-ad-gen",
   },
   {
