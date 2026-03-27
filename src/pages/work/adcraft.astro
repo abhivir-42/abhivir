@@ -1,0 +1,196 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Emotional Text-to-Speech — Abhivir Singh"
+  description="Fine-tuned open-source TTS models to express emotion. 1000+ HuggingFace downloads."
+>
+  <div class="editorial-container">
+
+    <!-- Hero -->
+    <section class="pt-20 pb-16 border-b border-border">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="tag-pill">TTS</span>
+        <span class="tag-pill">Parler-TTS</span>
+        <span class="tag-pill">SpeechBrain</span>
+        <span class="tag-pill">CrewAI</span>
+      </div>
+      <h1 class="font-serif text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
+        Emotional Text-to-Speech
+      </h1>
+      <p class="text-lg text-muted-foreground mb-6">
+        Humanising open-source TTS. Adding emotion to machines.
+      </p>
+      <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
+        Most open-source TTS models produce monotone, flat audio. I fine-tuned Parler-TTS
+        to accept emotion as an input parameter and built a voice consistency system on top.
+        The fine-tuned model has 1000+ downloads on HuggingFace. Built at DeepSearch Labs.
+      </p>
+      <div class="flex items-center gap-4">
+        <a
+          href="https://github.com/abhivir-42/marketing-app-ad-gen"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
+        >
+          GitHub &nearr;
+        </a>
+        <a
+          href="/papers/tts-report.pdf"
+          class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Full Report (PDF) &nearr;
+        </a>
+        <a
+          href="/papers/tts-slides.pdf"
+          class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Slides (PDF) &nearr;
+        </a>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">The Problem</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          Open-source TTS is good at clarity. It's bad at emotion. Parler-TTS was trained
+          on 45,000 hours of audiobooks, which optimise for clear narration, not for sounding
+          happy, angry, or excited. If you want expressive speech, you're stuck with expensive
+          proprietary APIs.
+        </p>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          There's a second problem: Parler-TTS generates a random voice every time. Say you're
+          generating three sentences of an ad. Each sentence sounds like a different person.
+          There's no built-in way to keep the voice consistent across generations.
+        </p>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">What I Built</p>
+      <div class="space-y-8">
+        <div>
+          <h3 class="font-serif text-lg font-semibold text-foreground mb-2">Emotional Fine-Tuning</h3>
+          <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+            Collected 4 open-source emotional audio datasets. Used DataSpeech to extract audio
+            features and convert them into natural language prompts with emotional context
+            (e.g., "young man, excited, fast pace"). Fine-tuned Parler-TTS on this combined set.
+            The model now accepts emotion as an input parameter. User testing across 20 volunteers:
+            ~4/5 on perceived naturalness.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-serif text-lg font-semibold text-foreground mb-2">Voice Consistency</h3>
+          <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+            Trained a SpeechBrain voice classifier to label each random generation with the closest
+            matching speaker ID. This means you can generate multiple sentences and they'll sound
+            like the same person. It solved the core problem that made Parler-TTS unusable for
+            multi-sentence output.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-serif text-lg font-semibold text-foreground mb-2">Agent Orchestration</h3>
+          <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+            Three CrewAI agents coordinate the ad creation pipeline: Script Creator generates copy,
+            Art Director creates voice/tone direction, Script Refiner modifies specific sentences
+            without changing the rest. A multi-layer validation system ensures edits don't bleed
+            across sentences.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Evaluation -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">Evaluation</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            Dual-metric evaluation: cross-entropy loss for technical accuracy, plus Multi-Scale STFT
+            loss for perceptual quality (spectral alignment with human perception). The model
+            performs best on "happy" and "excited" emotions, weaker on "angry" and "frustrated"
+            due to dataset imbalance.
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            Listening tests with 20 volunteers. Scored ~4/5 on naturalness. Users noted the
+            fine-tuned model sounded noticeably more human than base Parler-TTS, especially on
+            emotional content. One generation improvised a word that wasn't in the script and
+            it sounded natural.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stack -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">Stack</p>
+      <div class="space-y-0">
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">frontend</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Next.js</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">backend</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">FastAPI, Llama 3B</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">tts</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">Fine-tuned Parler-TTS, SpeechBrain classifier, DataSpeech</p>
+          </div>
+        </div>
+        <div class="border-t border-border py-4 grid grid-cols-12 gap-4">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">agents</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <p class="text-sm text-muted-foreground">CrewAI (3 agents: Script Creator, Art Director, Refiner)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Links -->
+    <section class="pt-12 pb-16">
+      <p class="section-label">Links</p>
+      <div class="space-y-0">
+        <div class="border-t border-border py-5 grid grid-cols-12 gap-4 items-center">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">code</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <a href="https://github.com/abhivir-42/marketing-app-ad-gen" target="_blank" rel="noopener noreferrer"
+              class="font-serif text-base font-semibold text-foreground hover:text-accent transition-colors">
+              GitHub &nearr;
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-border py-5 grid grid-cols-12 gap-4 items-center">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">report</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <a href="/papers/tts-report.pdf"
+              class="font-serif text-base font-semibold text-foreground hover:text-accent transition-colors">
+              Full Technical Report (PDF) &nearr;
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-border py-5 grid grid-cols-12 gap-4 items-center">
+          <div class="col-span-3 md:col-span-2"><span class="tag-pill">demo</span></div>
+          <div class="col-span-9 md:col-span-10">
+            <a href="https://ad-craft-app.vercel.app/" target="_blank" rel="noopener noreferrer"
+              class="font-serif text-base font-semibold text-foreground hover:text-accent transition-colors">
+              Live Demo &nearr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>

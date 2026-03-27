@@ -4,53 +4,29 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const repoUrl = "https://github.com/abhivir-42/ai-data-science-platform-hackathon";
 
 const agents = [
-  {
-    name: "Data Loader",
-    description: "Ingests CSV files, infers schemas, and prepares datasets for downstream agents.",
-    icon: "📂",
-  },
-  {
-    name: "Data Cleaning",
-    description: "GLM-5 generates Python/pandas code to fix missing values, handle outliers, and normalize types.",
-    icon: "🧹",
-  },
-  {
-    name: "Visualization",
-    description: "GLM-5 generates interactive Plotly chart specifications from natural language descriptions.",
-    icon: "📊",
-  },
-  {
-    name: "Feature Engineering",
-    description: "GLM-5 writes scikit-learn transformation code based on statistical properties of the data.",
-    icon: "⚙️",
-  },
-  {
-    name: "ML Training",
-    description: "Orchestrates H2O AutoML training runs and interprets model leaderboard results.",
-    icon: "🧠",
-  },
-  {
-    name: "Prediction",
-    description: "Runs inference on trained models with new data and explains predictions.",
-    icon: "🎯",
-  },
+  { name: "Data Loader", description: "Ingests CSV files, infers schemas, prepares datasets for downstream agents.", icon: "📂" },
+  { name: "Data Cleaning", description: "Generates Python/pandas code to fix missing values, handle outliers, normalize types.", icon: "🧹" },
+  { name: "Visualization", description: "Generates interactive Plotly charts from natural language descriptions.", icon: "📊" },
+  { name: "Feature Engineering", description: "Writes scikit-learn transformation code based on statistical properties of the data.", icon: "⚙️" },
+  { name: "ML Training", description: "Orchestrates H2O AutoML runs and interprets leaderboard results.", icon: "🧠" },
+  { name: "Prediction", description: "Runs inference on trained models and explains predictions.", icon: "🎯" },
 ];
 
 const techStack = [
   { layer: "Frontend", items: "Next.js 14, React 18, TypeScript, Tailwind CSS, Plotly.js" },
   { layer: "Backend", items: "Python 3.10, FastAPI, LangChain, LangGraph" },
-  { layer: "LLM", items: "Z.AI GLM-5 via OpenAI-compatible API" },
+  { layer: "LLM", items: "OpenAI-compatible API" },
   { layer: "ML", items: "H2O AutoML, scikit-learn, XGBoost, MLflow" },
   { layer: "Infrastructure", items: "PostgreSQL, Redis, Celery, Docker (7 services)" },
 ];
 
 const demoSteps = [
-  { step: "1", title: "Upload", description: "Drop a CSV file — the data loader agent ingests it and infers the schema automatically." },
-  { step: "2", title: "Clean", description: "The cleaning agent uses GLM-5 to generate Python code that fixes missing values, removes outliers, and normalizes types." },
-  { step: "3", title: "Visualize", description: "Describe what you want to see in plain English. GLM-5 generates interactive Plotly charts." },
-  { step: "4", title: "Engineer", description: "The feature engineering agent transforms raw columns into ML-ready features using GLM-5-generated scikit-learn code." },
-  { step: "5", title: "Train", description: "H2O AutoML trains and evaluates dozens of models. GLM-5 interprets the leaderboard and recommends the best one." },
-  { step: "6", title: "Predict", description: "Run inference on new data with the trained model. Get predictions and explanations." },
+  { step: "1", title: "Upload", description: "Drop a CSV. The data loader agent ingests it and infers the schema." },
+  { step: "2", title: "Clean", description: "The cleaning agent generates Python code that fixes missing values, removes outliers, normalizes types." },
+  { step: "3", title: "Visualize", description: "Describe what you want to see. The viz agent generates interactive Plotly charts." },
+  { step: "4", title: "Engineer", description: "Features are transformed into ML-ready representations using generated scikit-learn code." },
+  { step: "5", title: "Train", description: "H2O AutoML trains and evaluates models. The LLM interprets the leaderboard and recommends the best one." },
+  { step: "6", title: "Predict", description: "Run inference on new data. Get predictions and explanations." },
 ];
 ---
 
@@ -65,19 +41,23 @@ const demoSteps = [
       <div class="flex items-center gap-3 mb-6">
         <span class="tag-pill">AI Agents</span>
         <span class="tag-pill">Solo-Built</span>
-        <span class="tag-pill">Hackathon Winner</span>
+        <span class="tag-pill">Harness Engineering</span>
       </div>
       <h1 class="font-serif text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-4">
         AI Data Science Platform
       </h1>
       <p class="text-lg text-muted-foreground mb-6">
-        <span class="text-foreground font-medium">8+ specialised AI agents</span> for end-to-end data science
+        8+ specialised AI agents for end-to-end data science
       </p>
       <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
-        Solo-built platform where AI agents coordinate across the full data science pipeline —
-        cleaning, visualisation, feature engineering, training, prediction. Humans in the loop
-        at every decision point. Live with data scientists at Bosch and Fetch.ai, and non-technical
-        users at HR teams. Won the UK AI Agent Hackathon at Imperial.
+        I built this solo at Fetch.ai. The idea: instead of writing data science code yourself,
+        describe what you want in natural language and let a team of AI agents handle the pipeline.
+        Each agent is specialised. A supervisor agent orchestrates them. Humans stay in the loop
+        at every decision point.
+      </p>
+      <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
+        It's live with data scientists at Bosch and Fetch.ai, and non-technical users at HR teams.
+        People who'd never written a line of Python are getting Kaggle-level results in minutes.
       </p>
       <div class="flex items-center gap-4">
         <a
@@ -86,43 +66,37 @@ const demoSteps = [
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
         >
-          GitHub Repository &nearr;
-        </a>
-        <a
-          href="#demo"
-          class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          See the demo &darr;
+          GitHub &nearr;
         </a>
       </div>
     </section>
 
-    <!-- Problem -->
+    <!-- Harness Engineering -->
     <section class="pt-12 pb-12 border-b border-border">
-      <p class="section-label">The Problem</p>
+      <p class="section-label">Harness Engineering</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <p class="text-sm text-muted-foreground leading-relaxed">
-          Data science requires deep expertise most teams lack. The journey from raw data to
-          actionable insight — cleaning, transformation, visualization, model training — is
-          fragmented across disconnected tools and requires manual stitching at every step.
+          This project is fundamentally about harness engineering: designing the environment,
+          constraints, and feedback loops that let AI agents do reliable work. The human's job
+          isn't to write code. It's to specify intent, set architectural boundaries, and build
+          the scaffolding that keeps agents on track.
         </p>
         <p class="text-sm text-muted-foreground leading-relaxed">
-          A single analysis might require pandas for cleaning, matplotlib for charts, scikit-learn
-          for features, and a separate AutoML tool for training. Each handoff is a point of failure.
-          <span class="text-foreground font-medium">Most teams give up before reaching the insight.</span>
+          I built this before the term existed. The problems were the same: agents hallucinate,
+          lose context, violate structure. I had to engineer 10+ guardrails, prompt injection
+          protection, agent logging, enforced determinism, and orchestration patterns from scratch.
+          What OpenAI now calls harness engineering, I was figuring out on my own.
         </p>
       </div>
     </section>
 
-    <!-- Solution -->
+    <!-- Agents -->
     <section class="pt-12 pb-12 border-b border-border">
-      <p class="section-label">The Solution</p>
+      <p class="section-label">The Agents</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-8">
-        DataPilot replaces the fragmented toolchain with a
-        <span class="text-foreground font-medium">unified, agent-driven platform</span>.
-        Six specialized AI agents — each powered by Z.AI GLM-5 — handle every stage of the pipeline.
-        A LangGraph supervisor agent orchestrates them, deciding which agents to invoke, in what order,
-        and managing state between steps.
+        Six specialised agents handle every stage of the pipeline. A LangGraph supervisor
+        decomposes high-level goals into multi-agent workflows, decides which agents to invoke
+        and in what order, and manages state between steps.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {agents.map((agent) => (
@@ -137,89 +111,84 @@ const demoSteps = [
       </div>
     </section>
 
-    <!-- How GLM-5 Is Used -->
+    <!-- How the LLM is used -->
     <section class="pt-12 pb-12 border-b border-border">
-      <p class="section-label">How GLM-5 Powers DataPilot</p>
+      <p class="section-label">How the LLM is Used</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-10">
-        GLM-5 is not a chat wrapper — it is the
-        <span class="text-foreground font-medium">execution engine</span> behind every agent.
-        Three pillars of integration:
+        The LLM isn't a chat wrapper. It's the execution engine behind every agent. Three modes:
       </p>
 
       <div class="space-y-10">
-        <!-- Coding -->
         <div class="grid grid-cols-12 gap-6 items-start">
           <div class="col-span-12 md:col-span-3">
             <h3 class="font-serif text-xl font-bold text-foreground mb-1">Coding</h3>
-            <p class="text-xs text-muted-foreground">GLM-5 writes executable code</p>
+            <p class="text-xs text-muted-foreground">Writes executable code</p>
           </div>
           <div class="col-span-12 md:col-span-9">
             <div class="border border-border p-5 space-y-3">
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">cleaning</span>
-                <p class="text-sm text-muted-foreground">Generates Python/pandas code to fix missing values, handle outliers, normalize column types — executed directly against user data</p>
+                <p class="text-sm text-muted-foreground">Python/pandas to fix missing values, handle outliers, normalize types</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">features</span>
-                <p class="text-sm text-muted-foreground">Writes scikit-learn transformation pipelines for encoding, scaling, and derived feature creation</p>
+                <p class="text-sm text-muted-foreground">scikit-learn transformation pipelines for encoding, scaling, derived features</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">viz</span>
-                <p class="text-sm text-muted-foreground">Generates Plotly chart specifications from natural language — interactive charts rendered in the browser</p>
+                <p class="text-sm text-muted-foreground">Plotly chart specs from natural language, rendered in the browser</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Reasoning -->
         <div class="grid grid-cols-12 gap-6 items-start">
           <div class="col-span-12 md:col-span-3">
             <h3 class="font-serif text-xl font-bold text-foreground mb-1">Reasoning</h3>
-            <p class="text-xs text-muted-foreground">GLM-5 analyzes and decides</p>
+            <p class="text-xs text-muted-foreground">Analyses and decides</p>
           </div>
           <div class="col-span-12 md:col-span-9">
             <div class="border border-border p-5 space-y-3">
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">schema</span>
-                <p class="text-sm text-muted-foreground">Analyzes dataset schemas to detect quality issues before any cleaning code is generated</p>
+                <p class="text-sm text-muted-foreground">Detects data quality issues before any code runs</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">charts</span>
-                <p class="text-sm text-muted-foreground">Selects appropriate chart types based on data distribution, column types, and cardinality</p>
+                <p class="text-sm text-muted-foreground">Picks chart types based on distribution, column types, cardinality</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">models</span>
-                <p class="text-sm text-muted-foreground">Interprets H2O AutoML leaderboard results and recommends the best model with reasoning</p>
+                <p class="text-sm text-muted-foreground">Interprets AutoML leaderboard and recommends the best model with reasoning</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Orchestration -->
         <div class="grid grid-cols-12 gap-6 items-start">
           <div class="col-span-12 md:col-span-3">
             <h3 class="font-serif text-xl font-bold text-foreground mb-1">Orchestration</h3>
-            <p class="text-xs text-muted-foreground">GLM-5 coordinates agents</p>
+            <p class="text-xs text-muted-foreground">Coordinates agents</p>
           </div>
           <div class="col-span-12 md:col-span-9">
             <div class="border border-border p-5 space-y-3">
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">supervisor</span>
-                <p class="text-sm text-muted-foreground">LangGraph supervisor agent uses GLM-5 to decompose high-level goals into multi-agent workflows</p>
+                <p class="text-sm text-muted-foreground">LangGraph supervisor decomposes goals into multi-agent workflows</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">routing</span>
-                <p class="text-sm text-muted-foreground">GLM-5 decides which agents to invoke, in what order, and manages state between them</p>
+                <p class="text-sm text-muted-foreground">Decides which agents to invoke, in what order, manages state</p>
               </div>
               <div class="border-t border-border"></div>
               <div class="flex items-start gap-3">
                 <span class="tag-pill shrink-0">example</span>
-                <p class="text-sm text-muted-foreground">"Analyze this sales data" &rarr; load &rarr; clean &rarr; visualize &rarr; engineer features &rarr; train model</p>
+                <p class="text-sm text-muted-foreground">"Analyse this sales data" → load → clean → visualise → engineer → train</p>
               </div>
             </div>
           </div>
@@ -241,7 +210,7 @@ User (Natural Language)
   FastAPI Backend
         |
         v
-  LangGraph Supervisor (<span class="text-foreground font-medium">GLM-5 orchestration</span>)
+  LangGraph Supervisor (<span class="text-foreground font-medium">LLM orchestration</span>)
         |
    +----+----+----+----+----+
    |    |    |    |    |    |
@@ -252,7 +221,7 @@ User (Natural Language)
    +----+----+----+----+----+
         |
         v
-  <span class="text-foreground font-medium">GLM-5 (Z.AI)</span> — coding + reasoning
+  <span class="text-foreground font-medium">LLM</span> — coding + reasoning
         |
   H2O AutoML / MLflow / PostgreSQL / Redis</pre>
       </div>
@@ -279,8 +248,7 @@ User (Natural Language)
     <section id="demo" class="pt-12 pb-12 border-b border-border">
       <p class="section-label">How It Works</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-8">
-        A complete data science workflow in six steps — from raw CSV to trained model and predictions.
-        Every step is powered by GLM-5 generating real, executable code.
+        A full data science workflow in six steps. From raw CSV to trained model and predictions.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {demoSteps.map((item) => (
@@ -312,32 +280,7 @@ User (Natural Language)
             >
               GitHub Repository &nearr;
             </a>
-            <p class="text-xs text-muted-foreground mt-0.5">Full source code, setup instructions, and documentation</p>
-          </div>
-        </div>
-        <div class="border-t border-border py-5 grid grid-cols-12 gap-4 items-center">
-          <div class="col-span-3 md:col-span-2">
-            <span class="tag-pill">site</span>
-          </div>
-          <div class="col-span-9 md:col-span-10">
-            <a
-              href="/"
-              class="font-serif text-base font-semibold text-foreground hover:text-accent transition-colors"
-            >
-              abhivir.com
-            </a>
-            <p class="text-xs text-muted-foreground mt-0.5">Built by Abhivir Singh — Imperial College London</p>
-          </div>
-        </div>
-        <div class="border-t border-border py-5 grid grid-cols-12 gap-4 items-center">
-          <div class="col-span-3 md:col-span-2">
-            <span class="tag-pill">track</span>
-          </div>
-          <div class="col-span-9 md:col-span-10">
-            <span class="font-serif text-base font-semibold text-foreground">
-              Z.AI — Production-Ready AI Agents
-            </span>
-            <p class="text-xs text-muted-foreground mt-0.5">UK AI Agent Hackathon at Imperial College London</p>
+            <p class="text-xs text-muted-foreground mt-0.5">Full source code and documentation</p>
           </div>
         </div>
       </div>

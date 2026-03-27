@@ -19,8 +19,7 @@ export const work: WorkItem[] = [
     date: "2024 — 2025",
     tags: ["AI Agents", "LangChain", "FastAPI", "AutoML"],
     description:
-      "Solo-built platform with 8+ specialised AI agents coordinating across the full data science pipeline — cleaning, visualisation, feature engineering, training, prediction. Humans in the loop at every decision point. Live with data scientists at Bosch and Fetch.ai. Won the UK AI Agent Hackathon.",
-    href: "https://github.com/abhivir-42/fetchfund",
+      "Solo-built platform with 8+ AI agents that coordinate across the full data science pipeline. Humans in the loop at every decision point. Live with data scientists at Bosch and Fetch.ai.",
   },
   {
     title: "AI for Fetal Heart Ultrasound",
@@ -29,7 +28,8 @@ export const work: WorkItem[] = [
     date: "2025 — Present",
     tags: ["Deep Learning", "Medical Imaging", "PyTorch"],
     description:
-      "MEng thesis at Imperial. Developing MobileUNet for real-time fetal heart segmentation, AutoFHR for automated heart rate estimation, and L-FUSION for landmark-guided probe navigation. Targeting deployment on portable ultrasound devices for low-resource settings.",
+      "MEng thesis. MobileUNet for real-time fetal heart segmentation, AutoFHR for heart rate estimation, L-FUSION for probe navigation. Targeting portable devices for low-resource settings.",
+    href: "/chd-detection-interim-report.pdf",
   },
   {
     title: "Pintos OS & WACC Compiler",
@@ -39,44 +39,48 @@ export const work: WorkItem[] = [
     date: "2023 — 2024",
     tags: ["C", "ARM Assembly", "Systems Programming"],
     description:
-      "Built an operating system and a compiler from scratch. Best in cohort of 230 students at Imperial. Led the team, took ownership, and built deep friendships with potential co-founders along the way.",
-  },
-
-  // Notable
-  {
-    title: "FetchFund — Hackathon Winner",
-    tier: "notable",
-    date: "Spring 2024",
-    tags: ["Fetch.ai", "DeFi", "AI Agents", "Winner"],
-    description:
-      "Won IC Hack / UK AI Agent Hackathon. Built an automated crypto trading engine on Fetch.ai's uAgents framework — multi-agent coordination for market analysis, signal generation, and trade execution.",
-    href: "https://dorahacks.io/buidl/25727",
+      "Operating system and compiler, both from scratch. Best in cohort of 230 at Imperial.",
   },
   {
-    title: "AdCraft — AI Radio Ad Generation",
-    tier: "notable",
+    title: "Emotional Text-to-Speech",
+    slug: "adcraft",
+    tier: "flagship",
+    featured: true,
     date: "Winter 2024/25",
-    tags: ["TTS", "CrewAI", "Parler-TTS", "Next.js"],
+    tags: ["TTS", "CrewAI", "Parler-TTS", "SpeechBrain"],
     description:
-      "AI-powered radio ad platform at DeepSearch Labs. Fine-tuned Parler-TTS for emotional expressiveness, built voice consistency via SpeechBrain classifier, orchestrated with CrewAI agents. 1000+ HuggingFace downloads.",
+      "Fine-tuned open-source TTS to express emotion. Built a voice consistency system via SpeechBrain. 1000+ HuggingFace downloads.",
     href: "https://github.com/abhivir-42/marketing-app-ad-gen",
   },
   {
-    title: "MEGA — Multilingual LLM Evaluation",
-    tier: "notable",
-    date: "Winter 2024",
-    tags: ["NLP", "Multilingual", "Research"],
-    description:
-      "Research paper benchmarking LLMs across 70+ languages. Evaluated compression parity metrics, identified data contamination issues in existing benchmarks, and proposed directions for fairer multilingual evaluation.",
-  },
-  {
     title: "GPT-2 from Scratch",
-    tier: "notable",
+    tier: "flagship",
     featured: true,
     date: "Summer 2024",
     tags: ["Transformers", "PyTorch", "LLMs"],
     description:
-      "Implemented GPT-2 (124M parameters) from scratch — full transformer decoder, multi-head self-attention, BPE tokenizer. Trained on OpenWebText.",
+      "Full GPT-2 implementation. Transformer decoder, multi-head self-attention, BPE tokenizer. Trained on OpenWebText.",
+  },
+  {
+    title: "MEGA: Multilingual LLM Evaluation",
+    tier: "flagship",
+    featured: true,
+    date: "Winter 2024",
+    tags: ["NLP", "Multilingual", "Research"],
+    description:
+      "Research paper evaluating LLMs across 70+ languages. Identified data contamination issues in benchmarks and evaluated compression parity as a fairer metric.",
+    href: "/papers/mega-paper.pdf",
+  },
+
+  // Notable
+  {
+    title: "FetchFund",
+    tier: "notable",
+    date: "Spring 2024",
+    tags: ["Fetch.ai", "DeFi", "AI Agents"],
+    description:
+      "Automated crypto trading engine on Fetch.ai's uAgents framework. Multi-agent system for market analysis, signal generation, and trade execution.",
+    href: "https://dorahacks.io/buidl/25727",
   },
   {
     title: "Statistical Arbitrage Framework",
@@ -84,7 +88,7 @@ export const work: WorkItem[] = [
     date: "2024",
     tags: ["Quant", "Python", "Crypto"],
     description:
-      "Cryptocurrency pairs trading system using cointegration analysis, Kalman filters for dynamic hedge ratios, and mean-reversion signals.",
+      "Pairs trading system. Cointegration, Kalman filters, mean-reversion signals.",
   },
   {
     title: "Optiver Trading Academy",
@@ -92,7 +96,7 @@ export const work: WorkItem[] = [
     date: "Sep — Nov 2023",
     tags: ["Options", "Market-Making", "Trading"],
     description:
-      "Built a high-performance options market-making algorithm. 3rd out of 100 in the trading challenge, awarded by the head of Optiver's London office.",
+      "Options market-making algorithm. 3rd out of 100, awarded by the head of Optiver's London office.",
   },
   {
     title: "Morgan Stanley Arbitrage Challenge",
@@ -100,7 +104,7 @@ export const work: WorkItem[] = [
     date: "Winter 2025",
     tags: ["Trading", "Arbitrage", "1st Place"],
     description:
-      "1st place in Morgan Stanley's arbitrage challenge across manual trading and quantitative reasoning rounds.",
+      "1st place across manual trading and quantitative reasoning rounds.",
   },
   {
     title: "NLP — Top Submission at Imperial",
@@ -108,7 +112,7 @@ export const work: WorkItem[] = [
     date: "2024",
     tags: ["NLP", "ML", "Python"],
     description:
-      "Top submission in Imperial's NLP coursework. Key insight: AI platform + human beat all students, but platform alone didn't beat careful manual work. Harness engineering matters.",
+      "Top submission in Imperial's NLP coursework. AI platform + human beat all students; platform alone didn't beat careful manual work.",
   },
   {
     title: "CUDA Kernel Optimization",
@@ -119,12 +123,13 @@ export const work: WorkItem[] = [
       "5th fastest CUDA kernel in the cohort at Imperial.",
   },
   {
-    title: "Wintermute Crypto CTF — Winner",
+    title: "Wintermute Crypto CTF",
     tier: "notable",
     date: "2024",
     tags: ["Cryptography", "ZKP", "CTF"],
     description:
-      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win the UK Crypto Capture The Flag.",
+      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
+    href: "https://www.linkedin.com/posts/matt-styles-b69a33108_crypto-internship-digitalassets-activity-7399061077201670144-PxiO",
   },
 
   // Other
@@ -132,9 +137,9 @@ export const work: WorkItem[] = [
     title: "Imperial Cricket Captain",
     tier: "other",
     date: "2023 — 2025",
-    tags: ["Cricket", "Leadership"],
+    tags: ["Cricket", "BUCS", "Leadership"],
     description:
-      "Captained Imperial College London cricket team. Led the side from second division to top division in the UK.",
+      "Captained Imperial College London cricket team in BUCS.",
   },
   {
     title: "AI Club at Imperial",
@@ -142,6 +147,14 @@ export const work: WorkItem[] = [
     date: "2023 — Present",
     tags: ["AI", "Leadership", "Community"],
     description:
-      "Co-founded and led as Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",
+      "Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",
+  },
+  {
+    title: "Secretary, DoCSoc",
+    tier: "other",
+    date: "2023 — 2024",
+    tags: ["Leadership", "Hackathon"],
+    description:
+      "Department of Computing Society at Imperial. Organised IC Hack, the UK's largest student-run hackathon.",
   },
 ];

@@ -12,7 +12,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "JEE Advanced — 99th Percentile",
     caption:
-      "All India Rank 723 out of ~200,000. The exam that decides everything in India.",
+      "All India Rank 723 out of ~200,000. Got admitted to IIT Delhi.",
     date: "2021",
     category: "academic",
     placeholder: true,
@@ -20,7 +20,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "Cambridge ENGAA — 9.0/9.0",
     caption:
-      "Perfect score on the Cambridge Engineering Aptitude Assessment. Led to an unconditional offer from Trinity College.",
+      "Perfect score. Unconditional offer from Trinity College, Cambridge University.",
     date: "2021",
     category: "academic",
     placeholder: true,
@@ -28,15 +28,15 @@ export const highlights: HighlightItem[] = [
   {
     title: "KVPY Scholar",
     caption:
-      "Kishore Vaigyanik Protsahan Yojana — India's premier science fellowship for young researchers.",
+      "Kishore Vaigyanik Protsahan Yojana — national fellowship for excellence in math and science.",
     date: "2020",
     category: "academic",
     placeholder: true,
   },
   {
-    title: "Logic Olympiad — AIR 10",
+    title: "Technothlon — AIR 10",
     caption:
-      "Indian Olympiad of Logic & Mathematical Reasoning. All India Rank 10 out of 50,000. Made friends I reconnected with at IIT.",
+      "Organised by IIT Guwahati. All India Rank 10 out of 50,000. Made friends I reconnected with at IIT.",
     date: "2020",
     category: "academic",
     placeholder: true,
@@ -44,7 +44,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "Pintos & WACC — Best in Cohort",
     caption:
-      "Built an operating system and compiler from scratch. Top marks out of 230 students at Imperial.",
+      "Operating system and compiler from scratch. Top marks out of 230 at Imperial.",
     date: "2024",
     category: "academic",
     placeholder: true,
@@ -52,25 +52,26 @@ export const highlights: HighlightItem[] = [
 
   // Competition
   {
-    title: "UK AI Agent Hackathon — Winner",
+    title: "IC Hack Winner",
     caption:
-      "Won IC Hack with FetchFund, an automated crypto trading engine built on Fetch.ai agents.",
+      "Built FetchFund, an automated crypto trading engine on Fetch.ai agents.",
     date: "2024",
     category: "competition",
     placeholder: true,
   },
   {
-    title: "Wintermute Crypto CTF — Winner",
+    title: "Wintermute Crypto CTF",
     caption:
       "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
     date: "2024",
     category: "competition",
     placeholder: true,
+    image: undefined,
   },
   {
     title: "Morgan Stanley — 1st Place",
     caption:
-      "Won the arbitrage challenge across manual trading and quantitative reasoning rounds.",
+      "Arbitrage challenge. Manual trading and quantitative reasoning rounds.",
     date: "2025",
     category: "competition",
     placeholder: true,
@@ -88,7 +89,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "India AI Summit — With Demis Hassabis",
     caption:
-      "Got myself a seat. Sat at the same table as the CEO of Google DeepMind.",
+      "Sat at the same table as the CEO of Google DeepMind.",
     date: "Feb 2026",
     category: "event",
     placeholder: true,
@@ -96,7 +97,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "Meeting Vinod Khosla",
     caption:
-      "At the India AI Summit. The conversation that shaped how I think about conviction.",
+      "At the India AI Summit.",
     date: "Feb 2026",
     category: "event",
     placeholder: true,
@@ -118,25 +119,17 @@ export const highlights: HighlightItem[] = [
 
   // Leadership
   {
-    title: "Imperial Cricket — Promotion",
+    title: "Imperial Cricket Captain",
     caption:
-      "Captained the team from second division to top division in the UK.",
-    date: "2024",
+      "Captained the team in BUCS (British Universities & Colleges Sport).",
+    date: "2023 — 2025",
     category: "leadership",
     placeholder: true,
   },
   {
-    title: "Hosting Thomas Wolf",
+    title: "Hosting Thomas Wolf & Peter Steinberger",
     caption:
-      "Hugging Face CEO at the AI Club I co-founded at Imperial.",
-    date: "2024",
-    category: "leadership",
-    placeholder: true,
-  },
-  {
-    title: "Hosting Peter Steinberger",
-    caption:
-      "At the Imperial AI Club. Led to the hackathon collaboration.",
+      "Hugging Face CEO and Peter Steinberger at the AI Club at Imperial. Head of Data.",
     date: "2024",
     category: "leadership",
     placeholder: true,
@@ -144,25 +137,17 @@ export const highlights: HighlightItem[] = [
 
   // Building
   {
-    title: "Poshan Tracker Contribution",
-    caption:
-      "Contributed to India's national nutrition tracking system, deployed across all villages and Anganwadi centres.",
-    date: "2025",
-    category: "building",
-    placeholder: true,
-  },
-  {
     title: "COVID App for Gurdwara",
     caption:
-      "Built a supply chain management app during COVID. Caught the eye of a senior government official.",
+      "Built a supply chain management app during COVID for a local Gurdwara.",
     date: "2021",
     category: "building",
     placeholder: true,
   },
   {
-    title: "AdCraft — 1000+ HuggingFace Downloads",
+    title: "Emotional TTS — 1000+ HuggingFace Downloads",
     caption:
-      "Fine-tuned emotional TTS model. Over 1000 downloads on HuggingFace.",
+      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 1000 downloads.",
     date: "2025",
     category: "building",
     placeholder: true,
