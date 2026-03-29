@@ -23,7 +23,8 @@ export const highlights: HighlightItem[] = [
       "Perfect score. Unconditional offer from Trinity College, Cambridge University.",
     date: "2021",
     category: "academic",
-    placeholder: true,
+    image: "/photos/trinity-college-cambridge.jpg",
+    placeholder: false,
   },
   {
     title: "IIT Delhi",
@@ -31,7 +32,8 @@ export const highlights: HighlightItem[] = [
       "Admitted through JEE Advanced, top 0.4% nationally.",
     date: "2021",
     category: "academic",
-    placeholder: true,
+    image: "/photos/IITD.JPG",
+    placeholder: false,
   },
   {
     title: "KVPY Scholar",
@@ -47,10 +49,20 @@ export const highlights: HighlightItem[] = [
       "Organised by IIT Guwahati. All India Rank 10 out of 50,000. Made friends I reconnected with at IIT.",
     date: "2020",
     category: "academic",
-    placeholder: true,
+    image: "/photos/technothlon.jpg",
+    placeholder: false,
   },
 
   // Building — shipped work
+  {
+    title: "Built and Programmed a Robot Wall-E from Scratch",
+    caption:
+      "Designed, built, and programmed a functioning Wall-E robot from the ground up.",
+    date: "2023",
+    category: "building",
+    image: "/photos/robot-photo.jpg",
+    placeholder: false,
+  },
   {
     title: "Emotional TTS — 1000+ HuggingFace Downloads",
     caption:
@@ -60,12 +72,13 @@ export const highlights: HighlightItem[] = [
     placeholder: true,
   },
   {
-    title: "IC Hack Winner",
+    title: "UK AI Agent X Openclaw Hackathon Winner",
     caption:
       "Built FetchFund, an automated crypto trading engine on Fetch.ai agents.",
     date: "2024",
     category: "competition",
-    placeholder: true,
+    image: "/photos/uk-ai-agent-hack.jpeg",
+    placeholder: false,
   },
   {
     title: "COVID App for Gurdwara",
@@ -83,7 +96,8 @@ export const highlights: HighlightItem[] = [
       "Arbitrage challenge. Manual trading and quantitative reasoning rounds.",
     date: "2025",
     category: "competition",
-    placeholder: true,
+    image: "/photos/morgan-stanley.jpg",
+    placeholder: false,
   },
   {
     title: "Optiver — 3rd/100",
@@ -91,7 +105,8 @@ export const highlights: HighlightItem[] = [
       "Options market-making challenge. Awarded by the head of Optiver's London office.",
     date: "2023",
     category: "competition",
-    placeholder: true,
+    image: "/photos/optiver.jpg",
+    placeholder: false,
   },
   {
     title: "Wintermute Crypto CTF",
@@ -99,8 +114,8 @@ export const highlights: HighlightItem[] = [
       "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
     date: "2024",
     category: "competition",
-    placeholder: true,
-    image: undefined,
+    image: "/photos/wintermute-ctf.jpeg",
+    placeholder: false,
   },
 
   // Leadership
@@ -118,17 +133,28 @@ export const highlights: HighlightItem[] = [
       "Captained the team in BUCS (British Universities & Colleges Sport).",
     date: "2023 — 2025",
     category: "leadership",
-    placeholder: true,
+    image: "/photos/cricket.jpg",
+    placeholder: false,
   },
 
-  // Events — last
+  // Events
+  {
+    title: "YC Startup School India",
+    caption:
+      "Accepted. Awarded $25k+ in credits. Bengaluru, April 2026.",
+    date: "Apr 2026",
+    category: "event",
+    image: "/photos/yc.png",
+    placeholder: false,
+  },
   {
     title: "India AI Summit — With Demis Hassabis",
     caption:
       "Sat at the same table as the CEO of Google DeepMind.",
     date: "Feb 2026",
     category: "event",
-    placeholder: true,
+    image: "/photos/Dario-Nandan.JPG",
+    placeholder: false,
   },
   {
     title: "Meeting Vinod Khosla",
@@ -136,20 +162,41 @@ export const highlights: HighlightItem[] = [
       "At the India AI Summit.",
     date: "Feb 2026",
     category: "event",
-    placeholder: true,
+    image: "/photos/vinod-khosla.jpg",
+    placeholder: false,
   },
   {
     title: "With Dario Amodei",
     caption: "CEO of Anthropic, at the India AI Summit.",
     date: "Feb 2026",
     category: "event",
-    placeholder: true,
+    image: "/photos/Dario-Nandan.JPG",
+    placeholder: false,
   },
   {
     title: "Alexander Wang — Scale AI",
     caption: "Met at the India AI Summit.",
     date: "Feb 2026",
     category: "event",
-    placeholder: true,
+    image: "/photos/Alexander-wang.jpg",
+    placeholder: false,
+  },
+  // {
+  //   title: "Fetch.ai Presentation",
+  //   caption:
+  //     "Presenting the AI Data Science Platform at Fetch.ai.",
+  //   date: "2025",
+  //   category: "event",
+  //   image: "/photos/fetch-ai-presentation.PNG",
+  //   placeholder: false,
+  // },
+  {
+    title: "With Vivek Raghavan — Sarvam AI",
+    caption:
+      "Co-founder of Sarvam AI, building India's AI infrastructure.",
+    date: "Feb 2026",
+    category: "event",
+    image: "/photos/Sarvam-vivek-raghavan.jpg",
+    placeholder: false,
   },
 ];
