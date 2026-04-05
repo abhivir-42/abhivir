@@ -4,7 +4,9 @@ export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}"],
   theme: {
     fontFamily: {
-      serif: ["Playfair Display", "Georgia", "serif"],
+      display: ["Playfair Display", "Georgia", "serif"],
+      content: ["EB Garamond", "Georgia", "serif"],
+      serif: ["EB Garamond", "Georgia", "serif"],
       sans: ["IBM Plex Sans", "system-ui", "sans-serif"],
       mono: ["IBM Plex Mono", "monospace"],
     },

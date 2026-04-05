@@ -12,7 +12,7 @@ const sortedPosts = posts.sort(
 <BaseLayout title="Blog & Reading — Abhivir Singh">
   <div class="editorial-container">
     <section class="pt-20 pb-12 border-b border-border">
-      <h1 class="font-serif text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+      <h1 class="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
         Blog &amp; Reading
       </h1>
       <p class="text-base text-muted-foreground max-w-2xl">
@@ -33,7 +33,7 @@ const sortedPosts = posts.sort(
           return (
             <a href={`/blog/${post.id}`} class="block border-b border-border py-6 group last:border-b-0">
               <div class="flex items-start justify-between">
-                <h3 class="font-serif text-lg font-semibold text-foreground group-hover:text-accent transition-colors">
+                <h3 class="font-content text-lg font-semibold text-foreground group-hover:text-accent transition-colors">
                   {post.data.title}
                 </h3>
                 <span class="text-xs text-muted-foreground whitespace-nowrap ml-4 mt-1 font-mono">
@@ -63,12 +63,12 @@ const sortedPosts = posts.sort(
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-serif text-base font-semibold text-foreground hover:text-accent transition-colors"
+                class="font-content text-base font-semibold text-foreground hover:text-accent transition-colors"
               >
                 {item.title} &nearr;
               </a>
             ) : (
-              <span class="font-serif text-base font-semibold text-foreground">
+              <span class="font-content text-base font-semibold text-foreground">
                 {item.title}
               </span>
             )}
