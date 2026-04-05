@@ -1,12 +1,14 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { reading } from "../../data/reading";
+import { books, technicalReading } from "../../data/reading";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const sortedPosts = posts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+const sortedPosts = posts
+  .filter((post) => post.data.description)
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
 ---
 
 <BaseLayout title="Blog & Reading — Abhivir Singh">
@@ -49,33 +51,69 @@ const sortedPosts = posts.sort(
       </section>
     )}
 
-    <!-- Reading List -->
+    <!-- Books -->
+    <section class="pt-8 pb-8 border-b border-border">
+      <p class="section-label">Books</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {books.map((book) => {
+          const Tag = book.href ? "a" : "div";
+          const linkProps = book.href
+            ? { href: book.href, target: "_blank", rel: "noopener noreferrer" }
+            : {};
+          return (
+            <Tag
+              {...linkProps}
+              class:list={[
+                "border border-border p-4 rounded-sm",
+                book.href && "hover:bg-card transition-colors group",
+              ]}
+            >
+              <p class:list={[
+                "font-content text-sm font-semibold text-foreground leading-snug",
+                book.href && "group-hover:text-accent transition-colors",
+              ]}>
+                {book.title}
+                {book.href && <span class="text-muted-foreground text-xs ml-1">&nearr;</span>}
+              </p>
+              <p class="text-xs text-muted-foreground mt-1">{book.author}</p>
+            </Tag>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Technical Reading -->
     <section class="pt-8 pb-16">
-      <p class="section-label">Reading List</p>
-      {reading.map((item) => (
-        <div class="border-b border-border py-6 grid grid-cols-12 gap-4 items-start">
-          <div class="col-span-12 md:col-span-1">
-            <span class="tag-pill">{item.type}</span>
-          </div>
-          <div class="col-span-12 md:col-span-7">
-            {item.href ? (
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="font-content text-base font-semibold text-foreground hover:text-accent transition-colors"
-              >
-                {item.title} &nearr;
-              </a>
-            ) : (
-              <span class="font-content text-base font-semibold text-foreground">
-                {item.title}
-              </span>
-            )}
-            <p class="text-xs text-muted-foreground mt-0.5">{item.author}</p>
-          </div>
-          <div class="col-span-12 md:col-span-4">
-            <p class="text-xs text-muted-foreground leading-relaxed">{item.note}</p>
+      <p class="section-label">Technical Reading</p>
+      {technicalReading.map((item) => (
+        <div class="border-b border-border py-5 last:border-b-0">
+          <div class="flex items-start gap-4">
+            <div class="flex-1">
+              {item.href ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-content text-base font-semibold text-foreground hover:text-accent transition-colors"
+                >
+                  {item.title} &nearr;
+                </a>
+              ) : (
+                <span class="font-content text-base font-semibold text-foreground">
+                  {item.title}
+                </span>
+              )}
+              <p class="text-xs text-muted-foreground mt-0.5">{item.author}</p>
+              <p class="text-sm text-muted-foreground leading-relaxed mt-2">{item.takeaway}</p>
+              {item.blogHref && (
+                <a
+                  href={item.blogHref}
+                  class="text-xs text-accent hover:underline mt-1 inline-block"
+                >
+                  Read my notes &rarr;
+                </a>
+              )}
+            </div>
           </div>
         </div>
       ))}

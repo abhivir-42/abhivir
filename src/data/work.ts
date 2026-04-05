@@ -25,7 +25,7 @@ export const work: WorkItem[] = [
     title: "AI for Fetal Heart Ultrasound",
     tier: "flagship",
     featured: true,
-    date: "2025 — Present",
+    date: "Oct 2025 — Jun 2026",
     tags: ["Deep Learning", "Medical Imaging", "PyTorch"],
     description:
       "MEng thesis. MobileUNet for real-time fetal heart segmentation, AutoFHR for heart rate estimation, L-FUSION for probe navigation. Targeting portable devices for low-resource settings.",
@@ -39,7 +39,7 @@ export const work: WorkItem[] = [
     date: "2023 — 2024",
     tags: ["C", "ARM Assembly", "Systems Programming"],
     description:
-      "Operating system and compiler, both from scratch. Best in cohort of 230 at Imperial.",
+      "Operating system and compiler, both from scratch. Best in cohort of 230 at Imperial. 95% mark.",
   },
   {
     title: "Emotional Text-to-Speech",
@@ -53,7 +53,7 @@ export const work: WorkItem[] = [
     href: "https://github.com/abhivir-42/marketing-app-ad-gen",
   },
   {
-    title: "GPT-2 from Scratch",
+    title: "GPT from Scratch",
     tier: "flagship",
     featured: true,
     date: "Summer 2024",
@@ -65,7 +65,7 @@ export const work: WorkItem[] = [
     title: "MEGA: Multilingual LLM Evaluation",
     tier: "flagship",
     featured: true,
-    date: "Winter 2024",
+    date: "Autumn 2024",
     tags: ["NLP", "Multilingual", "Research"],
     description:
       "Research paper evaluating LLMs across 70+ languages. Identified data contamination issues in benchmarks and evaluated compression parity as a fairer metric.",
@@ -76,7 +76,7 @@ export const work: WorkItem[] = [
   {
     title: "FetchFund",
     tier: "notable",
-    date: "Spring 2024",
+    date: "Spring 2025",
     tags: ["Fetch.ai", "DeFi", "AI Agents"],
     description:
       "Automated crypto trading engine on Fetch.ai's uAgents framework. Multi-agent system for market analysis, signal generation, and trade execution.",
@@ -85,7 +85,7 @@ export const work: WorkItem[] = [
   {
     title: "Statistical Arbitrage Framework",
     tier: "notable",
-    date: "2024",
+    date: "Fall 2024",
     tags: ["Quant", "Python", "Crypto"],
     description:
       "Pairs trading system. Cointegration, Kalman filters, mean-reversion signals.",
@@ -109,7 +109,7 @@ export const work: WorkItem[] = [
   {
     title: "NLP — Top Submission at Imperial",
     tier: "notable",
-    date: "2024",
+    date: "Winter 2026",
     tags: ["NLP", "ML", "Python"],
     description:
       "Top submission in Imperial's NLP coursework. AI platform + human beat all students; platform alone didn't beat careful manual work.",
@@ -117,7 +117,7 @@ export const work: WorkItem[] = [
   {
     title: "CUDA Kernel Optimization",
     tier: "notable",
-    date: "2024",
+    date: "Autumn 2025",
     tags: ["CUDA", "GPU", "Performance"],
     description:
       "5th fastest CUDA kernel in the cohort at Imperial.",
@@ -125,7 +125,7 @@ export const work: WorkItem[] = [
   {
     title: "Wintermute Crypto CTF",
     tier: "notable",
-    date: "2024",
+    date: "2026",
     tags: ["Cryptography", "ZKP", "CTF"],
     description:
       "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
@@ -140,11 +140,12 @@ export const work: WorkItem[] = [
     tags: ["Cricket", "BUCS", "Leadership"],
     description:
       "Captained Imperial College London cricket team in BUCS.",
+    href: "/blog/cricket",
   },
   {
-    title: "AI Club at Imperial",
+    title: "AI, Blockchain Club at Imperial",
     tier: "other",
-    date: "2023 — Present",
+    date: "2024 — 2025",
     tags: ["AI", "Leadership", "Community"],
     description:
       "Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",

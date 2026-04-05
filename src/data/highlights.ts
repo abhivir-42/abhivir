@@ -27,9 +27,9 @@ export const highlights: HighlightItem[] = [
     placeholder: false,
   },
   {
-    title: "IIT Delhi",
+    title: "IIT Delhi — B.Tech",
     caption:
-      "Admitted through JEE Advanced, top 0.4% nationally.",
+      "Admitted for B.Tech through JEE Advanced, top 0.1% nationally.",
     date: "2021",
     category: "academic",
     image: "/photos/IITD.JPG",
@@ -39,14 +39,14 @@ export const highlights: HighlightItem[] = [
     title: "KVPY Scholar",
     caption:
       "Kishore Vaigyanik Protsahan Yojana — national fellowship for excellence in math and science.",
-    date: "2020",
+    date: "2021",
     category: "academic",
     placeholder: true,
   },
   {
-    title: "Technothlon — AIR 10",
+    title: "Technothlon — All India Rank 14",
     caption:
-      "Organised by IIT Guwahati. All India Rank 10 out of 50,000. Made friends I reconnected with at IIT.",
+      "Organised by IIT Guwahati. All India Rank (AIR) 14 out of 50,000. Made friends I reconnected with at IIT.",
     date: "2020",
     category: "academic",
     image: "/photos/technothlon.jpg",
@@ -58,15 +58,15 @@ export const highlights: HighlightItem[] = [
     title: "Built and Programmed a Robot Wall-E from Scratch",
     caption:
       "Designed, built, and programmed a functioning Wall-E robot from the ground up.",
-    date: "2023",
+    date: "2025",
     category: "building",
     image: "/photos/robot-photo.jpg",
     placeholder: false,
   },
   {
-    title: "Emotional TTS — 1000+ HuggingFace Downloads",
+    title: "Emotional TTS — 2,000+ HuggingFace Downloads",
     caption:
-      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 1000 downloads.",
+      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 2,000 downloads.",
     date: "2025",
     category: "building",
     placeholder: true,
@@ -75,7 +75,7 @@ export const highlights: HighlightItem[] = [
     title: "UK AI Agent X Openclaw Hackathon Winner",
     caption:
       "Built FetchFund, an automated crypto trading engine on Fetch.ai agents.",
-    date: "2024",
+    date: "2025",
     category: "competition",
     image: "/photos/uk-ai-agent-hack.jpeg",
     placeholder: false,
@@ -84,7 +84,7 @@ export const highlights: HighlightItem[] = [
     title: "COVID App for Gurdwara",
     caption:
       "Built a supply chain management app during COVID for a local Gurdwara.",
-    date: "2021",
+    date: "2020",
     category: "building",
     placeholder: true,
   },
@@ -112,7 +112,7 @@ export const highlights: HighlightItem[] = [
     title: "Wintermute Crypto CTF",
     caption:
       "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
-    date: "2024",
+    date: "2026",
     category: "competition",
     image: "/photos/wintermute-ctf.jpeg",
     placeholder: false,
@@ -122,8 +122,8 @@ export const highlights: HighlightItem[] = [
   {
     title: "Hosting Thomas Wolf & Peter Steinberger",
     caption:
-      "Hugging Face CEO and Peter Steinberger at the AI Club at Imperial. Head of Data.",
-    date: "2024",
+      "Hugging Face CEO and Peter Steinberger at the AI, Blockchain Club at Imperial. Head of Data.",
+    date: "2026",
     category: "leadership",
     placeholder: true,
   },
