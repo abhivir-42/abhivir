@@ -56,27 +56,49 @@ const featured = work.filter((w) => w.featured);
     </section>
 
     <!-- Right Now -->
-    <section class="pt-12 pb-16">
-      <div class="flex items-center justify-between mb-6">
+    <section class="pt-12 pb-12 border-b border-border">
+      <div class="flex items-center justify-between">
         <p class="section-label mb-0">Right Now</p>
         <a
           href="/now"
           class="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          More &rarr;
+          What I'm up to &rarr;
         </a>
       </div>
-      <ul class="space-y-3 text-sm text-muted-foreground">
-        <li>
-          <span class="text-foreground font-medium">FYP:</span> AI-guided fetal ultrasound analysis for low-resource settings
-        </li>
-        <li>
-          <span class="text-foreground font-medium">Applying:</span> YC Startup School India, a16z Speedrun, Z Fellows
-        </li>
-        <li>
-          <span class="text-foreground font-medium">Exploring:</span> AI for Indian education and governance
-        </li>
-      </ul>
+      <p class="text-sm text-muted-foreground mt-4">
+        Final year at Imperial. Building AI for fetal ultrasound analysis. Heading to YC Startup School India in April, then back to India after graduating in June.
+      </p>
+    </section>
+
+    <!-- Contact -->
+    <section class="pt-12 pb-16">
+      <p class="section-label">Get in Touch</p>
+      <p class="text-sm text-muted-foreground mb-6">
+        Want to work together, have a question, or just want to say hello?
+      </p>
+      <div class="flex items-center gap-4">
+        <a
+          href="mailto:as9422@ic.ac.uk"
+          class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
+        >
+          Email me
+        </a>
+        <a
+          href="https://linkedin.com/in/abhivir"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          LinkedIn &nearr;
+        </a>
+        <a
+          href="/contact"
+          class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          More ways to reach me &rarr;
+        </a>
+      </div>
     </section>
   </div>
 </BaseLayout>
