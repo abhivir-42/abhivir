@@ -84,12 +84,12 @@ const featured = work.filter((w) => w.featured);
       <p class="text-sm text-muted-foreground mb-6">
         Want to work together, have a question, or just want to say hello?
       </p>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 flex-wrap">
         <a
-          href="mailto:as9422@ic.ac.uk"
+          href="/contact"
           class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
         >
-          Email me
+          Send a message &rarr;
         </a>
         <a
           href="https://www.linkedin.com/in/abhivir-singh/"
@@ -98,12 +98,6 @@ const featured = work.filter((w) => w.featured);
           class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           LinkedIn &nearr;
-        </a>
-        <a
-          href="/contact"
-          class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          More ways to reach me &rarr;
         </a>
       </div>
     </section>
