@@ -29,7 +29,7 @@ export const work: WorkItem[] = [
     tags: ["Deep Learning", "Medical Imaging", "PyTorch"],
     description:
       "MEng thesis. MobileUNet for real-time fetal heart segmentation, AutoFHR for heart rate estimation, L-FUSION for probe navigation. Targeting portable devices for low-resource settings.",
-    href: "/chd-detection-interim-report.pdf",
+    href: "/ai-congenital-heart-detection.pdf",
   },
   {
     title: "Pintos OS & WACC Compiler",

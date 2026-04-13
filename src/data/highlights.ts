@@ -192,7 +192,7 @@ export const highlights: HighlightItem[] = [
     placeholder: false,
   },
   {
-    title: "Meeting Vinod Khosla",
+    title: "Vinod Khosla",
     caption:
       "At the India AI Summit.",
     date: "Feb 2026",
@@ -209,7 +209,7 @@ export const highlights: HighlightItem[] = [
     placeholder: false,
   },
   {
-    title: "With Vivek Raghavan — Sarvam AI",
+    title: "Vivek Raghavan, Sarvam AI",
     caption:
       "Co-founder of Sarvam AI, building India's AI infrastructure.",
     date: "Feb 2026",
