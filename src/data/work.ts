@@ -16,7 +16,7 @@ export const work: WorkItem[] = [
     slug: "data-pilot",
     tier: "flagship",
     featured: true,
-    date: "2024 — 2025",
+    date: "2024–2025",
     tags: ["AI Agents", "LangChain", "FastAPI", "AutoML"],
     description:
       "Solo-built platform with 8+ AI agents that coordinate across the full data science pipeline. Humans in the loop at every decision point. Live with data scientists at Bosch and Fetch.ai.",
@@ -25,7 +25,7 @@ export const work: WorkItem[] = [
     title: "AI for Fetal Heart Ultrasound",
     tier: "flagship",
     featured: true,
-    date: "Oct 2025 — Jun 2026",
+    date: "Oct 2025 – Jun 2026",
     tags: ["Deep Learning", "Medical Imaging", "PyTorch"],
     description:
       "MEng thesis. MobileUNet for real-time fetal heart segmentation, AutoFHR for heart rate estimation, L-FUSION for probe navigation. Targeting portable devices for low-resource settings.",
@@ -36,7 +36,7 @@ export const work: WorkItem[] = [
     slug: "pintos-wacc",
     tier: "flagship",
     featured: true,
-    date: "2023 — 2024",
+    date: "2023–2024",
     tags: ["C", "ARM Assembly", "Systems Programming"],
     description:
       "Operating system and compiler, both from scratch. Best in cohort of 230 at Imperial. 95% mark.",
@@ -93,7 +93,7 @@ export const work: WorkItem[] = [
   {
     title: "Optiver Trading Academy",
     tier: "notable",
-    date: "Sep — Nov 2023",
+    date: "Sep – Nov 2023",
     tags: ["Options", "Market-Making", "Trading"],
     description:
       "Options market-making algorithm. 3rd out of 100, awarded by the head of Optiver's London office.",
@@ -107,7 +107,7 @@ export const work: WorkItem[] = [
       "1st place across manual trading and quantitative reasoning rounds.",
   },
   {
-    title: "NLP — Top Submission at Imperial",
+    title: "NLP: Top Submission at Imperial",
     tier: "notable",
     date: "Winter 2026",
     tags: ["NLP", "ML", "Python"],
@@ -136,7 +136,7 @@ export const work: WorkItem[] = [
   {
     title: "Imperial Cricket Captain",
     tier: "other",
-    date: "2023 — 2025",
+    date: "2023–2025",
     tags: ["Cricket", "BUCS", "Leadership"],
     description:
       "Captained Imperial College London cricket team in BUCS.",
@@ -145,7 +145,7 @@ export const work: WorkItem[] = [
   {
     title: "AI, Blockchain Club at Imperial",
     tier: "other",
-    date: "2024 — 2025",
+    date: "2024–2025",
     tags: ["AI", "Leadership", "Community"],
     description:
       "Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",
@@ -153,7 +153,7 @@ export const work: WorkItem[] = [
   {
     title: "Secretary, DoCSoc",
     tier: "other",
-    date: "2023 — 2024",
+    date: "2023–2024",
     tags: ["Leadership", "Hackathon"],
     description:
       "Department of Computing Society at Imperial. Organised IC Hack, the UK's largest student-run hackathon.",

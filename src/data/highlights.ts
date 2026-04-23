@@ -15,7 +15,7 @@ export const highlights: HighlightItem[] = [
     title: "Imperial College London",
     caption:
       "MEng Computing (AI & ML). Final year.",
-    date: "2022 — 2026",
+    date: "2022–2026",
     category: "academic",
     image: "/photos/imperial.jpg",
     placeholder: false,
@@ -23,7 +23,7 @@ export const highlights: HighlightItem[] = [
   },
   // 2. IIT Delhi
   {
-    title: "IIT Delhi — B.Tech",
+    title: "IIT Delhi, B.Tech",
     caption:
       "Admitted for B.Tech through JEE Advanced, top 0.1% nationally. Transferred to Imperial CS after one year.",
     date: "2021",
@@ -33,7 +33,7 @@ export const highlights: HighlightItem[] = [
   },
   // 3. Cambridge ENGAA
   {
-    title: "Cambridge ENGAA — 9.0/9.0",
+    title: "Cambridge ENGAA: 9.0/9.0",
     caption:
       "Perfect score. Unconditional offer from Trinity College, Cambridge University.",
     date: "2021",
@@ -43,7 +43,7 @@ export const highlights: HighlightItem[] = [
   },
   // 4. Morgan Stanley
   {
-    title: "Morgan Stanley — 1st Place",
+    title: "Morgan Stanley: 1st Place",
     caption:
       "Arbitrage challenge. Manual trading and quantitative reasoning rounds.",
     date: "2025",
@@ -74,18 +74,28 @@ export const highlights: HighlightItem[] = [
   },
   // 7. Pintos & WACC
   {
-    title: "Pintos & WACC — Best in Cohort",
+    title: "Pintos & WACC: Best in Cohort",
     caption:
       "Operating system and compiler from scratch. Top marks (95%) out of 230 at Imperial.",
     date: "2024",
     category: "academic",
     placeholder: true,
   },
-  // 8. YC Startup School
+  // 8. YC Startup School: Top 25 Dinner
+  {
+    title: "YC Top 25: Dinner with YC Partners",
+    caption:
+      "Top 25 of 25,000 builders selected for an exclusive dinner with YC partners Jared Friedman, Jon Xu, Ankit Gupta, and Arnav Sahu (Peak XV). Writeup coming.",
+    date: "Apr 2026",
+    category: "event",
+    image: "/photos/yc.png",
+    placeholder: false,
+  },
+  // 8b. YC Startup School (attended)
   {
     title: "YC Startup School India",
     caption:
-      "Accepted. Awarded $25k+ in credits. Bengaluru, April 2026.",
+      "Attended in Bengaluru. Awarded $25k+ in credits.",
     date: "Apr 2026",
     category: "event",
     image: "/photos/yc.png",
@@ -93,7 +103,7 @@ export const highlights: HighlightItem[] = [
   },
   // 9. Optiver
   {
-    title: "Optiver — 3rd/100",
+    title: "Optiver: 3rd/100",
     caption:
       "Options market-making challenge. Awarded by the head of Optiver's London office.",
     date: "2023",
@@ -117,7 +127,7 @@ export const highlights: HighlightItem[] = [
     title: "Imperial Cricket Captain",
     caption:
       "Led the team in BUCS. Scored a 100, earned the baggy blue cap. Batting avg: 81.",
-    date: "2023 — 2025",
+    date: "2023–2025",
     category: "leadership",
     image: "/photos/cricket.jpg",
     placeholder: false,
@@ -136,7 +146,7 @@ export const highlights: HighlightItem[] = [
   },
   // 13. Technothlon
   {
-    title: "Technothlon — All India Rank 14",
+    title: "Technothlon: All India Rank 14",
     caption:
       "Organised by IIT Guwahati. All India Rank (AIR) 14 out of 50,000. Made friends I reconnected with at IIT.",
     date: "2020",
@@ -146,7 +156,7 @@ export const highlights: HighlightItem[] = [
   },
   // 14. Emotional TTS
   {
-    title: "Emotional TTS — 2,000+ HuggingFace Downloads",
+    title: "Emotional TTS: 2,000+ HuggingFace Downloads",
     caption:
       "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 2,000 downloads.",
     date: "2025",
@@ -157,7 +167,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "KVPY Scholar",
     caption:
-      "Kishore Vaigyanik Protsahan Yojana — national fellowship for excellence in math and science.",
+      "Kishore Vaigyanik Protsahan Yojana. National fellowship for excellence in math and science.",
     date: "2021",
     category: "academic",
     placeholder: true,
@@ -172,7 +182,7 @@ export const highlights: HighlightItem[] = [
     placeholder: true,
   },
 
-  // Events — photos but lower priority
+  // Events: photos but lower priority
   {
     title: "Fetch.ai Presentation",
     caption:
@@ -183,7 +193,7 @@ export const highlights: HighlightItem[] = [
     placeholder: false,
   },
   {
-    title: "India AI Summit — With Demis Hassabis & Dario Amodei",
+    title: "India AI Summit: With Demis Hassabis & Dario Amodei",
     caption:
       "Sat at the same table as the CEOs of Google DeepMind and Anthropic.",
     date: "Feb 2026",
@@ -201,7 +211,7 @@ export const highlights: HighlightItem[] = [
     placeholder: false,
   },
   {
-    title: "Alexander Wang — Scale AI",
+    title: "Alexander Wang, Scale AI",
     caption: "Met at the India AI Summit.",
     date: "Feb 2026",
     category: "event",

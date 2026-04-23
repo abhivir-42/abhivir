@@ -27,30 +27,29 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  const { name, email, message } = payload;
+  const rawName = typeof payload.name === "string" ? payload.name.trim() : "";
+  const rawEmail = typeof payload.email === "string" ? payload.email.trim() : "";
+  const rawMessage = typeof payload.message === "string" ? payload.message.trim() : "";
 
-  // Basic validation
-  if (
-    typeof name !== "string" ||
-    typeof email !== "string" ||
-    typeof message !== "string" ||
-    !name.trim() ||
-    !email.trim() ||
-    !message.trim()
-  ) {
-    return new Response(JSON.stringify({ error: "Missing fields" }), {
+  // Message is required; name and email are optional
+  if (!rawMessage) {
+    return new Response(JSON.stringify({ error: "Message is required" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
 
   // Sanity limits to prevent abuse
-  if (name.length > 200 || email.length > 200 || message.length > 5000) {
+  if (rawName.length > 200 || rawEmail.length > 200 || rawMessage.length > 5000) {
     return new Response(JSON.stringify({ error: "Field too long" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  const name = rawName || "Anonymous";
+  const email = rawEmail || undefined;
+  const message = rawMessage;
 
   // Read API key from Cloudflare Pages environment (via locals.runtime.env)
   // @ts-expect-error — Cloudflare runtime types injected at deploy time
@@ -67,9 +66,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: TO_EMAIL,
-          reply_to: email,
+          ...(email ? { reply_to: email } : {}),
           subject: `[abhivir.com] Message from ${name}`,
-          text: `From: ${name} <${email}>\n\n${message}`,
+          text: `From: ${name}${email ? ` <${email}>` : ""}\n\n${message}`,
         }),
       });
 

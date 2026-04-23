@@ -1,9 +1,23 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import HighlightCard from "../components/HighlightCard.astro";
 import { work } from "../data/work";
+import { highlights } from "../data/highlights";
 
 const featured = work.filter((w) => w.featured);
+
+const featuredHighlightTitles = [
+  "Imperial College London",
+  "IIT Delhi, B.Tech",
+  "Cambridge ENGAA: 9.0/9.0",
+  "Imperial Cricket Captain",
+  "YC Top 25: Dinner with YC Partners",
+  "Wintermute Crypto CTF",
+];
+const featuredHighlights = featuredHighlightTitles
+  .map((title) => highlights.find((h) => h.title === title))
+  .filter((h): h is NonNullable<typeof h> => Boolean(h));
 ---
 
 <BaseLayout>
@@ -33,6 +47,33 @@ const featured = work.filter((w) => w.featured);
         <p>
           Graduating June 2026. Going back to India to build.
         </p>
+      </div>
+    </section>
+
+    <!-- Highlights -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <div class="flex items-center justify-between mb-6">
+        <p class="section-label mb-0">Highlights</p>
+        <a
+          href="/highlights"
+          class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          See all highlights &rarr;
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {featuredHighlights.map((item) => (
+          <HighlightCard
+            title={item.title}
+            caption={item.caption}
+            date={item.date}
+            category={item.category}
+            image={item.image}
+            imagePosition={item.imagePosition}
+            placeholder={item.placeholder}
+            href={item.href}
+          />
+        ))}
       </div>
     </section>
 
@@ -74,7 +115,7 @@ const featured = work.filter((w) => w.featured);
         </a>
       </div>
       <p class="text-sm text-muted-foreground mt-4">
-        Final year at Imperial. Building AI for fetal ultrasound analysis. Heading to YC Startup School India in April, then back to India after graduating in June.
+        Final year at Imperial. Building AI for fetal ultrasound analysis. Just back from YC Startup School India in Bengaluru. Writeup coming. Back to India for good after graduating in June.
       </p>
     </section>
 

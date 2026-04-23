@@ -93,6 +93,6 @@ export const technicalReading: TechnicalReadingItem[] = [
     title: "Meta-Harness: End-to-End Optimization of Model Harnesses",
     author: "Research paper",
     takeaway:
-      "Formalises harness engineering — the scaffolding around models matters as much as the models themselves.",
+      "Formalises harness engineering. The scaffolding around models matters as much as the models themselves.",
   },
 ];
