@@ -1,0 +1,1223 @@
+---
+export const prerender = true;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex Demo Picker</title>
+    <style is:global>
+:root {
+  --ink: #121816;
+  --muted: #5e6864;
+  --line: #d8dfda;
+  --paper: #f7f7f1;
+  --panel: #ffffff;
+  --green: #08745d;
+  --green-dark: #064f40;
+  --blue: #315f9b;
+  --red: #b34436;
+  --yellow: #e3b341;
+  --shadow: 0 18px 54px rgba(18, 24, 22, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    linear-gradient(135deg, rgba(8, 116, 93, 0.08), transparent 34rem),
+    linear-gradient(180deg, #fffefa 0%, var(--paper) 52%, #eef2ed 100%);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  padding: 22px 0 36px;
+}
+
+.compact-hero {
+  min-height: auto;
+}
+
+.topbar,
+.judge-hero,
+.rubric-strip,
+.form-grid,
+.slider-grid,
+.leaderboard,
+.project-grid {
+  display: grid;
+}
+
+.topbar {
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.brand-lockup,
+.nav-actions,
+.hero-actions,
+.button-row,
+.rank-row,
+.card-actions,
+.chips {
+  display: flex;
+  align-items: center;
+}
+
+.brand-lockup {
+  gap: 14px;
+  min-width: 0;
+}
+
+.mark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(8, 116, 93, 0.25);
+  background: #eaf2ee;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.eyebrow {
+  margin: 0 0 7px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.nav-actions {
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.nav-actions a {
+  padding: 11px 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 42px;
+  padding: 11px 16px;
+  border-radius: 6px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(8, 116, 93, 0.22);
+}
+
+.secondary-button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.judge-hero {
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: end;
+  padding-top: 72px;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.status-pill {
+  display: inline-flex;
+  margin-bottom: 18px;
+  padding: 8px 10px;
+  border: 1px solid rgba(179, 68, 54, 0.25);
+  background: rgba(179, 68, 54, 0.08);
+  color: #812f26;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.hero-copy h2 {
+  max-width: 820px;
+  margin-bottom: 20px;
+  font-size: clamp(46px, 7vw, 92px);
+  line-height: 0.94;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.hero-copy p:not(.status-pill) {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.58;
+}
+
+.hero-actions,
+.button-row {
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.score-summary {
+  display: grid;
+  gap: 12px;
+}
+
+.score-summary > div {
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 30px rgba(18, 24, 22, 0.08);
+}
+
+.summary-number {
+  display: block;
+  color: var(--green-dark);
+  font-size: 48px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.score-summary span:last-child {
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.rubric-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.rubric-strip article {
+  min-height: 120px;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+}
+
+.rubric-strip article:last-child {
+  border-right: 0;
+}
+
+.rubric-strip strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--green-dark);
+  font-size: 20px;
+}
+
+.rubric-strip span,
+.section-heading p,
+.team,
+.project-card p,
+.leader-card p {
+  color: var(--muted);
+}
+
+.section {
+  padding: 72px 0 0;
+}
+
+.section-heading {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.section-heading h2 {
+  margin-bottom: 12px;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.05;
+}
+
+.section-heading p {
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.submission-form,
+.leader-card,
+.project-card,
+.empty-state {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 34px rgba(18, 24, 22, 0.08);
+}
+
+.submission-form {
+  padding: 22px;
+}
+
+.form-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field,
+.range-field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.field span,
+.range-field span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+}
+
+input {
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+  padding: 12px;
+  line-height: 1.45;
+}
+
+.chips {
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 4px 0 18px;
+}
+
+.chips label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: #31403a;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.chips input {
+  width: auto;
+  min-height: 0;
+}
+
+.slider-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+input[type="range"] {
+  accent-color: var(--green);
+}
+
+.leaderboard-tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.leaderboard {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.project-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-bottom: 80px;
+}
+
+.leader-card,
+.project-card,
+.empty-state {
+  padding: 18px;
+}
+
+.leader-card {
+  border-top: 6px solid var(--green);
+}
+
+.project-card {
+  border-top: 4px solid #cbd8d0;
+}
+
+.rank-row {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.rank {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 5px 9px;
+  background: #eaf2ee;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.rank-row strong {
+  color: var(--red);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.leader-card h3,
+.project-card h3 {
+  margin-bottom: 4px;
+  font-size: 22px;
+  line-height: 1.12;
+}
+
+.team {
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.score-bars {
+  display: grid;
+  gap: 5px;
+  margin: 16px 0;
+}
+
+.score-bars span {
+  display: block;
+  height: 7px;
+  min-width: 8px;
+  border-radius: 999px;
+}
+
+.score-bars span:nth-child(1) {
+  background: var(--green);
+}
+
+.score-bars span:nth-child(2) {
+  background: var(--blue);
+}
+
+.score-bars span:nth-child(3) {
+  background: var(--yellow);
+}
+
+.score-bars span:nth-child(4) {
+  background: var(--red);
+}
+
+.score-bars span:nth-child(5) {
+  background: #17201c;
+}
+
+.reason-list,
+.tag-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.reason-list span,
+.tag-list span {
+  padding: 5px 7px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.reason-list span {
+  background: rgba(8, 116, 93, 0.1);
+  color: var(--green-dark);
+}
+
+.tag-list span {
+  background: #f0f2ed;
+  color: #45504b;
+}
+
+.card-actions {
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.card-actions a,
+.card-actions button {
+  min-height: 34px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(18px);
+  max-width: min(460px, calc(100% - 32px));
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: #121816;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 1040px) {
+  .leaderboard,
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rubric-strip,
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .topbar,
+  .judge-hero,
+  .rubric-strip,
+  .form-grid,
+  .form-grid.two,
+  .slider-grid,
+  .leaderboard,
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    align-items: start;
+  }
+
+  .nav-actions {
+    justify-content: flex-start;
+  }
+
+  .nav-actions a {
+    display: none;
+  }
+
+  .judge-hero {
+    padding-top: 44px;
+  }
+
+  .hero-copy h2 {
+    max-width: 340px;
+    font-size: 39px;
+    line-height: 1.01;
+  }
+
+  .hero-copy p:not(.status-pill) {
+    max-width: 340px;
+    font-size: 16px;
+  }
+
+  .score-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .score-summary > div {
+    padding: 14px;
+  }
+
+  .summary-number {
+    font-size: 34px;
+  }
+
+  .rubric-strip article {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .rubric-strip article:last-child {
+    border-bottom: 0;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+<div class="shell">
+      <header class="hero compact-hero">
+        <nav class="topbar" aria-label="Primary">
+          <div class="brand-lockup">
+            <span class="mark" aria-hidden="true">CD</span>
+            <div>
+              <p class="eyebrow">OpenAI London Codex Mini Hackathon</p>
+              <h1>Codex Demo Picker</h1>
+            </div>
+          </div>
+          <div class="nav-actions">
+            <a href="#submit">Submit</a>
+            <a href="#leaderboard">Top 5</a>
+            <button class="secondary-button" id="loadSample" type="button">Load Sample</button>
+            <button class="primary-button" id="exportData" type="button">Export</button>
+          </div>
+        </nav>
+
+        <div class="judge-hero">
+          <section class="hero-copy">
+            <p class="status-pill">25 builders. 5 demo slots. Decide fairly in minutes.</p>
+            <h2>Find the projects most worth demoing.</h2>
+            <p>
+              A live triage board for the room: entrants paste what they built, links, Codex usage,
+              and impact. The board ranks demo-worthiness using the event’s actual themes:
+              delegation, tools, browser verification, useful artifacts, and showable polish.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-button" href="#submit">Add Project</a>
+              <a class="secondary-button" href="#leaderboard">Show Top 5</a>
+            </div>
+          </section>
+
+          <aside class="score-summary" aria-label="Selection summary">
+            <div>
+              <span class="summary-number" id="projectCount">0</span>
+              <span>submitted</span>
+            </div>
+            <div>
+              <span class="summary-number">5</span>
+              <span>demo slots</span>
+            </div>
+            <div>
+              <span class="summary-number" id="avgScore">0</span>
+              <span>avg score</span>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <main>
+        <section class="rubric-strip" aria-label="Rubric">
+          <article><strong>Usefulness</strong><span>Does someone here actually need it?</span></article>
+          <article><strong>Codex Leverage</strong><span>Did Codex inspect, patch, verify, or orchestrate?</span></article>
+          <article><strong>Demo Clarity</strong><span>Can the room understand the before/after fast?</span></article>
+          <article><strong>Event Fit</strong><span>Does it make Codex look inevitable?</span></article>
+        </section>
+
+        <section class="section" id="submit">
+          <div class="section-heading">
+            <p class="eyebrow">Project Intake</p>
+            <h2>Make it easy for builders to enter.</h2>
+            <p>
+              This can run from one shared laptop or a deployed Vercel URL. Paste details quickly;
+              the app scores locally and creates a judge packet. No login required.
+            </p>
+          </div>
+
+          <form class="submission-form" id="submissionForm">
+            <div class="form-grid">
+              <label class="field">
+                <span>Project name</span>
+                <input id="name" required placeholder="e.g. Codex Field Kit" />
+              </label>
+              <label class="field">
+                <span>Builder / team</span>
+                <input id="team" required placeholder="Name(s)" />
+              </label>
+              <label class="field">
+                <span>Demo link</span>
+                <input id="demoUrl" placeholder="https://..." />
+              </label>
+              <label class="field">
+                <span>Repo / artifact link</span>
+                <input id="repoUrl" placeholder="GitHub, Vercel, Drive, screenshot..." />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>What did you build?</span>
+              <textarea id="summary" required rows="3" placeholder="One or two sentences. What is the product?"></textarea>
+            </label>
+
+            <div class="form-grid two">
+              <label class="field">
+                <span>Who is it useful for?</span>
+                <textarea id="audience" rows="3" placeholder="Judges, OpenAI team, devrel, meetup attendees, developers, founders..."></textarea>
+              </label>
+              <label class="field">
+                <span>How did you use Codex?</span>
+                <textarea id="codexUse" rows="3" placeholder="Voice prompts, terminal, browser QA, file edits, image generation, GitHub, tools, agents..."></textarea>
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Before/after demo moment</span>
+              <textarea id="beforeAfter" rows="3" placeholder="Before: messy/broken/unknown. After: working/useful/shippable."></textarea>
+            </label>
+
+            <div class="chips" aria-label="Capability tags">
+              <label><input type="checkbox" value="agent delegation" /> Agent delegation</label>
+              <label><input type="checkbox" value="browser verification" /> Browser verification</label>
+              <label><input type="checkbox" value="terminal/tools" /> Terminal/tools</label>
+              <label><input type="checkbox" value="image/assets" /> Image/assets</label>
+              <label><input type="checkbox" value="real user utility" /> Real utility</label>
+              <label><input type="checkbox" value="voice prompting" /> Voice prompting</label>
+              <label><input type="checkbox" value="work artifacts" /> Work artifacts</label>
+              <label><input type="checkbox" value="github/pr" /> GitHub/PR</label>
+            </div>
+
+            <div class="slider-grid">
+              <label class="range-field">
+                <span>Live demo reliability</span>
+                <input id="reliability" type="range" min="1" max="5" value="3" />
+              </label>
+              <label class="range-field">
+                <span>Wow factor</span>
+                <input id="wow" type="range" min="1" max="5" value="3" />
+              </label>
+              <label class="range-field">
+                <span>Shipped polish</span>
+                <input id="polish" type="range" min="1" max="5" value="3" />
+              </label>
+            </div>
+
+            <div class="button-row">
+              <button class="primary-button" type="submit">Score Project</button>
+              <button class="secondary-button" id="resetForm" type="button">Reset Form</button>
+              <button class="secondary-button" id="pastePrompt" type="button">Copy AI Judge Prompt</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="section leaderboard-section" id="leaderboard">
+          <div class="section-heading">
+            <p class="eyebrow">Leaderboard</p>
+            <h2>Top 5 demo candidates.</h2>
+            <p>
+              The score is a transparent triage signal, not an unquestionable verdict. Judges can
+              still override for diversity, fairness, or live-room constraints.
+            </p>
+          </div>
+          <div class="leaderboard-tools">
+            <button class="secondary-button" id="copyTop5" type="button">Copy Top 5</button>
+            <button class="secondary-button" id="copyJudgePacket" type="button">Copy Judge Packet</button>
+            <button class="secondary-button" id="clearAll" type="button">Clear All</button>
+          </div>
+          <div class="leaderboard" id="leaderboardList"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-heading">
+            <p class="eyebrow">All Submissions</p>
+            <h2>Every project stays visible.</h2>
+          </div>
+          <div class="project-grid" id="projectGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" is:inline>
+const STORAGE_KEY = "codex-demo-picker-projects";
+
+const rubric = [
+  {
+    key: "usefulness",
+    label: "Usefulness",
+    max: 25,
+    terms: ["useful", "users", "team", "marketing", "organizer", "developer", "attendee", "workflow", "pain", "saves", "helps"],
+  },
+  {
+    key: "codex",
+    label: "Codex leverage",
+    max: 25,
+    terms: ["codex", "agent", "terminal", "browser", "tool", "plugin", "voice", "transcribe", "github", "review", "test", "verify", "image"],
+  },
+  {
+    key: "demo",
+    label: "Demo clarity",
+    max: 20,
+    terms: ["before", "after", "demo", "live", "working", "shipped", "link", "vercel", "screenshot", "shows"],
+  },
+  {
+    key: "event",
+    label: "Event fit",
+    max: 20,
+    terms: ["delegation", "browser", "tools", "app", "artifact", "community", "openai", "tessl", "meetup", "codex"],
+  },
+  {
+    key: "risk",
+    label: "Reliability",
+    max: 10,
+    terms: [],
+  },
+];
+
+const samples = [
+  {
+    name: "Codex London Field Kit",
+    team: "Abhivir",
+    demoUrl: "https://codex-field-kit.vercel.app",
+    repoUrl: "",
+    summary: "Turns raw event audio into a same-night marketing and community handoff for OpenAI/Tessl.",
+    audience: "OpenAI devrel, Tessl marketing, community organizers, and attendees who want a recap.",
+    codexUse: "Codex transcribed audio with terminal tools, extracted event themes, built the website, generated content drafts, and verified mobile/desktop screenshots.",
+    beforeAfter: "Before: six noisy audio files and no publishable recap. After: website, transcript evidence, social drafts, and exportable handoff.",
+    tags: ["terminal/tools", "real user utility", "work artifacts", "voice prompting"],
+    reliability: 5,
+    wow: 4,
+    polish: 5,
+  },
+  {
+    name: "PR Rescue Room",
+    team: "Team Merge",
+    demoUrl: "",
+    repoUrl: "https://github.com/example/pr-rescue",
+    summary: "A dashboard that reads a failing pull request, summarizes CI failures, and proposes a patch plan.",
+    audience: "Developers trying to land work quickly during a sprint.",
+    codexUse: "Codex inspects GitHub, terminal logs, tests, and review comments, then produces a ranked fix checklist.",
+    beforeAfter: "Before: red CI and noisy logs. After: clear root cause, patch, and retest plan.",
+    tags: ["agent delegation", "github/pr", "terminal/tools", "real user utility"],
+    reliability: 4,
+    wow: 4,
+    polish: 3,
+  },
+  {
+    name: "Browser Bug Replay",
+    team: "Viewport",
+    demoUrl: "",
+    repoUrl: "",
+    summary: "Records a broken UI path and asks Codex to reproduce, inspect, and verify the fix in browser.",
+    audience: "Frontend teams with flaky UI bug reports.",
+    codexUse: "Uses browser verification, screenshots, terminal tests, and Codex comments to explain what changed.",
+    beforeAfter: "Before: vague user bug report. After: reproduced flow, fixed UI, passing screenshot check.",
+    tags: ["browser verification", "terminal/tools", "real user utility"],
+    reliability: 4,
+    wow: 5,
+    polish: 4,
+  },
+];
+
+let projects = loadProjects();
+
+const form = document.querySelector("#submissionForm");
+const leaderboardList = document.querySelector("#leaderboardList");
+const projectGrid = document.querySelector("#projectGrid");
+const toast = document.querySelector("#toast");
+
+function loadProjects() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveProjects() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+}
+
+function textOf(project) {
+  return [
+    project.name,
+    project.summary,
+    project.audience,
+    project.codexUse,
+    project.beforeAfter,
+    project.tags.join(" "),
+    project.demoUrl,
+    project.repoUrl,
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+function countMatches(text, terms) {
+  return terms.reduce((count, term) => count + (text.includes(term) ? 1 : 0), 0);
+}
+
+function scoreProject(project) {
+  const text = textOf(project);
+  const tagBonus = project.tags.length * 2;
+  const linkBonus = project.demoUrl || project.repoUrl ? 4 : 0;
+  const beforeAfterBonus = project.beforeAfter.length > 60 ? 5 : 0;
+
+  const subscores = {};
+  for (const item of rubric) {
+    if (item.key === "risk") {
+      subscores[item.key] = Math.round((Number(project.reliability) / 5) * item.max);
+      continue;
+    }
+    const matches = countMatches(text, item.terms);
+    const base = Math.min(item.max, Math.round((matches / Math.max(4, item.terms.length)) * item.max));
+    subscores[item.key] = base;
+  }
+
+  subscores.usefulness = Math.min(25, subscores.usefulness + (project.audience.length > 35 ? 4 : 0));
+  subscores.codex = Math.min(25, subscores.codex + tagBonus);
+  subscores.demo = Math.min(20, subscores.demo + linkBonus + beforeAfterBonus);
+  subscores.event = Math.min(20, subscores.event + (project.tags.includes("agent delegation") ? 4 : 0));
+
+  const sliderBonus = Number(project.wow) + Number(project.polish);
+  const total = Math.min(
+    100,
+    Object.values(subscores).reduce((sum, value) => sum + value, 0) + sliderBonus,
+  );
+
+  return { total, subscores };
+}
+
+function enrichProject(project) {
+  const result = scoreProject(project);
+  const reasons = [];
+  if (result.subscores.usefulness >= 18) reasons.push("clear real-world utility");
+  if (result.subscores.codex >= 18) reasons.push("strong Codex leverage");
+  if (result.subscores.demo >= 15) reasons.push("easy before/after demo");
+  if (result.subscores.event >= 15) reasons.push("fits tonight's Codex narrative");
+  if (result.subscores.risk < 7) reasons.push("demo reliability risk");
+  return { ...project, score: result.total, subscores: result.subscores, reasons };
+}
+
+function sortedProjects() {
+  return projects.map(enrichProject).sort((a, b) => b.score - a.score);
+}
+
+function getFormProject() {
+  const tags = [...document.querySelectorAll(".chips input:checked")].map((input) => input.value);
+  return {
+    id: crypto.randomUUID(),
+    name: value("name"),
+    team: value("team"),
+    demoUrl: value("demoUrl"),
+    repoUrl: value("repoUrl"),
+    summary: value("summary"),
+    audience: value("audience"),
+    codexUse: value("codexUse"),
+    beforeAfter: value("beforeAfter"),
+    tags,
+    reliability: value("reliability"),
+    wow: value("wow"),
+    polish: value("polish"),
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function value(id) {
+  return document.querySelector(`#${id}`).value.trim();
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("is-visible");
+  window.setTimeout(() => toast.classList.remove("is-visible"), 1700);
+}
+
+async function copyText(text, message) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(message);
+  } catch {
+    showToast("Copy failed. Select manually.");
+  }
+}
+
+function renderSummary() {
+  const scored = sortedProjects();
+  const avg = scored.length
+    ? Math.round(scored.reduce((sum, project) => sum + project.score, 0) / scored.length)
+    : 0;
+  document.querySelector("#projectCount").textContent = scored.length;
+  document.querySelector("#avgScore").textContent = avg;
+}
+
+function scoreBar(subscores) {
+  return rubric
+    .map((item) => {
+      const width = Math.round((subscores[item.key] / item.max) * 100);
+      return `<span title="${item.label}: ${subscores[item.key]}/${item.max}" style="width:${width}%"></span>`;
+    })
+    .join("");
+}
+
+function projectCard(project, index, featured = false) {
+  const rank = index + 1;
+  const links = [
+    project.demoUrl ? `<a href="${project.demoUrl}" target="_blank" rel="noreferrer">Demo</a>` : "",
+    project.repoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer">Artifact</a>` : "",
+  ]
+    .filter(Boolean)
+    .join("");
+  return `
+    <article class="${featured ? "leader-card" : "project-card"}">
+      <div class="rank-row">
+        <span class="rank">${rank <= 5 ? `#${rank}` : "Waitlist"}</span>
+        <strong>${project.score}</strong>
+      </div>
+      <h3>${escapeHtml(project.name)}</h3>
+      <p class="team">${escapeHtml(project.team)}</p>
+      <p>${escapeHtml(project.summary)}</p>
+      <div class="score-bars">${scoreBar(project.subscores)}</div>
+      <div class="reason-list">${project.reasons.map((reason) => `<span>${reason}</span>`).join("")}</div>
+      <div class="tag-list">${project.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>
+      <div class="card-actions">
+        ${links}
+        <button type="button" data-copy="${project.id}">Copy Notes</button>
+        <button type="button" data-delete="${project.id}">Remove</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderProjects() {
+  const scored = sortedProjects();
+  leaderboardList.innerHTML = scored.length
+    ? scored.slice(0, 5).map((project, index) => projectCard(project, index, true)).join("")
+    : `<div class="empty-state">No submissions yet. Add projects or load sample data.</div>`;
+  projectGrid.innerHTML = scored.length
+    ? scored.map((project, index) => projectCard(project, index)).join("")
+    : `<div class="empty-state">Every submitted project will appear here.</div>`;
+  renderSummary();
+}
+
+function notesFor(project) {
+  return `${project.name} by ${project.team}
+Score: ${project.score}/100
+
+Why demo-worthy:
+${project.reasons.map((reason) => `- ${reason}`).join("\n") || "- Needs judge discussion"}
+
+What they built:
+${project.summary}
+
+Useful for:
+${project.audience || "Not specified"}
+
+Codex usage:
+${project.codexUse || "Not specified"}
+
+Before/after:
+${project.beforeAfter || "Not specified"}
+
+Links:
+${project.demoUrl || "No demo link"}
+${project.repoUrl || "No artifact link"}`;
+}
+
+function top5Text() {
+  return sortedProjects()
+    .slice(0, 5)
+    .map((project, index) => `${index + 1}. ${project.name} (${project.score}/100) - ${project.summary}`)
+    .join("\n");
+}
+
+function judgePacket() {
+  const scored = sortedProjects();
+  return `Codex Demo Picker judge packet
+
+Selection criteria:
+- Useful to people in this room or the OpenAI/Tessl team
+- Shows real Codex leverage: agent delegation, terminal/tools, browser verification, plugins, voice, image/assets, GitHub, or work artifacts
+- Has a clear before/after that demos quickly
+- Fits the event message: Codex makes delegated workflows practical
+- Reliable enough to demo live
+
+Recommended top 5:
+${top5Text() || "No submissions yet."}
+
+All submissions:
+
+${scored.map(notesFor).join("\n\n---\n\n")}`;
+}
+
+function aiJudgePrompt() {
+  return `You are judging the OpenAI London Codex mini hackathon. There are more projects than demo slots. Pick the 5 most demo-worthy projects.
+
+Optimize for:
+1. usefulness to attendees, OpenAI, Tessl, or developers
+2. visible Codex leverage, especially agent delegation, terminal/tool use, browser verification, plugins, voice, image/assets, GitHub, and work artifacts
+3. clear before/after demo
+4. live reliability
+5. fit with the event narrative: Codex moves work from autocomplete to delegated workflows
+
+Return:
+- ranked top 5
+- one sentence reason for each
+- any judge override concerns
+
+Submissions:
+${JSON.stringify(projects, null, 2)}`;
+}
+
+function exportJson() {
+  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), projects: sortedProjects() }, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "codex-demo-picker-submissions.json";
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast("Exported submissions");
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
+    return map[char];
+  });
+}
+
+function resetForm() {
+  form.reset();
+  document.querySelector("#reliability").value = 3;
+  document.querySelector("#wow").value = 3;
+  document.querySelector("#polish").value = 3;
+}
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const project = getFormProject();
+  projects.push(project);
+  saveProjects();
+  resetForm();
+  renderProjects();
+  showToast("Project scored and ranked");
+  document.querySelector("#leaderboard").scrollIntoView({ behavior: "smooth" });
+});
+
+document.addEventListener("click", (event) => {
+  const copyButton = event.target.closest("[data-copy]");
+  const deleteButton = event.target.closest("[data-delete]");
+  if (copyButton) {
+    const project = sortedProjects().find((item) => item.id === copyButton.dataset.copy);
+    if (project) copyText(notesFor(project), "Project notes copied");
+  }
+  if (deleteButton) {
+    projects = projects.filter((project) => project.id !== deleteButton.dataset.delete);
+    saveProjects();
+    renderProjects();
+    showToast("Project removed");
+  }
+});
+
+document.querySelector("#loadSample").addEventListener("click", () => {
+  projects = samples.map((sample) => ({ ...sample, id: crypto.randomUUID(), createdAt: new Date().toISOString() }));
+  saveProjects();
+  renderProjects();
+  showToast("Sample projects loaded");
+});
+
+document.querySelector("#exportData").addEventListener("click", exportJson);
+document.querySelector("#copyTop5").addEventListener("click", () => copyText(top5Text(), "Top 5 copied"));
+document.querySelector("#copyJudgePacket").addEventListener("click", () => copyText(judgePacket(), "Judge packet copied"));
+document.querySelector("#pastePrompt").addEventListener("click", () => copyText(aiJudgePrompt(), "AI judge prompt copied"));
+document.querySelector("#resetForm").addEventListener("click", resetForm);
+document.querySelector("#clearAll").addEventListener("click", () => {
+  projects = [];
+  saveProjects();
+  renderProjects();
+  showToast("All submissions cleared");
+});
+
+renderProjects();
+
+    </script>
+  </body>
+</html>
