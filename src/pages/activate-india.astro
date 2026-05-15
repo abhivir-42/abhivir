@@ -23,16 +23,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <div
           class="relative aspect-video rounded-sm overflow-hidden bg-black border border-border"
         >
-          <iframe
-            src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-            title="Activate AI Fellows intro"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full"
-          ></iframe>
+          <video
+            controls
+            preload="metadata"
+            playsinline
+            poster="/videos/activate-india-poster.jpg"
+            class="absolute inset-0 w-full h-full object-contain bg-black"
+          >
+            <source src="/videos/activate-india.mp4" type="video/mp4" />
+            <p class="text-sm text-muted-foreground p-4">
+              Your browser does not support the video tag.
+              <a href="/videos/activate-india.mp4" class="underline">Download the MP4</a>.
+            </p>
+          </video>
         </div>
         <p class="text-xs text-muted-foreground font-mono mt-4">
-          ~85 seconds. May 2026.
+          ~2 minutes. May 2026.
         </p>
       </div>
     </section>
