@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Activate AI Fellows · Abhivir Singh"
+  description="Intro video for the Activate AI Fellows program."
+>
+  <div class="editorial-container">
+    <section class="pt-20 pb-12 border-b border-border">
+      <h1
+        class="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4"
+      >
+        Activate AI Fellows
+      </h1>
+      <p class="text-base text-muted-foreground max-w-2xl">
+        Intro video. For Aakrit, Pratyush, and the team.
+      </p>
+    </section>
+
+    <section class="pt-12 pb-16">
+      <div class="max-w-3xl">
+        <div
+          class="relative aspect-video rounded-sm overflow-hidden bg-black border border-border"
+        >
+          <iframe
+            src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+            title="Activate AI Fellows intro"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full"
+          ></iframe>
+        </div>
+        <p class="text-xs text-muted-foreground font-mono mt-4">
+          ~85 seconds. May 2026.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
