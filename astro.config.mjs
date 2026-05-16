@@ -14,6 +14,7 @@ export default defineConfig({
     mdx(),
   ],
   redirects: {
+    "/codex": "/",
     "/zai": "/work/data-pilot",
     "/papers": "/work",
   },
