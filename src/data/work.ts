@@ -123,7 +123,7 @@ export const work: WorkItem[] = [
       "5th fastest CUDA kernel in the cohort at Imperial.",
   },
   {
-    title: "Wintermute Crypto CTF",
+    title: "Winner: Wintermute Crypto CTF",
     tier: "notable",
     date: "2026",
     tags: ["Cryptography", "ZKP", "CTF"],

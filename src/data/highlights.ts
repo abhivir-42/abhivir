@@ -25,7 +25,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "IIT Delhi, B.Tech",
     caption:
-      "Admitted for B.Tech through JEE Advanced, top 0.1% nationally. Transferred to Imperial CS after one year.",
+      "Admitted for B.Tech through JEE Advanced, top 0.1% nationally. Transferred to Imperial CS after one year to specialise in AI.",
     date: "2021",
     category: "academic",
     image: "/photos/IITD.JPG",
@@ -53,7 +53,7 @@ export const highlights: HighlightItem[] = [
   },
   // 5. Wintermute
   {
-    title: "Wintermute Crypto CTF",
+    title: "Winner: Wintermute Crypto CTF",
     caption:
       "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
     date: "2026",
