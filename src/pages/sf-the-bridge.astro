@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 const title = "Abhivir Singh · The Bridge";
-const description = "A 60-second intro for EF · The Bridge.";
+const description = "A 60-second intro for Entrepreneur First · The Bridge.";
 const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
 ---
 
@@ -11,10 +11,9 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#05060a" />
+    <meta name="theme-color" content="#6e00e2" />
     <title>{title}</title>
 
-    <!-- Social preview (this link gets shared with EF) -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -31,202 +30,175 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
 
     <style is:global>
       :root {
-        --bg: #05060a;
-        --fg: #eef1f8;
-        --muted: #98a2b8;
-        --indigo: #6366f1;
-        --cyan: #22d3ee;
-        --violet: #8b5cf6;
-        --pink: #ec4899;
+        --purple: #6e00e2;
+        --coral: #ff7f52;
+        --ink: #181225;
+        --muted: #6c6580;
+        --bg: #ffffff;
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; height: 100%; }
       body {
         background: var(--bg);
-        color: var(--fg);
+        color: var(--ink);
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         overflow-x: hidden;
         min-height: 100svh;
       }
 
-      /* ---------- AI background layers ---------- */
-      #net, .aurora, .grid, .vignette {
+      /* soft brand wash */
+      .wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+      .wash::before, .wash::after {
+        content: ""; position: absolute; border-radius: 50%; filter: blur(90px);
+      }
+      .wash::before {
+        width: 48vw; height: 48vw; right: -12vw; top: -14vw;
+        background: radial-gradient(circle at 50% 50%, rgba(110,0,226,0.16), transparent 65%);
+      }
+      .wash::after {
+        width: 44vw; height: 44vw; left: -12vw; bottom: -16vw;
+        background: radial-gradient(circle at 50% 50%, rgba(255,127,82,0.16), transparent 65%);
+      }
+      .dots {
         position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      }
-      .aurora { overflow: hidden; }
-      .aurora::before, .aurora::after, .aurora i {
-        content: ""; position: absolute; border-radius: 50%;
-        filter: blur(90px); opacity: 0.55; mix-blend-mode: screen;
-      }
-      .aurora::before {
-        width: 60vw; height: 60vw; left: -10vw; top: -15vw;
-        background: radial-gradient(circle at 30% 30%, var(--indigo), transparent 60%);
-        animation: drift1 22s ease-in-out infinite alternate;
-      }
-      .aurora::after {
-        width: 55vw; height: 55vw; right: -12vw; top: 5vw;
-        background: radial-gradient(circle at 50% 50%, var(--cyan), transparent 60%);
-        animation: drift2 26s ease-in-out infinite alternate;
-      }
-      .aurora i {
-        width: 50vw; height: 50vw; left: 25vw; bottom: -20vw;
-        background: radial-gradient(circle at 50% 50%, var(--violet), transparent 60%);
-        animation: drift3 30s ease-in-out infinite alternate;
-      }
-      @keyframes drift1 { to { transform: translate(8vw, 6vh) scale(1.1); } }
-      @keyframes drift2 { to { transform: translate(-7vw, 8vh) scale(1.15); } }
-      @keyframes drift3 { to { transform: translate(4vw, -8vh) scale(1.08); } }
-
-      .grid {
-        background-image:
-          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-        background-size: 46px 46px;
-        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 80%);
-        mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 80%);
-        opacity: 0.6;
-      }
-      .vignette {
-        background: radial-gradient(ellipse 90% 80% at 50% 40%, transparent 55%, rgba(0,0,0,0.65) 100%);
+        background-image: radial-gradient(rgba(110,0,226,0.10) 1px, transparent 1px);
+        background-size: 26px 26px;
+        -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 75%);
+        mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 75%);
+        opacity: 0.7;
       }
 
-      /* ---------- Content ---------- */
       .stage {
         position: relative; z-index: 10;
         min-height: 100svh;
         display: flex; align-items: center; justify-content: center;
-        gap: clamp(24px, 5vw, 72px);
-        padding: 88px 24px 48px;
+        gap: clamp(28px, 5vw, 76px);
+        padding: 92px 24px 48px;
         flex-wrap: wrap;
       }
 
       .back {
         position: fixed; top: 18px; left: 18px; z-index: 40;
         display: inline-flex; align-items: center; gap: 8px;
-        padding: 9px 15px; border-radius: 999px;
-        font-size: 14px; font-weight: 500; letter-spacing: 0.01em;
-        color: var(--fg); text-decoration: none;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.14);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        padding: 9px 16px; border-radius: 999px;
+        font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
+        color: var(--purple); text-decoration: none;
+        background: rgba(255,255,255,0.8);
+        border: 1.5px solid rgba(110,0,226,0.25);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
       }
-      .back:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.28); transform: translateY(-1px); }
+      .back:hover { background: #fff; border-color: var(--purple); transform: translateY(-1px); }
       .back svg { width: 16px; height: 16px; }
 
       /* video */
       .player { position: relative; flex: 0 0 auto; }
       .frame {
-        position: relative; border-radius: 22px; overflow: hidden;
-        background: #000;
-        border: 1px solid rgba(255,255,255,0.12);
-        box-shadow:
-          0 0 0 1px rgba(99,102,241,0.25),
-          0 30px 80px -20px rgba(34,211,238,0.35),
-          0 20px 60px -30px rgba(139,92,246,0.5);
+        position: relative; border-radius: 22px; padding: 3px;
+        background: linear-gradient(140deg, var(--purple), var(--coral));
+        box-shadow: 0 30px 70px -24px rgba(110,0,226,0.45), 0 12px 30px -18px rgba(255,127,82,0.4);
       }
+      .frame > .inner { border-radius: 19px; overflow: hidden; background: #000; display: block; }
       video {
         display: block;
-        height: min(84svh, 720px);
-        max-width: 92vw;
-        width: auto;
-        background: #000;
+        height: min(82svh, 720px);
+        max-width: 92vw; width: auto; background: #000;
       }
       .caption {
-        margin-top: 12px; text-align: center;
-        font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase;
-        color: var(--muted); font-variant-numeric: tabular-nums;
+        margin-top: 14px; text-align: center;
+        font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--muted); font-weight: 600;
       }
 
-      /* side panel */
-      .side { max-width: 340px; min-width: 240px; }
-      .kicker {
-        font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
-        color: var(--cyan); margin: 0 0 14px;
+      /* side */
+      .side { max-width: 360px; min-width: 250px; }
+      .lockup {
+        display: inline-flex; align-items: center; gap: 9px; margin-bottom: 20px;
+        padding: 7px 13px 7px 9px; border-radius: 999px;
+        border: 1.5px solid rgba(110,0,226,0.22); background: rgba(110,0,226,0.04);
       }
-      .side h1 {
-        font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0 0 14px;
-        font-weight: 700; letter-spacing: -0.02em;
+      .lockup .mark {
+        display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px;
+        background: var(--purple); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: -0.02em;
       }
-      .side p { color: var(--muted); font-size: 15.5px; line-height: 1.6; margin: 0; }
+      .lockup .txt { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple); }
+
+      .side h1 { font-size: clamp(30px, 4vw, 42px); line-height: 1.04; margin: 0 0 14px; font-weight: 800; letter-spacing: -0.02em; }
+      .side p { color: var(--muted); font-size: 16px; line-height: 1.6; margin: 0; }
+      .uline { box-shadow: inset 0 -0.3em 0 rgba(255,127,82,0.45); }
 
       #intro, #thanks { transition: opacity 0.5s ease, transform 0.5s ease; }
       #intro.hide { opacity: 0; transform: translateY(-8px); pointer-events: none; position: absolute; }
       #thanks { opacity: 0; transform: translateY(10px); pointer-events: none; }
       #thanks.show { opacity: 1; transform: translateY(0); pointer-events: auto; position: static; }
 
-      .gradient-text {
-        background: linear-gradient(100deg, var(--cyan), var(--indigo) 45%, var(--violet) 80%, var(--pink));
-        -webkit-background-clip: text; background-clip: text; color: transparent;
-      }
+      .grad { background: linear-gradient(100deg, var(--purple), var(--coral)); -webkit-background-clip: text; background-clip: text; color: transparent; }
       .cta {
         display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
-        padding: 11px 18px; border-radius: 999px;
-        font-size: 14.5px; font-weight: 600; text-decoration: none; color: #05060a;
-        background: linear-gradient(100deg, var(--cyan), var(--indigo));
-        box-shadow: 0 12px 30px -10px rgba(34,211,238,0.6);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        padding: 12px 20px; border-radius: 999px;
+        font-size: 14.5px; font-weight: 700; text-decoration: none; color: #fff;
+        background: var(--purple);
+        box-shadow: 0 12px 28px -10px rgba(110,0,226,0.6);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       }
-      .cta:hover { transform: translateY(-1px); box-shadow: 0 16px 36px -10px rgba(99,102,241,0.7); }
+      .cta:hover { transform: translateY(-1px); background: #5a00bd; box-shadow: 0 16px 34px -10px rgba(110,0,226,0.7); }
 
       #confetti { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
       @media (max-width: 880px) {
-        .stage { flex-direction: column; gap: 26px; padding-top: 72px; }
+        .stage { flex-direction: column; gap: 26px; padding-top: 74px; }
         .side { text-align: center; max-width: 92vw; }
-        video { height: min(68svh, 620px); }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .aurora::before, .aurora::after, .aurora i { animation: none; }
+        .lockup { margin-left: auto; margin-right: auto; }
+        video { height: min(66svh, 600px); }
       }
     </style>
   </head>
 
   <body>
-    <canvas id="net"></canvas>
-    <div class="aurora"><i></i></div>
-    <div class="grid"></div>
-    <div class="vignette"></div>
+    <div class="wash"></div>
+    <div class="dots"></div>
 
     <a class="back" href="/">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
       abhivir.com
     </a>
 
     <main class="stage">
       <div class="player">
         <div class="frame">
-          <video
-            id="vid"
-            controls
-            playsinline
-            preload="metadata"
-            poster="/videos/sf-the-bridge-poster.jpg"
-          >
-            <source src="/videos/sf-the-bridge.mp4" type="video/mp4" />
-            <p style="color:#98a2b8;padding:16px">
-              Your browser can't play this video.
-              <a href="/videos/sf-the-bridge.mp4" style="color:#22d3ee">Download the MP4</a>.
-            </p>
-          </video>
+          <div class="inner">
+            <video
+              id="vid"
+              controls
+              playsinline
+              preload="metadata"
+              poster="/videos/sf-the-bridge-poster.jpg"
+            >
+              <source src="/videos/sf-the-bridge.mp4" type="video/mp4" />
+              <p style="color:#fff;padding:16px">
+                Your browser can't play this video.
+                <a href="/videos/sf-the-bridge.mp4" style="color:#ff7f52">Download the MP4</a>.
+              </p>
+            </video>
+          </div>
         </div>
         <div class="caption">60 seconds · sound on</div>
       </div>
 
       <aside class="side">
         <div id="intro">
-          <p class="kicker">For EF · The Bridge</p>
+          <span class="lockup"><span class="mark">EF</span><span class="txt">The Bridge</span></span>
           <h1>Abhivir Singh</h1>
-          <p>A 60-second intro. Hit play, and turn the sound on.</p>
+          <p>A 60-second intro. Hit play, sound on.</p>
         </div>
         <div id="thanks">
-          <p class="kicker">That's a wrap</p>
-          <h1 class="gradient-text">Thanks for watching.</h1>
-          <p>There's a lot more in the rest of my application. See you in the Bay.</p>
+          <span class="lockup"><span class="mark">EF</span><span class="txt">The Bridge</span></span>
+          <h1><span class="grad">Thanks for watching.</span></h1>
+          <p>There's <span class="uline">a lot more</span> in the rest of my application. See you in the Bay.</p>
           <a class="cta" href="/">
             Explore abhivir.com
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
       </aside>
@@ -238,65 +210,6 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
       (function () {
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        // ---- Neural-network background ----
-        (function net() {
-          var c = document.getElementById("net");
-          if (!c || reduce) return;
-          var ctx = c.getContext("2d");
-          var W, H, dpr = Math.min(window.devicePixelRatio || 1, 2);
-          function size() {
-            W = c.width = Math.floor(innerWidth * dpr);
-            H = c.height = Math.floor(innerHeight * dpr);
-            c.style.width = innerWidth + "px";
-            c.style.height = innerHeight + "px";
-          }
-          size();
-          window.addEventListener("resize", size);
-          var N = Math.max(28, Math.min(64, Math.floor(innerWidth / 24)));
-          var nodes = [];
-          for (var i = 0; i < N; i++) {
-            nodes.push({
-              x: Math.random() * W, y: Math.random() * H,
-              vx: (Math.random() - 0.5) * 0.32 * dpr,
-              vy: (Math.random() - 0.5) * 0.32 * dpr,
-            });
-          }
-          var LINK = 150 * dpr;
-          function tick() {
-            ctx.clearRect(0, 0, W, H);
-            for (var i = 0; i < N; i++) {
-              var n = nodes[i];
-              n.x += n.vx; n.y += n.vy;
-              if (n.x < 0 || n.x > W) n.vx *= -1;
-              if (n.y < 0 || n.y > H) n.vy *= -1;
-            }
-            for (var a = 0; a < N; a++) {
-              for (var b = a + 1; b < N; b++) {
-                var dx = nodes[a].x - nodes[b].x, dy = nodes[a].y - nodes[b].y;
-                var d = Math.sqrt(dx * dx + dy * dy);
-                if (d < LINK) {
-                  var o = (1 - d / LINK) * 0.32;
-                  ctx.strokeStyle = "rgba(99,102,241," + o + ")";
-                  ctx.lineWidth = 1 * dpr;
-                  ctx.beginPath();
-                  ctx.moveTo(nodes[a].x, nodes[a].y);
-                  ctx.lineTo(nodes[b].x, nodes[b].y);
-                  ctx.stroke();
-                }
-              }
-            }
-            for (var k = 0; k < N; k++) {
-              ctx.fillStyle = "rgba(34,211,238,0.7)";
-              ctx.beginPath();
-              ctx.arc(nodes[k].x, nodes[k].y, 1.7 * dpr, 0, 6.2832);
-              ctx.fill();
-            }
-            requestAnimationFrame(tick);
-          }
-          tick();
-        })();
-
-        // ---- Confetti ----
         function fireConfetti() {
           var c = document.getElementById("confetti");
           if (!c) return;
@@ -306,19 +219,19 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
           var H = (c.height = Math.floor(innerHeight * dpr));
           c.style.width = innerWidth + "px";
           c.style.height = innerHeight + "px";
-          var colors = ["#6366f1", "#22d3ee", "#8b5cf6", "#ec4899", "#f59e0b", "#34d399"];
-          var P = [], N = 180;
+          var colors = ["#6e00e2", "#ff7f52", "#a855f7", "#ffb38a", "#5a00bd", "#ffd166"];
+          var P = [], N = 190;
           for (var i = 0; i < N; i++) {
             P.push({
-              x: W * (0.5 + (Math.random() - 0.5) * 0.4),
-              y: H * 0.32 + (Math.random() - 0.5) * 80 * dpr,
+              x: W * (0.5 + (Math.random() - 0.5) * 0.45),
+              y: H * 0.34 + (Math.random() - 0.5) * 80 * dpr,
               vx: (Math.random() - 0.5) * 13 * dpr,
               vy: (Math.random() * -15 - 4) * dpr,
               g: (0.32 + Math.random() * 0.12) * dpr,
               s: (6 + Math.random() * 7) * dpr,
               rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.45,
               col: colors[i % colors.length],
-              life: 0, max: 130 + Math.random() * 50,
+              life: 0, max: 130 + Math.random() * 55,
             });
           }
           function tick() {
@@ -335,7 +248,7 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
               ctx.globalAlpha = alpha;
               ctx.translate(p.x, p.y); ctx.rotate(p.rot);
               ctx.fillStyle = p.col;
-              ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.6);
+              ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.62);
               ctx.restore();
             }
             if (alive) requestAnimationFrame(tick);
@@ -344,7 +257,6 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
           tick();
         }
 
-        // ---- End-of-video: thanks + confetti ----
         var v = document.getElementById("vid");
         var intro = document.getElementById("intro");
         var thanks = document.getElementById("thanks");
@@ -358,7 +270,6 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
         }
         if (v) {
           v.addEventListener("ended", finish);
-          // allow replay to re-arm the celebration
           v.addEventListener("play", function () {
             if (v.currentTime < 1) {
               done = false;
