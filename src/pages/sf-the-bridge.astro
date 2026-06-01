@@ -2,7 +2,9 @@
 export const prerender = true;
 const title = "Abhivir Singh · The Bridge";
 const description = "A 60-second intro for Entrepreneur First · The Bridge.";
-const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
+const poster = "/videos/sf-the-bridge-v2.jpg";
+const video = "/videos/sf-the-bridge-v2.mp4";
+const posterAbs = "https://abhivir.com" + poster;
 ---
 
 <!doctype html>
@@ -17,63 +19,34 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={posterUrl} />
+    <meta property="og:image" content={posterAbs} />
     <meta property="og:url" content="https://abhivir.com/sf-the-bridge/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={posterUrl} />
+    <meta name="twitter:image" content={posterAbs} />
 
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <style is:global>
       :root {
         --purple: #6e00e2;
-        --coral: #ff7f52;
-        --ink: #181225;
-        --muted: #6c6580;
-        --bg: #ffffff;
+        --orange: #ff7f52;
+        --white: #ffffff;
       }
       * { box-sizing: border-box; }
-      html, body { margin: 0; height: 100%; }
+      html, body { margin: 0; min-height: 100%; }
       body {
-        background: var(--bg);
-        color: var(--ink);
+        background: radial-gradient(125% 120% at 50% 0%, #7d1bf2 0%, #6e00e2 46%, #5400b4 100%);
+        color: #fff;
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
         min-height: 100svh;
-      }
-
-      /* soft brand wash */
-      .wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-      .wash::before, .wash::after {
-        content: ""; position: absolute; border-radius: 50%; filter: blur(90px);
-      }
-      .wash::before {
-        width: 48vw; height: 48vw; right: -12vw; top: -14vw;
-        background: radial-gradient(circle at 50% 50%, rgba(110,0,226,0.16), transparent 65%);
-      }
-      .wash::after {
-        width: 44vw; height: 44vw; left: -12vw; bottom: -16vw;
-        background: radial-gradient(circle at 50% 50%, rgba(255,127,82,0.16), transparent 65%);
-      }
-      .dots {
-        position: fixed; inset: 0; z-index: 0; pointer-events: none;
-        background-image: radial-gradient(rgba(110,0,226,0.10) 1px, transparent 1px);
-        background-size: 26px 26px;
-        -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 75%);
-        mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 75%);
-        opacity: 0.7;
       }
 
       .stage {
-        position: relative; z-index: 10;
         min-height: 100svh;
         display: flex; align-items: center; justify-content: center;
-        gap: clamp(28px, 5vw, 76px);
+        gap: clamp(28px, 5vw, 72px);
         padding: 92px 24px 48px;
         flex-wrap: wrap;
       }
@@ -82,67 +55,54 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
         position: fixed; top: 18px; left: 18px; z-index: 40;
         display: inline-flex; align-items: center; gap: 8px;
         padding: 9px 16px; border-radius: 999px;
-        font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
-        color: var(--purple); text-decoration: none;
-        background: rgba(255,255,255,0.8);
-        border: 1.5px solid rgba(110,0,226,0.25);
+        font-size: 14px; font-weight: 600; color: #fff; text-decoration: none;
+        background: rgba(255,255,255,0.10);
+        border: 1.5px solid rgba(255,255,255,0.45);
         backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        transition: background .2s, transform .2s;
       }
-      .back:hover { background: #fff; border-color: var(--purple); transform: translateY(-1px); }
+      .back:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
       .back svg { width: 16px; height: 16px; }
 
-      /* video */
-      .player { position: relative; flex: 0 0 auto; }
+      .player { flex: 0 0 auto; }
       .frame {
-        position: relative; border-radius: 22px; padding: 3px;
-        background: linear-gradient(140deg, var(--purple), var(--coral));
-        box-shadow: 0 30px 70px -24px rgba(110,0,226,0.45), 0 12px 30px -18px rgba(255,127,82,0.4);
+        border-radius: 22px; overflow: hidden; background: #000;
+        border: 1px solid rgba(255,255,255,0.25);
+        box-shadow: 0 30px 70px -20px rgba(0,0,0,0.55), 0 0 0 6px rgba(255,255,255,0.06);
       }
-      .frame > .inner { border-radius: 19px; overflow: hidden; background: #000; display: block; }
-      video {
-        display: block;
-        height: min(82svh, 720px);
-        max-width: 92vw; width: auto; background: #000;
-      }
+      video { display: block; height: min(82svh, 720px); max-width: 92vw; width: auto; background: #000; }
       .caption {
         margin-top: 14px; text-align: center;
         font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
-        color: var(--muted); font-weight: 600;
+        color: rgba(255,255,255,0.7); font-weight: 600;
       }
 
-      /* side */
       .side { max-width: 360px; min-width: 250px; }
       .lockup {
-        display: inline-flex; align-items: center; gap: 9px; margin-bottom: 20px;
-        padding: 7px 13px 7px 9px; border-radius: 999px;
-        border: 1.5px solid rgba(110,0,226,0.22); background: rgba(110,0,226,0.04);
+        display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+        padding: 7px 14px; border-radius: 999px;
+        border: 1.5px solid rgba(255,255,255,0.4);
+        font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
       }
-      .lockup .mark {
-        display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px;
-        background: var(--purple); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: -0.02em;
-      }
-      .lockup .txt { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple); }
+      .lockup b { color: var(--orange); font-weight: 800; }
+      .side h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.04; margin: 0 0 14px; font-weight: 800; letter-spacing: -0.02em; }
+      .side p { color: rgba(255,255,255,0.82); font-size: 16px; line-height: 1.6; margin: 0; }
+      .uline { box-shadow: inset 0 -0.32em 0 rgba(255,127,82,0.55); }
 
-      .side h1 { font-size: clamp(30px, 4vw, 42px); line-height: 1.04; margin: 0 0 14px; font-weight: 800; letter-spacing: -0.02em; }
-      .side p { color: var(--muted); font-size: 16px; line-height: 1.6; margin: 0; }
-      .uline { box-shadow: inset 0 -0.3em 0 rgba(255,127,82,0.45); }
-
-      #intro, #thanks { transition: opacity 0.5s ease, transform 0.5s ease; }
+      #intro, #thanks { transition: opacity .5s, transform .5s; }
       #intro.hide { opacity: 0; transform: translateY(-8px); pointer-events: none; position: absolute; }
       #thanks { opacity: 0; transform: translateY(10px); pointer-events: none; }
       #thanks.show { opacity: 1; transform: translateY(0); pointer-events: auto; position: static; }
 
-      .grad { background: linear-gradient(100deg, var(--purple), var(--coral)); -webkit-background-clip: text; background-clip: text; color: transparent; }
       .cta {
         display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
         padding: 12px 20px; border-radius: 999px;
-        font-size: 14.5px; font-weight: 700; text-decoration: none; color: #fff;
-        background: var(--purple);
-        box-shadow: 0 12px 28px -10px rgba(110,0,226,0.6);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        font-size: 14.5px; font-weight: 800; text-decoration: none; color: #2b0050;
+        background: var(--orange);
+        box-shadow: 0 12px 28px -10px rgba(255,127,82,0.7);
+        transition: transform .2s, box-shadow .2s;
       }
-      .cta:hover { transform: translateY(-1px); background: #5a00bd; box-shadow: 0 16px 34px -10px rgba(110,0,226,0.7); }
+      .cta:hover { transform: translateY(-1px); box-shadow: 0 16px 34px -10px rgba(255,127,82,0.85); }
 
       #confetti { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
@@ -156,9 +116,6 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
   </head>
 
   <body>
-    <div class="wash"></div>
-    <div class="dots"></div>
-
     <a class="back" href="/">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
       abhivir.com
@@ -167,38 +124,27 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
     <main class="stage">
       <div class="player">
         <div class="frame">
-          <div class="inner">
-            <video
-              id="vid"
-              controls
-              playsinline
-              preload="metadata"
-              poster="/videos/sf-the-bridge-poster.jpg"
-            >
-              <source src="/videos/sf-the-bridge.mp4" type="video/mp4" />
-              <p style="color:#fff;padding:16px">
-                Your browser can't play this video.
-                <a href="/videos/sf-the-bridge.mp4" style="color:#ff7f52">Download the MP4</a>.
-              </p>
-            </video>
-          </div>
+          <video id="vid" controls playsinline preload="metadata" poster={poster}>
+            <source src={video} type="video/mp4" />
+            <p style="color:#fff;padding:16px">Your browser can't play this video.
+              <a href={video} style="color:#ff7f52">Download the MP4</a>.</p>
+          </video>
         </div>
         <div class="caption">60 seconds · sound on</div>
       </div>
 
       <aside class="side">
         <div id="intro">
-          <span class="lockup"><span class="mark">EF</span><span class="txt">The Bridge</span></span>
+          <span class="lockup"><b>EF</b> · The Bridge</span>
           <h1>Abhivir Singh</h1>
           <p>A 60-second intro. Hit play, sound on.</p>
         </div>
         <div id="thanks">
-          <span class="lockup"><span class="mark">EF</span><span class="txt">The Bridge</span></span>
-          <h1><span class="grad">Thanks for watching.</span></h1>
+          <span class="lockup"><b>EF</b> · The Bridge</span>
+          <h1>Thanks for watching.</h1>
           <p>There's <span class="uline">a lot more</span> in the rest of my application. See you in the Bay.</p>
-          <a class="cta" href="/">
-            Explore abhivir.com
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <a class="cta" href="/">Explore abhivir.com
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
       </aside>
@@ -209,74 +155,45 @@ const posterUrl = "https://abhivir.com/videos/sf-the-bridge-poster.jpg";
     <script is:inline>
       (function () {
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-        function fireConfetti() {
-          var c = document.getElementById("confetti");
-          if (!c) return;
+        function confetti() {
+          var c = document.getElementById("confetti"); if (!c) return;
           var ctx = c.getContext("2d");
           var dpr = Math.min(window.devicePixelRatio || 1, 2);
           var W = (c.width = Math.floor(innerWidth * dpr));
           var H = (c.height = Math.floor(innerHeight * dpr));
-          c.style.width = innerWidth + "px";
-          c.style.height = innerHeight + "px";
-          var colors = ["#6e00e2", "#ff7f52", "#a855f7", "#ffb38a", "#5a00bd", "#ffd166"];
-          var P = [], N = 190;
-          for (var i = 0; i < N; i++) {
-            P.push({
-              x: W * (0.5 + (Math.random() - 0.5) * 0.45),
-              y: H * 0.34 + (Math.random() - 0.5) * 80 * dpr,
-              vx: (Math.random() - 0.5) * 13 * dpr,
-              vy: (Math.random() * -15 - 4) * dpr,
-              g: (0.32 + Math.random() * 0.12) * dpr,
-              s: (6 + Math.random() * 7) * dpr,
-              rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.45,
-              col: colors[i % colors.length],
-              life: 0, max: 130 + Math.random() * 55,
-            });
-          }
-          function tick() {
-            ctx.clearRect(0, 0, W, H);
-            var alive = false;
-            for (var i = 0; i < P.length; i++) {
-              var p = P[i];
-              p.life++;
-              if (p.life > p.max) continue;
-              alive = true;
+          c.style.width = innerWidth + "px"; c.style.height = innerHeight + "px";
+          var colors = ["#ffffff", "#ff7f52", "#ffd166", "#ffb38a", "#e9d4ff"];
+          var P = [];
+          for (var i = 0; i < 190; i++) P.push({
+            x: W * (0.5 + (Math.random() - 0.5) * 0.45),
+            y: H * 0.34 + (Math.random() - 0.5) * 80 * dpr,
+            vx: (Math.random() - 0.5) * 13 * dpr, vy: (Math.random() * -15 - 4) * dpr,
+            g: (0.32 + Math.random() * 0.12) * dpr, s: (6 + Math.random() * 7) * dpr,
+            rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.45,
+            col: colors[i % colors.length], life: 0, max: 130 + Math.random() * 55
+          });
+          (function tick() {
+            ctx.clearRect(0, 0, W, H); var alive = false;
+            for (var i = 0; i < P.length; i++) { var p = P[i]; p.life++; if (p.life > p.max) continue; alive = true;
               p.vy += p.g; p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.rot += p.vr;
-              var alpha = Math.max(0, 1 - p.life / p.max);
-              ctx.save();
-              ctx.globalAlpha = alpha;
-              ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-              ctx.fillStyle = p.col;
-              ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.62);
-              ctx.restore();
-            }
-            if (alive) requestAnimationFrame(tick);
-            else ctx.clearRect(0, 0, W, H);
-          }
-          tick();
+              ctx.save(); ctx.globalAlpha = Math.max(0, 1 - p.life / p.max);
+              ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.col;
+              ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.62); ctx.restore(); }
+            if (alive) requestAnimationFrame(tick); else ctx.clearRect(0, 0, W, H);
+          })();
         }
-
         var v = document.getElementById("vid");
         var intro = document.getElementById("intro");
         var thanks = document.getElementById("thanks");
         var done = false;
-        function finish() {
-          if (done) return;
-          done = true;
+        function finish() { if (done) return; done = true;
           if (intro) intro.classList.add("hide");
           if (thanks) thanks.classList.add("show");
-          if (!reduce) fireConfetti();
-        }
+          if (!reduce) confetti(); }
         if (v) {
           v.addEventListener("ended", finish);
-          v.addEventListener("play", function () {
-            if (v.currentTime < 1) {
-              done = false;
-              if (thanks) thanks.classList.remove("show");
-              if (intro) intro.classList.remove("hide");
-            }
-          });
+          v.addEventListener("play", function () { if (v.currentTime < 1) { done = false;
+            if (thanks) thanks.classList.remove("show"); if (intro) intro.classList.remove("hide"); } });
         }
       })();
     </script>
