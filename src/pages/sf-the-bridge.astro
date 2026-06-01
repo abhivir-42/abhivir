@@ -1,9 +1,9 @@
 ---
 export const prerender = true;
 const title = "Abhivir Singh · The Bridge";
-const description = "A 60-second intro for Entrepreneur First · The Bridge.";
-const poster = "/videos/sf-the-bridge-v2.jpg";
-const video = "/videos/sf-the-bridge-v2.mp4";
+const description = "A 60-second intro for Entrepreneurs First · The Bridge.";
+const poster = "/videos/sf-the-bridge-v3.jpg";
+const video = "/videos/sf-the-bridge-v3.mp4";
 const posterAbs = "https://abhivir.com" + poster;
 ---
 
@@ -26,129 +26,134 @@ const posterAbs = "https://abhivir.com" + poster;
 
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&display=swap" rel="stylesheet" />
 
     <style is:global>
       :root {
         --purple: #6e00e2;
         --orange: #ff7f52;
-        --white: #ffffff;
+        --mint: #dde8e3;
+        --ink: #1c0a33;
+        --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+        --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
       }
       * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; }
+      html, body { margin: 0; }
       body {
-        background: radial-gradient(125% 120% at 50% 0%, #7d1bf2 0%, #6e00e2 46%, #5400b4 100%);
+        background: var(--purple);
         color: #fff;
-        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+        font-family: var(--serif);
         -webkit-font-smoothing: antialiased;
-        min-height: 100svh;
+      }
+      .page { min-height: 100svh; display: flex; flex-direction: column; }
+
+      /* header bar */
+      .bar {
+        position: relative; z-index: 30;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 22px;
+        border-bottom: 1px solid rgba(255,255,255,0.55);
+      }
+      .nav { font-family: var(--mono); font-size: 14px; letter-spacing: 0.02em; text-transform: uppercase; color: #fff; text-decoration: none; white-space: nowrap; }
+      .nav:hover { color: var(--orange); }
+      .wordmark {
+        position: absolute; left: 50%; transform: translateX(-50%);
+        font-family: var(--sans); font-weight: 800; text-transform: uppercase;
+        letter-spacing: -0.015em; color: var(--orange);
+        font-size: clamp(20px, 2.8vw, 34px); white-space: nowrap;
       }
 
+      /* main */
       .stage {
-        min-height: 100svh;
-        display: flex; align-items: center; justify-content: center;
-        gap: clamp(28px, 5vw, 72px);
-        padding: 92px 24px 48px;
-        flex-wrap: wrap;
+        flex: 1; display: flex; align-items: center; justify-content: center;
+        gap: clamp(28px, 5vw, 80px); padding: clamp(24px, 4vh, 56px) 24px; flex-wrap: wrap;
       }
-
-      .back {
-        position: fixed; top: 18px; left: 18px; z-index: 40;
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 9px 16px; border-radius: 999px;
-        font-size: 14px; font-weight: 600; color: #fff; text-decoration: none;
-        background: rgba(255,255,255,0.10);
-        border: 1.5px solid rgba(255,255,255,0.45);
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        transition: background .2s, transform .2s;
-      }
-      .back:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
-      .back svg { width: 16px; height: 16px; }
-
       .player { flex: 0 0 auto; }
-      .frame {
-        border-radius: 22px; overflow: hidden; background: #000;
-        border: 1px solid rgba(255,255,255,0.25);
-        box-shadow: 0 30px 70px -20px rgba(0,0,0,0.55), 0 0 0 6px rgba(255,255,255,0.06);
-      }
-      video { display: block; height: min(82svh, 720px); max-width: 92vw; width: auto; background: #000; }
-      .caption {
-        margin-top: 14px; text-align: center;
-        font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
-        color: rgba(255,255,255,0.7); font-weight: 600;
-      }
+      .frame { border: 1px solid rgba(255,255,255,0.4); background: #000; line-height: 0; }
+      video { display: block; height: min(74svh, 680px); max-width: 92vw; width: auto; background: #000; }
+      .caption { margin-top: 12px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
 
-      .side { max-width: 360px; min-width: 250px; }
-      .lockup {
-        display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
-        padding: 7px 14px; border-radius: 999px;
-        border: 1.5px solid rgba(255,255,255,0.4);
-        font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
+      /* side */
+      .side { max-width: 380px; min-width: 250px; }
+      .kicker { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin: 0 0 16px; }
+      .side h1 { font-family: var(--serif); font-weight: 800; font-size: clamp(36px, 5vw, 60px); line-height: 1.02; margin: 0 0 18px; letter-spacing: -0.01em; }
+      .side h1 .hook { color: var(--orange); font-weight: 700; }
+      .lede { font-size: 19px; line-height: 1.5; margin: 0; color: rgba(255,255,255,0.92); }
+      .biglink {
+        display: inline-block; margin-top: 24px;
+        font-family: var(--mono); font-size: 15px; letter-spacing: 0.02em; text-transform: uppercase;
+        color: #fff; text-decoration: none; border-bottom: 2px solid var(--orange); padding-bottom: 3px;
       }
-      .lockup b { color: var(--orange); font-weight: 800; }
-      .side h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.04; margin: 0 0 14px; font-weight: 800; letter-spacing: -0.02em; }
-      .side p { color: rgba(255,255,255,0.82); font-size: 16px; line-height: 1.6; margin: 0; }
-      .uline { box-shadow: inset 0 -0.32em 0 rgba(255,127,82,0.55); }
+      .biglink:hover { color: var(--orange); }
 
       #intro, #thanks { transition: opacity .5s, transform .5s; }
       #intro.hide { opacity: 0; transform: translateY(-8px); pointer-events: none; position: absolute; }
       #thanks { opacity: 0; transform: translateY(10px); pointer-events: none; }
       #thanks.show { opacity: 1; transform: translateY(0); pointer-events: auto; position: static; }
 
-      .cta {
-        display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
-        padding: 12px 20px; border-radius: 999px;
-        font-size: 14.5px; font-weight: 800; text-decoration: none; color: #2b0050;
-        background: var(--orange);
-        box-shadow: 0 12px 28px -10px rgba(255,127,82,0.7);
-        transition: transform .2s, box-shadow .2s;
-      }
-      .cta:hover { transform: translateY(-1px); box-shadow: 0 16px 34px -10px rgba(255,127,82,0.85); }
+      /* footer strip (EF mint) */
+      .strip { background: var(--mint); color: var(--ink); padding: 16px 22px 20px; font-family: var(--mono); }
+      .strip .rule { border-top: 1.5px dashed rgba(28,10,51,0.4); margin-bottom: 12px; }
+      .strip .line { font-size: 14px; letter-spacing: 0.01em; }
+      .strip .line b { color: var(--purple); }
 
       #confetti { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
       @media (max-width: 880px) {
-        .stage { flex-direction: column; gap: 26px; padding-top: 74px; }
+        .stage { flex-direction: column; gap: 24px; }
         .side { text-align: center; max-width: 92vw; }
-        .lockup { margin-left: auto; margin-right: auto; }
-        video { height: min(66svh, 600px); }
+        video { height: min(60svh, 560px); }
+      }
+      @media (max-width: 560px) {
+        .wordmark { font-size: 16px; }
+        .nav.right { display: none; }
       }
     </style>
   </head>
 
   <body>
-    <a class="back" href="/">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-      abhivir.com
-    </a>
+    <div class="page">
+      <header class="bar">
+        <a class="nav left" href="/">[ &larr; abhivir.com ]</a>
+        <span class="wordmark">Entrepreneurs First</span>
+        <span class="nav right">[ The Bridge ]</span>
+      </header>
 
-    <main class="stage">
-      <div class="player">
-        <div class="frame">
-          <video id="vid" controls playsinline preload="metadata" poster={poster}>
-            <source src={video} type="video/mp4" />
-            <p style="color:#fff;padding:16px">Your browser can't play this video.
-              <a href={video} style="color:#ff7f52">Download the MP4</a>.</p>
-          </video>
+      <main class="stage">
+        <div class="player">
+          <div class="frame">
+            <video id="vid" controls playsinline preload="metadata" poster={poster}>
+              <source src={video} type="video/mp4" />
+              <p style="color:#fff;padding:16px;font-family:var(--mono)">Your browser can't play this video.
+                <a href={video} style="color:#ff7f52">Download the MP4</a>.</p>
+            </video>
+          </div>
+          <div class="caption">\\ 60 seconds · sound on</div>
         </div>
-        <div class="caption">60 seconds · sound on</div>
-      </div>
 
-      <aside class="side">
-        <div id="intro">
-          <span class="lockup"><b>EF</b> · The Bridge</span>
-          <h1>Abhivir Singh</h1>
-          <p>A 60-second intro. Hit play, sound on.</p>
-        </div>
-        <div id="thanks">
-          <span class="lockup"><b>EF</b> · The Bridge</span>
-          <h1>Thanks for watching.</h1>
-          <p>There's <span class="uline">a lot more</span> in the rest of my application. See you in the Bay.</p>
-          <a class="cta" href="/">Explore abhivir.com
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
-      </aside>
-    </main>
+        <aside class="side">
+          <div id="intro">
+            <p class="kicker">\\ the 60-second version</p>
+            <h1>Abhivir Singh</h1>
+            <p class="lede">Press play, sound on.</p>
+          </div>
+          <div id="thanks">
+            <p class="kicker">\\ that's a wrap</p>
+            <h1><span class="hook">&#8627;</span> Thanks for watching.</h1>
+            <p class="lede">There's a lot more in the rest of my application. See you in the Bay.</p>
+            <a class="biglink" href="/">[ visit abhivir.com &rarr; ]</a>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="strip">
+        <div class="rule"></div>
+        <div class="line">\\&nbsp;&nbsp;A 60-second intro for <b>The Bridge</b>. Found, don't follow.</div>
+      </footer>
+    </div>
 
     <canvas id="confetti"></canvas>
 
@@ -165,7 +170,7 @@ const posterAbs = "https://abhivir.com" + poster;
           var colors = ["#ffffff", "#ff7f52", "#ffd166", "#ffb38a", "#e9d4ff"];
           var P = [];
           for (var i = 0; i < 190; i++) P.push({
-            x: W * (0.5 + (Math.random() - 0.5) * 0.45),
+            x: W * (0.5 + (Math.random() - 0.5) * 0.5),
             y: H * 0.34 + (Math.random() - 0.5) * 80 * dpr,
             vx: (Math.random() - 0.5) * 13 * dpr, vy: (Math.random() * -15 - 4) * dpr,
             g: (0.32 + Math.random() * 0.12) * dpr, s: (6 + Math.random() * 7) * dpr,
