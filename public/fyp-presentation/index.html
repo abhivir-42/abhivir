@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0f17">
+<title>FYP Teleprompter — 25 slides</title>
+<style>
+  :root{
+    --bg:#0b0f17; --bg2:#121826; --bg3:#0f1420; --line:#222c3c;
+    --text:#eef2f8; --muted:#9aa7b8; --dim:#5f6b7d;
+    --accent:#5ccfe6; --key:#ffd479; --good:#5bd99a; --warn:#f2c14e; --bad:#ff6b6b;
+    --s:1; /* global text scale, adjustable */
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.4; overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  /* ---------- top bar ---------- */
+  #top{
+    position:fixed; top:0; left:0; right:0; z-index:40;
+    display:flex; align-items:center; gap:14px;
+    padding:10px clamp(12px,3vw,26px) 8px;
+    background:linear-gradient(180deg,var(--bg2),rgba(18,24,38,.92));
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(6px);
+  }
+  #num{
+    font-weight:800; letter-spacing:-1px; line-height:1;
+    font-size:calc(clamp(1.8rem,5.2vw,2.9rem)*var(--s));
+    color:var(--text); cursor:pointer; white-space:nowrap;
+  }
+  #num small{color:var(--dim); font-weight:600; font-size:.5em;}
+  #ttl{
+    flex:1; min-width:0; font-weight:600; color:var(--muted);
+    font-size:calc(clamp(.95rem,2.2vw,1.5rem)*var(--s));
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .badge{font-size:.62em; font-weight:800; padding:2px 8px; border-radius:999px; vertical-align:middle; margin-left:8px; letter-spacing:.5px;}
+  .badge.fast{background:rgba(242,193,78,.18); color:var(--warn); border:1px solid rgba(242,193,78,.4);}
+  .badge.vb{background:rgba(255,212,121,.14); color:var(--key); border:1px solid rgba(255,212,121,.45);}
+  /* timer cluster */
+  #clock{display:flex; flex-direction:column; align-items:flex-end; gap:2px; cursor:pointer; user-select:none;}
+  #elapsed{font-variant-numeric:tabular-nums; font-weight:800; line-height:1;
+           font-size:calc(clamp(1.3rem,3.6vw,2rem)*var(--s)); letter-spacing:-.5px;}
+  #clockmeta{display:flex; gap:8px; align-items:center; font-size:calc(clamp(.6rem,1.5vw,.8rem)*var(--s)); color:var(--dim); font-variant-numeric:tabular-nums;}
+  #delta{font-weight:800; padding:1px 7px; border-radius:6px;}
+  #delta.good{color:#072; background:rgba(91,217,154,.16); color:var(--good);}
+  #delta.warn{color:var(--warn); background:rgba(242,193,78,.16);}
+  #delta.bad{color:var(--bad); background:rgba(255,107,107,.16);}
+  #delta.idle{color:var(--dim); background:transparent;}
+  /* progress line */
+  #pbar{position:fixed; top:0; left:0; height:3px; background:var(--accent); z-index:50; transition:width .25s ease; box-shadow:0 0 8px var(--accent);}
+  /* ---------- main ---------- */
+  #stage{
+    position:fixed; top:0; left:0; right:0; bottom:0; z-index:10;
+    display:flex; flex-direction:column;
+    padding-top:calc(env(safe-area-inset-top) + clamp(58px,11vw,82px));
+    padding-bottom:calc(env(safe-area-inset-bottom) + clamp(58px,11vw,74px));
+  }
+  #scroll{flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+          padding:clamp(10px,2.5vw,26px) clamp(16px,5vw,46px);}
+  #scroll::-webkit-scrollbar{width:9px;}
+  #scroll::-webkit-scrollbar-thumb{background:#2a3547; border-radius:5px;}
+  .wrap{max-width:1000px; margin:0 auto;}
+  .dur{color:var(--dim); font-weight:600; font-size:calc(clamp(.8rem,1.7vw,1rem)*var(--s)); margin-bottom:6px;}
+  /* anchors */
+  ul.anchors{list-style:none; margin:0 0 10px; padding:0;}
+  ul.anchors li{
+    position:relative; padding:6px 0 6px 30px;
+    font-weight:650; color:var(--text);
+    font-size:calc(clamp(1.55rem,4.4vw,2.6rem)*var(--s));
+    line-height:1.28; letter-spacing:-.2px;
+  }
+  ul.anchors li::before{
+    content:""; position:absolute; left:2px; top:.62em;
+    width:11px; height:11px; border-radius:3px; background:var(--accent); transform:translateY(-50%);
+  }
+  ul.anchors li b.k{color:var(--key); font-weight:800;}
+  ul.anchors li .hl{color:var(--accent); font-weight:750;}
+  .cuechip{display:inline-block; font-size:.62em; font-weight:700; color:var(--accent);
+           background:rgba(92,207,230,.12); border:1px solid rgba(92,207,230,.3);
+           padding:1px 8px; border-radius:6px; margin-right:8px; vertical-align:middle; letter-spacing:.3px;}
+  /* transition */
+  .trans{
+    margin:14px 0 4px; padding:12px 16px; border-left:4px solid var(--accent);
+    background:rgba(92,207,230,.07); border-radius:0 10px 10px 0;
+    color:var(--accent); font-weight:700;
+    font-size:calc(clamp(1.1rem,2.6vw,1.6rem)*var(--s));
+  }
+  .trans .lbl{color:var(--dim); font-weight:700; font-size:.62em; letter-spacing:1px; display:block; margin-bottom:2px;}
+  /* full script */
+  .script{
+    margin-top:18px; padding-top:16px; border-top:1px dashed var(--line);
+    color:var(--muted); font-size:calc(clamp(1rem,1.9vw,1.28rem)*var(--s)); line-height:1.55;
+  }
+  .script .shead{display:flex; align-items:center; gap:8px; color:var(--dim); font-weight:800; letter-spacing:1px; font-size:.72em; margin-bottom:10px; text-transform:uppercase;}
+  .script p{margin:0 0 11px;}
+  .script i.cue{color:var(--dim); font-style:italic;}
+  .script .aside{color:#7d8aa0;}
+  .script b{color:#cdd6e4;}
+  .script .num,.script b.k{color:var(--key); font-weight:700;}
+  .verbatim{
+    border-left:4px solid var(--key); background:rgba(255,212,121,.08);
+    padding:12px 16px; border-radius:0 10px 10px 0; color:#f4ecd6;
+    font-weight:550;
+  }
+  .verbatim .vlbl{display:block; color:var(--key); font-weight:800; font-size:.66em; letter-spacing:1px; margin-bottom:6px; text-transform:uppercase;}
+  .why{margin-top:12px; color:var(--dim); font-size:calc(clamp(.92rem,1.7vw,1.12rem)*var(--s)); line-height:1.5;}
+  .why .wl{color:var(--accent); font-weight:800; font-size:.82em; letter-spacing:.5px; margin-right:6px;}
+  .hidden-script .script{display:none;}
+  /* ---------- edge tap zones ---------- */
+  .edge{position:fixed; top:0; bottom:0; width:13%; max-width:130px; z-index:20; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .15s;}
+  .edge.left{left:0;} .edge.right{right:0;}
+  .edge:active{opacity:.5;}
+  .edge svg{width:34px;height:34px;fill:none;stroke:var(--accent);stroke-width:3;}
+  /* ---------- bottom bar ---------- */
+  #bottom{
+    position:fixed; bottom:0; left:0; right:0; z-index:40;
+    display:flex; align-items:center; gap:8px;
+    padding:8px clamp(10px,3vw,22px);
+    padding-bottom:calc(8px + env(safe-area-inset-bottom));
+    background:linear-gradient(0deg,var(--bg2),rgba(18,24,38,.92));
+    border-top:1px solid var(--line); backdrop-filter:blur(6px);
+  }
+  .btn{
+    appearance:none; border:1px solid var(--line); background:var(--bg3); color:var(--text);
+    font-weight:700; border-radius:11px; cursor:pointer; user-select:none;
+    font-size:calc(clamp(.85rem,1.8vw,1.05rem)*var(--s)); padding:11px 14px;
+    display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:transparent; color:var(--muted); border-color:transparent; padding:11px 9px;}
+  #next{flex:1; justify-content:center; background:linear-gradient(180deg,#1c6f80,#155764); border-color:#2a8499; color:#eafcff; font-weight:800; font-size:calc(clamp(1rem,2.2vw,1.25rem)*var(--s));}
+  #next .sub{color:#bfeef6; font-weight:600; font-size:.7em; margin-left:6px;}
+  #prev{min-width:54px; justify-content:center;}
+  .toolbtns{display:flex; gap:4px;}
+  .toolbtns .btn{padding:11px 12px;}
+  /* dots */
+  #dots{position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom) + clamp(58px,11vw,72px)); z-index:30;
+        display:flex; gap:4px; justify-content:center; padding:6px 10px; pointer-events:none; flex-wrap:wrap;}
+  #dots i{width:7px;height:7px;border-radius:50%;background:#2a3547; transition:all .2s;}
+  #dots i.on{background:var(--accent); transform:scale(1.5);}
+  #dots i.done{background:#3a607a;}
+  /* ---------- overlays ---------- */
+  .overlay{position:fixed; inset:0; z-index:60; background:rgba(7,10,16,.94); backdrop-filter:blur(8px);
+           display:none; flex-direction:column; padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+  .overlay.show{display:flex;}
+  .ohead{display:flex; align-items:center; justify-content:space-between; padding:16px clamp(16px,4vw,30px); border-bottom:1px solid var(--line);}
+  .ohead h2{margin:0; font-size:calc(clamp(1.1rem,2.6vw,1.6rem)*var(--s)); color:var(--text);}
+  .obody{flex:1; overflow-y:auto; padding:clamp(14px,3vw,26px); -webkit-overflow-scrolling:touch;}
+  .obody{max-width:1000px; margin:0 auto; width:100%;}
+  /* overview grid */
+  #grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px;}
+  .gcell{border:1px solid var(--line); background:var(--bg2); border-radius:12px; padding:12px; cursor:pointer; min-height:78px; display:flex; flex-direction:column; gap:5px;}
+  .gcell:hover{border-color:var(--accent);}
+  .gcell.cur{border-color:var(--accent); background:rgba(92,207,230,.1);}
+  .gcell .gn{font-weight:800; font-size:1.25rem; color:var(--accent);}
+  .gcell .gt{font-size:.82rem; color:var(--muted); line-height:1.25;}
+  .gcell .gd{font-size:.7rem; color:var(--dim);}
+  /* qa / elevator cards */
+  .qa{margin-bottom:16px; border:1px solid var(--line); border-radius:12px; background:var(--bg2); padding:14px 16px;}
+  .qa .q{font-weight:800; color:var(--key); font-size:calc(clamp(1rem,2.1vw,1.22rem)*var(--s)); margin-bottom:7px;}
+  .qa .a{color:var(--muted); font-size:calc(clamp(.95rem,1.8vw,1.12rem)*var(--s)); line-height:1.55;}
+  .qa .a .num{color:var(--accent); font-weight:700;}
+  .qa.warn{border-color:rgba(242,193,78,.5);}
+  .elev{border:1px solid var(--line); border-radius:14px; background:var(--bg2); padding:18px 20px; margin-bottom:18px;}
+  .elev h3{margin:0 0 10px; color:var(--accent); font-size:calc(clamp(1.05rem,2.4vw,1.4rem)*var(--s));}
+  .elev p{margin:0; color:var(--text); font-size:calc(clamp(1.05rem,2.2vw,1.4rem)*var(--s)); line-height:1.5;}
+  /* help */
+  #help .obody{max-width:640px;}
+  .krow{display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); font-size:1.05rem;}
+  .key{display:inline-flex; gap:5px;}
+  kbd{background:var(--bg3); border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:3px 9px; font-family:ui-monospace,monospace; font-size:.85rem; color:var(--text); min-width:26px; text-align:center;}
+  .krow span{color:var(--muted);}
+  .closeb{appearance:none; background:var(--bg3); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:9px 14px; font-weight:700; cursor:pointer; font-size:1rem;}
+  .ohint{color:var(--dim); font-size:.85rem; padding:0 clamp(16px,4vw,30px) 12px;}
+  /* toast */
+  #toast{position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom) + 90px); transform:translateX(-50%); z-index:70;
+         background:#1d2636; border:1px solid var(--line); color:var(--text); padding:9px 16px; border-radius:10px; font-weight:700; font-size:.95rem; opacity:0; transition:opacity .2s; pointer-events:none;}
+  #toast.show{opacity:1;}
+
+  @media (max-width:560px){
+    .toolbtns .btn span.lbl{display:none;}
+    #ttl{font-size:calc(.95rem*var(--s));}
+  }
+
+  /* ================= PRINT: one-page anchor cheat sheet ================= */
+  @media print{
+    @page{margin:9mm;}
+    html,body{height:auto; overflow:visible; background:#fff; color:#000;}
+    #top,#bottom,#dots,#stage,.edge,.overlay,#toast,#pbar{display:none !important;}
+    #print{display:block !important;}
+  }
+  #print{display:none;}
+  #print *{color:#000;}
+  #print h1{font-size:15pt; margin:0 0 2mm;}
+  #print .psub{font-size:8.5pt; color:#444 !important; margin:0 0 3mm;}
+  #print .pcols{column-count:3; column-gap:6mm;}
+  #print .ps{break-inside:avoid; margin:0 0 2.6mm; padding-bottom:1.6mm; border-bottom:.4pt solid #bbb;}
+  #print .ps .ph{font-weight:800; font-size:8.6pt;}
+  #print .ps .ph .pnn{display:inline-block; min-width:5mm;}
+  #print .ps .ph .pd{font-weight:400; color:#666 !important; font-size:7pt;}
+  #print .ps ul{margin:1mm 0 0; padding-left:3.6mm;}
+  #print .ps li{font-size:8pt; line-height:1.24; margin-bottom:.5mm;}
+  #print .ps li b{font-weight:800;}
+  #print .ps .pt{font-size:7.4pt; color:#0a5 !important; font-style:italic; margin-top:.6mm;}
+  @media print{#print .ps li{color:#000 !important;} #print .ps .pt{color:#063 !important;}}
+</style>
+</head>
+<body class="">
+<div id="pbar"></div>
+
+<!-- TOP BAR -->
+<div id="top">
+  <div id="num" title="Tap for slide grid (o)">1<small>/25</small></div>
+  <div id="ttl">—</div>
+  <div id="clock" title="Tap: start / pause timer">
+    <div id="elapsed">0:00</div>
+    <div id="clockmeta"><span id="tgt">⏱ 0:20</span><span id="delta" class="idle">start</span></div>
+  </div>
+</div>
+
+<!-- STAGE -->
+<div id="stage">
+  <div id="scroll"><div class="wrap" id="card"></div></div>
+</div>
+
+<!-- EDGE TAP ZONES -->
+<div class="edge left"  id="eLeft"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></div>
+<div class="edge right" id="eRight"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></div>
+
+<!-- DOTS -->
+<div id="dots"></div>
+
+<!-- BOTTOM BAR -->
+<div id="bottom">
+  <button class="btn" id="prev" title="Previous (←)">‹</button>
+  <button class="btn" id="next" title="Next (Space / →)">Next <span class="sub" id="nextsub"></span> ›</button>
+  <div class="toolbtns">
+    <button class="btn ghost" id="bScript" title="Toggle full script (g)">📄<span class="lbl"></span></button>
+    <button class="btn ghost" id="bGrid" title="Slide grid (o)">▦</button>
+    <button class="btn ghost" id="bQA" title="Q&amp;A (q)">Q&amp;A</button>
+    <button class="btn ghost" id="bMore" title="Help (?)">⋯</button>
+  </div>
+</div>
+
+<!-- OVERVIEW GRID -->
+<div class="overlay" id="overview">
+  <div class="ohead"><h2>Jump to slide</h2><button class="closeb" data-close>Close ✕</button></div>
+  <div class="obody"><div id="grid"></div></div>
+</div>
+
+<!-- Q&A -->
+<div class="overlay" id="qaOv">
+  <div class="ohead"><h2>Q&amp;A kit <span style="color:var(--dim);font-size:.7em;font-weight:600">≤1 min each</span></h2><button class="closeb" data-close>Close ✕</button></div>
+  <div class="obody" id="qaBody"></div>
+</div>
+
+<!-- ELEVATOR -->
+<div class="overlay" id="elevOv">
+  <div class="ohead"><h2>Elevator versions <span style="color:var(--dim);font-size:.7em;font-weight:600">if timing collapses</span></h2><button class="closeb" data-close>Close ✕</button></div>
+  <div class="obody" id="elevBody"></div>
+</div>
+
+<!-- HELP -->
+<div class="overlay" id="help">
+  <div class="ohead"><h2>Controls</h2><button class="closeb" data-close>Close ✕</button></div>
+  <div class="obody">
+    <div class="krow"><span class="key"><kbd>Space</kbd><kbd>→</kbd><kbd>PgDn</kbd></span><span>Next slide (tap right edge / big Next button)</span></div>
+    <div class="krow"><span class="key"><kbd>←</kbd><kbd>PgUp</kbd></span><span>Previous slide (tap left edge)</span></div>
+    <div class="krow"><span class="key"><kbd>g</kbd></span><span>Hide / show the full fallback script</span></div>
+    <div class="krow"><span class="key"><kbd>o</kbd></span><span>Slide grid — jump anywhere (or tap the big number)</span></div>
+    <div class="krow"><span class="key"><kbd>t</kbd></span><span>Start / pause timer &nbsp;·&nbsp; <kbd>r</kbd> reset</span></div>
+    <div class="krow"><span class="key"><kbd>q</kbd></span><span>Q&amp;A kit &nbsp;·&nbsp; <kbd>e</kbd> elevator (30s / 60s) versions</span></div>
+    <div class="krow"><span class="key"><kbd>f</kbd></span><span>Fullscreen</span></div>
+    <div class="krow"><span class="key"><kbd>+</kbd><kbd>−</kbd></span><span>Bigger / smaller text (read from further away)</span></div>
+    <div class="krow"><span class="key"><kbd>Home</kbd></span><span>Back to slide 1 &nbsp;·&nbsp; <kbd>Esc</kbd> close overlays</span></div>
+    <div class="ohint" style="padding-top:14px">Position &amp; timer survive a refresh. Print this page (⌘P) for the one-page paper cheat-sheet.</div>
+    <div style="text-align:center;padding:8px 0 4px"><button class="btn" onclick="window.print()">🖨 Print one-page cheat sheet</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- PRINT-ONLY CHEAT SHEET -->
+<div id="print"></div>
+
+<script>
+/* ============================== DATA ============================== */
+const SLIDES = [
+{ n:1, title:"Cover", dur:"≈20s", target:20,
+  anchors:[
+    `<span class="cuechip">don't read it</span>"Morning, I'm <span class="hl">Abhivir</span>"`,
+    `Can big general vision models pick up a <b class="k">heart defect</b> on a baby's 20-week scan?`,
+    `→ "why that scan matters"`
+  ],
+  script:`<p><i class="cue">[Cover on screen as you walk on. Don't read it.]</i></p>
+  <p>"Morning, I'm Abhivir. My project asks whether the big general-purpose vision models can do something quite specific and quite hard: pick up a heart defect on a baby's twenty-week scan. Let me start with why that scan matters."</p>
+  <p><i class="cue">[advance to the duct timeline]</i></p>`,
+  trans:`"why that scan matters" → duct timeline` },
+
+{ n:2, title:"One scan, two futures (COLD OPEN)", dur:"≈60s", target:80, vb:true,
+  anchors:[
+    `<span class="cuechip">2s silence, then quiet</span>"One baby, <span class="hl">two versions</span> of its first week."`,
+    `<span class="cuechip">top</span>Scan <b class="k">catches</b> it → plan, cardiac centre → <b class="k">does well</b>`,
+    `<span class="cuechip">bottom</span>Scan looks <b class="k">normal</b> → go home → duct closes → <b class="k">collapses</b> (sometimes after leaving)`,
+    `<span class="cuechip">beat</span>"Defect identical. Biology identical. Only difference: <span class="hl">whether one scan caught it</span>."`
+  ],
+  script:`<p><i class="cue">[Full duct timeline. Two seconds of silence, then quietly.]</i></p>
+  <div class="verbatim"><span class="vlbl">Verbatim open — you can read this</span>
+  "One baby, two versions of its first week.<br><br>
+  <i class="cue">[top track]</i> In the first, the sonographer at the twenty-week scan catches something off about the heart, a defect. Nothing is wrong yet, because in the womb the placenta is doing the work of the lungs and a small vessel, the arterial duct, is holding the circulation open. But because it was caught, there's a plan: delivery at a cardiac centre, the right people in the room, and the baby goes straight into care. It does well.<br><br>
+  <i class="cue">[bottom track]</i> Same baby, same defect, but the scan looks normal and everyone goes home. For a few days the baby genuinely is fine. Then that duct closes, exactly as it's meant to after birth, and the circulation that was leaning on it collapses. Sometimes after they've already left the hospital.<br><br>
+  <i class="cue">[beat]</i> The defect is identical in both. The biology is identical. The only thing that differs is whether one scan caught it."</div>`,
+  why:`<span class="wl">Q&A only</span>HLHS: whole systemic supply runs through the duct → closure = shock. TGA: two parallel loops, survival needs duct/foramen mixing → closure = oxygen-resistant cyanosis. Prostaglandin holds the duct open as a bridge to surgery.`,
+  trans:`<i class="cue">[lean in]</i> "that scan is genuinely hard to read"` },
+
+{ n:3, title:"A genuinely hard scan to read", dur:"≈45s", target:125,
+  anchors:[
+    `A real <b class="k">four-chamber view</b>`,
+    `Tiny · low-contrast · speckle · acoustic shadows (mimic or hide a defect)`,
+    `Flat slice → probe angle changes the view · heart ~<b class="k">2 beats/sec</b>`,
+    `<span class="cuechip">last bullet</span>It's a <span class="hl">detection</span> problem: almost every heart is normal → stay sharp for the rare one`
+  ],
+  script:`<p><i class="cue">[Clip loops on the left; bullets on the right.]</i></p>
+  <p>"This is a real four-chamber view. A few things make it hard, for a model and for a person. It's tiny and low-contrast, and ultrasound has this speckle texture, plus acoustic shadows that can imitate a defect or hide one. Each frame is a flat slice, so a small change in probe angle changes what you see. And the heart never stops, about two beats a second.</p>
+  <p><i class="cue">[beat, the last bullet]</i> But here's the part that makes it a <b>detection</b> problem. Almost every heart a sonographer sees is normal. So they're reading a long run of normal hearts, hour after hour, and they have to stay sharp enough to catch the rare abnormal one. That's exactly the case that's easy to miss."</p>
+  <p class="aside">(The clip is greyscale because colour-Doppler clips are filtered out before the model sees anything, so this is what it actually works on.)</p>`,
+  trans:`"So how often does that rare one get found?"` },
+
+{ n:4, title:"Even good programmes catch fewer than half", dur:"≈35s", target:160,
+  anchors:[
+    `Detection varies wildly: <b class="k">under a third</b> → <b class="k">over four-fifths</b>`,
+    `Pooled across unselected populations ≈ <b class="k">45%</b>`,
+    `Dashed line = the <b class="k">50%</b> floor; much of the world is below it`,
+    `Lowest where there are fewest expert fetal cardiologists → <span class="hl">a reliable second reader could close a real gap</span>`
+  ],
+  script:`<p><i class="cue">[detection_landscape.]</i></p>
+  <p>"Antenatal detection is all over the place. Across regions it runs from under a third of cases to over four-fifths, and pooled across unselected populations it's about forty-five per cent. <span class="aside">(Per condition a mature programme can reach the nineties, but that's the per-lesion ceiling, not a whole-programme rate.)</span> That dashed line is the fifty-per-cent floor a programme sets itself, and a lot of the world is below it, lowest where there are fewest expert fetal cardiologists.</p>
+  <p>So this is a hard human task where a reliable second reader could close a real gap."</p>`,
+  trans:`"Which brings me to the question I set out to answer."` },
+
+{ n:5, title:"Can a frozen off-the-shelf foundation model help?", dur:"≈35s", target:195,
+  anchors:[
+    `Usual way: train a specialist from scratch — <b class="k">expensive, slow, rare labelled data</b>`,
+    `Foundation models: trained on billions of internet images, <b class="k">never shown a medical image</b>`,
+    `Keep it <span class="hl">frozen</span> + a light classifier — could it already pick up a defect?`,
+    `Two parts: <span class="hl">Q1 does it WORK?</span> (sick vs healthy) &nbsp; <span class="hl">Q2 is it USEFUL?</span> (at 1% prevalence, the real refer-or-don't call)`
+  ],
+  script:`<p><i class="cue">[The question + the two parts.]</i></p>
+  <p>"The usual way to build that second reader is to train a specialist model from scratch on labelled cardiac scans. That's expensive, slow, and needs rare labelled data.</p>
+  <p>So my question was cheaper. There are these huge foundation models now, the vision cousins of the big language models, trained on billions of ordinary internet images and never shown a medical image, let alone a heart defect. Could one of those, kept <b>frozen</b>, with just a light classifier on top, already pick up a defect?</p>
+  <p>And I kept it deliberately in two parts, because they're different. <i class="cue">[Q1]</i> Does it even <b>work</b>, can it tell a sick heart from a healthy one? <i class="cue">[Q2]</i> And is it <b>useful</b>, at the one-per-cent prevalence of real screening, would it improve the actual refer-or-don't call, not just rank cases well? A model can do the first and fail the second."</p>`,
+  trans:`"Before any results, let me be clear about what I built."` },
+
+{ n:6, title:"Not a new model — a controlled evaluation", dur:"≈40s", target:235,
+  anchors:[
+    `<span class="cuechip">confident, not defensive</span>I did <b class="k">not</b> invent an architecture`,
+    `I built a <span class="hl">controlled evaluation</span> of the task: what makes it work · is it useful · where's the ceiling`,
+    `The detector is the well-trodden part — I did build a working system on iFIND data`,
+    `The research question is the evaluation. Demonstration = <b class="k">reproduction, one command</b>, no raw data`
+  ],
+  script:`<p><i class="cue">[Text + block. Confident, not defensive.]</i></p>
+  <p>"I want to be clear about what kind of project this is. I did not invent a new architecture. I built a controlled evaluation <b>of</b> this task: a like-for-like comparison of what makes these models work here, whether they're clinically useful, and where the ceiling sits.</p>
+  <p>Building the detector itself is the well-trodden part, and I did build a working automated detection system on the proprietary iFIND data provided for this project. But the research question is the evaluation. One more accuracy number is a single data point; pinning down <b>which</b> choices matter and <b>where</b> the ceiling is tells the field where to invest next.</p>
+  <p>And the closest thing to a demonstration here is the reproduction: every result in the report regenerates from released code with one command, no raw data needed."</p>`,
+  trans:`"Here's the technique, in one picture."` },
+
+{ n:7, title:"The technique: freeze the model, train only a light head", dur:"≈40s", target:275,
+  anchors:[
+    `Each scan = short clips → sample frames`,
+    `Each frame passes <span class="hl">once</span> through the frozen backbone → <b class="k">768 numbers</b> (an embedding)`,
+    `A small head pools them → one score: <span class="hl">refer / don't</span>`,
+    `Backbone never updated → the head <b class="k">reads</b> the signal, doesn't create it. Fair test of the representation.`
+  ],
+  script:`<p><i class="cue">[probing_pipeline.]</i></p>
+  <p>"Each scan is a set of short clips. I sample frames, and each frame passes <b>once</b> through the frozen backbone, the big vision model, and comes out as a list of 768 numbers, an embedding. A small head pools those into one score: refer, or don't.</p>
+  <p>The backbone is never updated. That matters for what this is testing: whatever a head achieves was already recoverable, near-linearly, from the frozen embeddings. The head reads the signal out, it doesn't create it. So this is a fair test of what the representation already contains."</p>`,
+  trans:`"And the real work is in HOW I compare."` },
+
+{ n:8, title:"The design: vary one factor at a time, on both backbones", dur:"≈45s", target:320,
+  anchors:[
+    `Two backbones: general <b class="k">DINOv2</b> vs domain <b class="k">FetalCLIP</b> — built neither, both frozen`,
+    `Controlled comparison: change <span class="hl">one thing at a time</span> across 3 axes — representation · head · how much it sees`,
+    `<span class="cuechip">land this</span>Same heads, same budgets, run on <span class="hl">both</span> backbones, everything else fixed`,
+    `So a change reads back to its cause. <span class="hl">The comparison is the point.</span>`
+  ],
+  script:`<p><i class="cue">[3 axes + the "common to both" block.]</i></p>
+  <p>"I probed two kinds of backbone: a general one, DINOv2, and a domain one, FetalCLIP, pretrained on fetal ultrasound but still never shown a <b>disease</b> label. I built neither; both are frozen.</p>
+  <p>The method is a controlled comparison: change one thing at a time across three axes, the representation, the head on top, and how much of each scan it sees.</p>
+  <p>And this is the part I want to land: the <b>same</b> heads, the <b>same</b> sampling budgets, and the further comparisons I'll show in a second are run on <b>both</b> backbones, with everything else held fixed. So a change reads back to its cause, and later, when I show a result for one backbone, the other was run exactly the same way. The comparison is the point."</p>`,
+  trans:`"Here are the further comparisons — the ones I committed to in advance."` },
+
+{ n:9, title:"Comparisons I specified in advance", dur:"≈40s", target:360,
+  anchors:[
+    `<span class="cuechip">don't read every row</span>A pre-committed set of specific comparisons`,
+    `Each holds the pipeline fixed, changes <span class="hl">exactly one mechanism</span>, asks one question`,
+    `Writing them down up front makes a <span class="hl">null result informative</span> — ruled out, not just untried`,
+    `<span class="cuechip">gesture</span>"I ran all of these. I'll show what they did near the end."`
+  ],
+  script:`<p><i class="cue">[Table 3.1 as a table.]</i></p>
+  <p>"On top of those three axes, I committed in advance to a set of specific comparisons. Each one holds the pipeline fixed and changes exactly one mechanism, and asks one question: does a subject-level hierarchy beat flat pooling, is the aggregator the bottleneck, does filtering to on-view frames help, does dense motion add signal, is the recipe near-optimal, does a bigger head change the decision, and so on.</p>
+  <p>The point of writing these down up front is that a <b>null</b> result becomes informative: if a mechanism doesn't move the decision, I've ruled it out rather than just not tried it. <i class="cue">[gesture]</i> I ran all of these. I'll show you what they did near the end."</p>`,
+  trans:`"First, the engineering that made a sweep this size even possible."` },
+
+{ n:10, title:"The engineering that made it tractable", dur:"≈15s", target:375, fast:true,
+  anchors:[
+    `Embed every frame <span class="hl">once</span>, cache to disk`,
+    `Later experiments = a cheap head on cached vectors, not re-running a web-scale model`,
+    `<b class="k">~80k clips</b>, one-off <b class="k">16–25 GPU-hours</b>; then a head trains in seconds–minutes`,
+    `Study spans 3 backbones · <b class="k">4000+ subjects</b> · 5 subject-disjoint folds`
+  ],
+  script:`<p><i class="cue">[Move quickly; return in Q&A if asked.]</i></p>
+  <p>"Very briefly on the engineering: I embed every frame <b>once</b> and cache it to disk, so every later experiment trains a cheap head on cached vectors instead of re-running a web-scale model. Embedding all eighty thousand clips through one backbone is a one-off, about sixteen to twenty-five GPU-hours on a single card; after that, a head trains in seconds to minutes. The whole study spans three backbones, over four thousand subjects, five subject-disjoint folds, and a grid of heads and budgets."</p>
+  <p class="aside">(Q&A: ~91 GB cache; 15.6 / 17.4 / 25.0 GPU-h to embed DINOv2-B / DINOv2-L / FetalCLIP; ~84 head configs → 2 heads × 3 backbones × 5 folds = 30 CV runs; reproduce.py regenerates the report numbers in ~7 s on CPU.)</p>`,
+  trans:`"And here's how I measure, and why — that's where a lot of the care is."` },
+
+{ n:11, title:"How I measure, and why", dur:"≈55s", target:430,
+  anchors:[
+    `<span class="cuechip">left</span>One honest estimand: every metric computed <span class="hl">inside each fold, then averaged</span> (not pooled)`,
+    `Not cosmetic: AUROC <b class="k">0.911</b> per-fold vs <b class="k">0.902</b> on a single split`,
+    `<span class="cuechip">right</span>AUROC = ranking (a check, not headline) · Sens@95% spec = the operating point a programme runs`,
+    `PPV / NPV = what a flag or all-clear <span class="hl">mean</span> at 1% · Net benefit = catch vs false alarm (use once, flag the assumption)`
+  ],
+  script:`<p><i class="cue">[Two columns: estimand + metrics preview.]</i></p>
+  <p>"Two things about the measurement.</p>
+  <p><i class="cue">[left]</i> First, one honest estimand. The tempting thing is to pool every fold's predictions into one pile and then pick your operating threshold on the pile. But that reuses subjects the folds were built to keep apart, so the number flatters itself. Instead I compute every metric <b>inside</b> each fold and average. It's not cosmetic: the headline AUROC is <span class="num">0.911</span> done per-fold, against <span class="num">0.902</span> on a single held-out split.</p>
+  <p><i class="cue">[right]</i> Second, the metrics, and what each is <b>for</b>, so none of them is a surprise later. AUROC is ranking, I treat it as a check, not the headline. Sensitivity at ninety-five-per-cent specificity is the operating point a programme could actually run. PPV and NPV are what a flag or an all-clear <b>mean</b> at one-per-cent prevalence. And net benefit weighs a catch against a false alarm under an assumed cost ratio; I'll use it once, later, and I'll flag the assumption when I do."</p>`,
+  trans:`"Right. Question one: does it work?"` },
+
+{ n:12, title:"A general model that never saw a defect clears the floor", dur:"≈40s", target:470,
+  anchors:[
+    `The surprise: the frozen <span class="hl">general-purpose</span> model — internet photos, never shown a heart defect —`,
+    `…already separates affected hearts from healthy ones`,
+    `AUROC <b class="k">0.825</b> on the four auditable lesions`,
+    `What matters isn't its size, it's <span class="hl">who produces it</span>. The field assumed train-from-scratch. You can borrow.`
+  ],
+  script:`<p><i class="cue">[Big 0.825.]</i></p>
+  <p>"Yes, and here's the surprise. The frozen <b>general-purpose</b> model, built for ordinary internet photos and never shown a single heart defect, already separates the affected hearts from the healthy ones. On the four auditable lesions it reaches an AUROC of <span class="num">0.825</span>.</p>
+  <p><b>WHY:</b> AUROC is just the chance that, handed one sick heart and one healthy heart, it scores the sick one higher. One is perfect, a half is a coin-flip. What makes 0.825 matter isn't its size, it's <b>who</b> produces it: a model that's never seen a heart. The field assumed a task this specialised needs training from scratch. It turns out you can borrow. That's one landmark of several."</p>`,
+  why:`<span class="wl">say plainly</span>AUROC = the chance it scores a random sick heart above a random healthy one. 1 = perfect, 0.5 = coin-flip.`,
+  trans:`"You can do better with the domain model — and the right question is WHY."` },
+
+{ n:13, title:"Domain pretraining buys headroom — domain, not size", dur:"≈60s", target:530, key:true,
+  anchors:[
+    `<span class="cuechip">slow down — key beat</span>Swap general→domain, head fixed: <b class="k">0.825 → 0.911</b> (blue curve)`,
+    `Right objection: FetalCLIP is also bigger. So I controlled it: DINOv2 ViT-L = <b class="k">0.837</b>`,
+    `Of the +0.086 total — only <b class="k">+0.012 is size</b>, <b class="k">+0.074 is domain</b> at matched scale (interval clear of zero)`,
+    `General gets you most of the way; domain is a real, few-point refinement`
+  ],
+  script:`<p><i class="cue">[ROC = Fig 4.1 + decomposition. Slow down.]</i></p>
+  <p>"Swap the general backbone for the domain one, head held fixed, and the AUROC goes from <span class="num">0.825</span> to <span class="num">0.911</span>. That's the blue curve.</p>
+  <p>The right objection is: FetalCLIP is also a bigger model. So I controlled for it, and ran the general model at the same size, DINOv2 ViT-L, which reaches <span class="num">0.837</span>. So of the total +0.086, only <span class="num">+0.012</span> is size, and <span class="num">+0.074</span> is the domain pretraining at matched scale, with a bootstrap interval well clear of zero.</p>
+  <p>I designed the comparison that way on purpose: two models that differ in five ways could never tell you that. The shape of it is the message: a general representation already gets you most of the way, and domain pretraining is a real, few-point refinement."</p>`,
+  trans:`"And it isn't riding on one easy lesion."` },
+
+{ n:14, title:"It holds across every lesion, lethal and not", dur:"≈35s", target:565,
+  anchors:[
+    `Lesion by lesion: every one of the four auditable lesions <span class="hl">clears the 50% floor</span>`,
+    `From transposition <b class="k">0.527</b> up to hypoplastic left heart <b class="k">0.813</b>`,
+    `So it isn't one easy condition carrying the result`,
+    `Two rarest marked exploratory (a handful of cases per fold) — but reported`
+  ],
+  script:`<p><i class="cue">[percondition_forest.]</i></p>
+  <p>"Lesion by lesion, every one of the four auditable lesions clears the fifty-per-cent floor on its own, from transposition at <span class="num">0.527</span> up to hypoplastic left heart at <span class="num">0.813</span>. So it isn't one easy condition carrying the result. The two rarest I mark as exploratory, only a handful of cases per fold, but I report them."</p>
+  <p class="aside">(Doppler, only if asked: colour-Doppler clips are filtered out before embedding, so it can't be keying on the colour overlay; a subtler acquisition-bias worry is future work.)</p>`,
+  trans:`"Now, what does choosing a CUTOFF on that score actually do?"` },
+
+{ n:15, title:"What the cutoff does: missed cases & false alarms", dur:"≈40s", target:605,
+  anchors:[
+    `<span class="cuechip">threshold is HORIZONTAL</span>The decision = where you draw the line, ~<b class="k">0.57</b> for 95% spec`,
+    `<span class="cuechip">above line, healthy side</span>Healthy above = <span class="hl">false alarms</span> &nbsp;·&nbsp; <span class="cuechip">below, affected side</span>Affected below = <span class="hl">missed cases</span>`,
+    `Lower the line → refer more (catch more, cry wolf more); raise it → the reverse`,
+    `A programme picks where to stand by the false-alarm load it can absorb`
+  ],
+  script:`<p><i class="cue">[error_analysis. The threshold is a HORIZONTAL line.]</i></p>
+  <p>"The model gives every heart a score. The decision is where you draw the line, here horizontally, at about <span class="num">0.57</span> for ninety-five-per-cent specificity.</p>
+  <p><i class="cue">[point above the line, healthy side]</i> Healthy hearts above the line are false alarms. <i class="cue">[point below the line, affected side]</i> Affected hearts below it are missed cases. <i class="cue">[gesture]</i> Lower the line and you refer more: you catch more, but you cry wolf more. Raise it and the reverse, fewer false alarms but more misses. A programme picks where to stand by the false-alarm load it can absorb, which pins the high-specificity end."</p>`,
+  why:`<span class="wl">say plainly</span>Sensitivity = share of affected babies caught. Specificity = share of healthy babies correctly cleared.`,
+  trans:`"Next axis: the head you put on top."` },
+
+{ n:16, title:"The head you choose changes the referral call", dur:"≈55s", target:660,
+  anchors:[
+    `Third lever = the head. On ranking it barely moves. On the <span class="hl">decision</span> it matters.`,
+    `Same domain backbone, swap head (net benefit): mean-pool linear <b class="k">+0.0290</b> · general linear <b class="k">+0.0149</b> · transformer <b class="k">−0.0372</b> (negative!)`,
+    `Why: transformer ranks well but scores run <span class="hl">hot</span> (~0.30 vs true ~0.10) → over-refers`,
+    `Which head you pick changes the call — not just which backbone`
+  ],
+  script:`<p><i class="cue">[decision_curve_enhanced + the three net-benefit numbers. Present as results.]</i></p>
+  <p>"The third lever, after the backbone, is the head. On discrimination the head barely moves the ranking. Where it really matters is the <b>decision</b>.</p>
+  <p>On the <b>same</b> domain backbone, swapping the head changes the referral call. Using net benefit, the metric I flagged earlier: the simple mean-pooling linear head comes out at <span class="num">+0.0290</span>, the general linear probe at <span class="num">+0.0149</span>, and the higher-AUROC transformer head actually goes <b>negative</b>, at <span class="num">−0.0372</span>. The reason is plain: the transformer ranks well but its scores run hot, its average prediction is about 0.30 against a true rate near 0.10, so at a fixed cutoff it over-refers. The simple head sits near the true rate and decides reliably.</p>
+  <p>So which head you pick changes the call, not just which backbone."</p>`,
+  why:`<span class="wl">Q&A provenance</span>Report Fig 6.1 plotted the general linear probe (+0.0149) vs the domain transformer; I add the domain linear probe to the same curve from the same committed predictions, and it decides best (+0.0290). Net benefit = one input under an assumed cost ratio (Vickers & Elkin 2006).`,
+  trans:`"And the third axis: how much of the scan it sees."` },
+
+{ n:17, title:"It keeps climbing as you feed it more of the scan", dur:"≈35s", target:695,
+  anchors:[
+    `The point is the <span class="hl">gradient</span>, not "more data helps"`,
+    `~20× more of each scan: AUROC <b class="k">0.911 → 0.947</b>, sensitivity <b class="k">0.593 → 0.766</b>, still climbing`,
+    `Returns aren't exhausted → worth more compute. A new clip buys more than more frames of the same clip.`,
+    `<span class="cuechip">hold this</span>Extra data lifts the <span class="hl">ranking</span>, but the referral <span class="hl">decision</span> doesn't follow — a clue`
+  ],
+  script:`<p><i class="cue">[scaling_gradient.]</i></p>
+  <p>"The point here isn't 'more data helps', it's the <b>gradient</b>. About twenty times more of each scan lifts the AUROC from <span class="num">0.911</span> to <span class="num">0.947</span> and the sensitivity from <span class="num">0.593</span> to <span class="num">0.766</span>, and the curve is still climbing. So the returns aren't exhausted; it's worth investing more compute. And a new clip buys more than more frames of the same clip.</p>
+  <p>One thing to hold: all that extra data lifts the <b>ranking</b>, but the referral <b>decision</b> doesn't follow. That's a clue."</p>`,
+  why:`<span class="wl">note</span>Say "0.947", never "0.95".`,
+  trans:`"And I didn't just look for what works. I tried to break the decision on purpose."` },
+
+{ n:18, title:"A battery built to break the decision: nothing moved it", dur:"≈50s", target:745, key:true,
+  anchors:[
+    `<span class="cuechip">top group — could only HELP</span>20× data (lifted ranking) · bigger head (confounded with budget). <span class="hl">Neither moved the decision.</span>`,
+    `<span class="cuechip">bottom group — actually HURT discrimination</span>attention aggregator · subject hierarchy · dense motion · cardiac-view filter. <span class="hl">Didn't move it either.</span>`,
+    `Across everything I varied, the decision <span class="hl">held</span>. Even at 20× budget, net benefit stays negative.`,
+    `<span class="cuechip">honest hedge</span>Reasoning from what I ruled out, not a direct proof — designing tests that could've moved it is what makes this an evaluation, not a demo`
+  ],
+  script:`<p><i class="cue">[The grouped table. Be factually careful.]</i></p>
+  <p>"These are the comparisons I committed to earlier, run. I've split them on purpose. <i class="cue">[top group]</i> These two could only have <b>helped</b>: twenty times the data, which lifted the ranking, and a bigger head, which is confounded with the budget so it gives no clean discrimination reading. Neither moved the referral decision. <i class="cue">[bottom group]</i> These four actually <b>hurt</b> discrimination, the attention aggregator, a subject hierarchy, dense motion, and the cardiac-view filter, which degrades as it tightens. They didn't move the decision either.</p>
+  <p>So across everything I varied, the decision held. Even at twenty times the budget, net benefit stays negative. <i class="cue">[honest hedge]</i> That's me reasoning from what I ruled out, not a direct proof, and I can't fully exclude that the frozen representation itself sets the ceiling. But designing comparisons that <b>could</b> have moved the result and reporting honestly that they didn't is what makes this an evaluation rather than a demo."</p>
+  <p class="aside">(Factual: discrimination deltas −0.071 MIL, −0.056 hierarchy, −0.024 motion; hierarchy on all-nine task, others auditable-four, motion on the motion subset.)</p>`,
+  trans:`"So, does it work? Yes. Now the second question: is it useful?"` },
+
+{ n:19, title:"At the clinic's cutoff, the domain model nearly doubles the catch", dur:"≈55s", target:800, key:true,
+  anchors:[
+    `The clinical result — and it needs <span class="hl">no cost assumption</span>`,
+    `At 95% spec: domain catches <b class="k">0.593</b>, general catches <b class="k">0.320</b>`,
+    `Per 100 affected babies: domain flags ~<b class="k">59</b>, general ~<b class="k">32</b> — nearly double — at the cost of ~1 in 20 healthy flagged`,
+    `<span class="cuechip">honest caveat</span>Both at <span class="hl">baseline budget</span> — 0.593 isn't the ceiling (scaling → 0.766). This slide is the comparison at matched budget.`
+  ],
+  script:`<p><i class="cue">[Dot-grids 59 vs 32. The load-bearing utility result.]</i></p>
+  <p>"Here's the result the clinical story rests on, and it needs no cost assumption. At that ninety-five-per-cent-specificity operating point, the domain model catches <span class="num">0.593</span> of cases; the general one catches <span class="num">0.320</span>. In people: of every hundred affected babies, the domain model flags about <span class="num">59</span>, the general one about <span class="num">32</span>, nearly double, at the cost of flagging about one in twenty healthy babies.</p>
+  <p>One honest caveat: both of these are at the <b>baseline</b> sampling budget, so 0.593 isn't the ceiling, we just saw scaling lift it to 0.766. What this slide is really showing is the <b>comparison</b> at matched budget: the domain backbone against the general one. Ranking isn't deciding, and on this call, at a usable cutoff, the domain backbone clearly wins."</p>
+  <p class="aside">(Q&A: this is the transformer head. Sens@fixed-spec re-picks the threshold to control false alarms, so it rewards ranking; net benefit at a fixed cost rewarded the linear head. Two lenses on the same scores.)</p>`,
+  trans:`"But at 1% prevalence, even a good catch rate meets the arithmetic of rarity."` },
+
+{ n:20, title:"At 1% prevalence, the arithmetic of rarity makes it a rule-out", dur:"≈60s", target:860,
+  anchors:[
+    `PPV = got a flag, how likely really affected? NPV = got an all-clear, how much to trust it?`,
+    `Cohort is disease-rich → raw PPV 0.58. Transported to 1%: a positive flag is only ~<b class="k">0.11</b> likely true. <span class="hl">Most flags are healthy babies</span> — arithmetic of rarity.`,
+    `NPV ~<b class="k">0.996</b> looks spectacular, but reassure-everyone already scores 0.99. Honest gain: residual miss <b class="k">1/100 → 1/250</b>`,
+    `Plain: strong at saying a heart is <span class="hl">fine</span>, weaker at confidently flagging a bad one. <span class="hl">It's a rule-out.</span>`
+  ],
+  script:`<p><i class="cue">[ppv_prevalence.]</i></p>
+  <p>"Two numbers a clinician actually feels. One: I got a flag, how likely is this baby really affected? That's PPV. Two: I got an all-clear, how much can I trust it? That's NPV. Both swing with how rare the disease is.</p>
+  <p>My cohort is disease-rich, so its raw PPV looks like 0.58. But that's not deployment. Transported down to a real one-per-cent prevalence, a positive flag is only about <span class="num">0.11</span> likely to be a true case. Most flags are healthy babies. That's not the model being bad, it's the arithmetic of rarity, which bites any test at one per cent.</p>
+  <p>The all-clear side looks spectacular, NPV about <span class="num">0.996</span>, but I'll be straight: at one per cent, reassuring <b>everyone</b> already scores 0.99. So the honest gain is small: among the babies it clears, the residual chance of a missed defect drops from about one in a hundred to about one in two-hundred-and-fifty. Plain version: it's strong at saying a heart is <b>fine</b>, weaker at confidently flagging a bad one. It's a rule-out."</p>`,
+  trans:`"So where does a rule-out sit next to a human?"` },
+
+{ n:21, title:"Against humans: near on HLHS, behind on the rest", dur:"≈30s", target:890, fast:true,
+  anchors:[
+    `Comparison vs the UK national audit, best config, baseline budget`,
+    `<span class="cuechip">caveat FIRST</span>Not like-for-like: model read at 95% spec, a national programme runs nearer 99% — <span class="hl">not claiming to beat humans</span>`,
+    `Near the audit on hypoplastic left heart, behind on the rest`,
+    `Real value = a <span class="hl">triage / rule-out aid</span> where detection is weakest. A hypothesis from one UK cohort.`
+  ],
+  script:`<p><i class="cue">[sonographer_baseline. Move quickly.]</i></p>
+  <p>"Quickly: this is the comparison with the UK national audit, at the best configuration I found, run at the baseline budget. <i class="cue">[caveat first]</i> It is <b>not</b> like-for-like, I'm reading the model at ninety-five-per-cent specificity while a national programme runs nearer ninety-nine, so I'm not claiming to beat humans. It's near the audit on hypoplastic left heart and behind on the rest. Where it has real value is as a triage or rule-out aid where antenatal detection is weakest today. I'd call that a hypothesis from one UK cohort."</p>`,
+  trans:`<i class="cue">[gear change, slow down]</i> "So that's what I found. Let me tell you what I think it means."` },
+
+{ n:22, title:"The likely limit is the labels and the next model, not the architecture", dur:"≈40s", target:930,
+  anchors:[
+    `Across every axis and every pre-specified test, the referral decision <span class="hl">didn't move</span>`,
+    `Most consistent reading: the limit isn't architecture or scan amount — it's the <span class="hl">supervision</span> (one label/subject, only a few hundred affected babies)`,
+    `<span class="cuechip">honest</span>Reasoning from what I ruled out, not a proof; can't fully rule out the frozen rep — clean tests are future work`,
+    `Next gains: <span class="hl">richer labels + stronger open models</span>. A cleverer head won't lift the ceiling.`
+  ],
+  script:`<p><i class="cue">[Text. After all the axes. The talk is winding toward discussion.]</i></p>
+  <p>"Pulling the comparison together: across every axis and every pre-specified test, the referral decision didn't move. The reading most consistent with that is that the limit isn't the architecture or how much scan you feed it, it's the <b>supervision</b>: one label per subject, over only a few hundred affected babies.</p>
+  <p>I want to be honest that this is reasoning from what I ruled out, not a proof, and I can't fully rule out the frozen representation itself; the clean tests for that are future work. But it points somewhere useful: the next gains come from richer labels and stronger open models. A cleverer head won't lift the ceiling."</p>`,
+  why:`<span class="wl">if asked "how did you deduce that?"</span>Two strands. (1) The designed battery: every lever that could only have helped (more data, view filter, more capacity) left the decision unchanged → bottleneck isn't there. (2) A linear probe already pulls AUROC 0.91 from the frozen embeddings → the signal IS present, just diffuse → points to extracting a calibrated decision from few labels, not missing signal. Clean direct test = a label-fraction learning curve (future work).`,
+  trans:`"And because the model is frozen, this leaves the field somewhere genuinely exciting."` },
+
+{ n:23, title:"Frozen reuse rides the wave for free, and vets what's next", dur:"≈45s", target:975,
+  anchors:[
+    `<span class="cuechip">the exciting part</span>Backbone frozen & reused → this task gets to <span class="hl">ride the wave</span>`,
+    `General models keep improving (paid by labs with resources none of us have) → a screen built this way inherits the gains <span class="hl">for free</span>`,
+    `Drop in the next, stronger model with my configs, refit the light head, done. <span class="hl">No training from scratch, ever.</span>`,
+    `The evaluation is a reusable <span class="hl">yardstick</span>: clinically vet future models on both questions. A cheap bet, and an honest one.`
+  ],
+  script:`<p><i class="cue">[The rising arrow + the yardstick block.]</i></p>
+  <p>"Here's the part I find most exciting. Because the backbone is frozen and reused, this task gets to <b>ride the wave</b>. General-purpose models keep improving, paid for by labs with resources none of us have, and a screen built this way inherits those gains for free: you drop in the next, stronger model with the configurations I found, refit the light head, and you're done. No training from scratch, ever.</p>
+  <p>And the evaluation isn't a one-off. It's a reusable yardstick: the same controlled setup can clinically vet <b>future</b> models, on both questions, does it work and is it useful. So it's a cheap bet, and an honest one."</p>`,
+  trans:`"Let me close where we started."` },
+
+{ n:24, title:"One scan, two futures (CLOSE)", dur:"≈45s", target:1020, vb:true,
+  anchors:[
+    `<span class="cuechip">slow right down</span>Same baby, same two futures, same one scan`,
+    `The missed track now has a cheap second pair of eyes: a frozen model, never trained on a defect, catching ~<b class="k">6 in 10</b> at high specificity`,
+    `Not to make the call — just "look at this one again." Works alongside the reader, strongest where there aren't enough expert eyes.`,
+    `<span class="cuechip">the two ticks</span>Does it work? <span class="hl">Yes, off the shelf.</span> Is it useful? <span class="hl">As a rule-out, honestly, yes.</span>`
+  ],
+  script:`<p><i class="cue">[Duct timeline returns with the two ticks. Slow right down. Last two sentences verbatim.]</i></p>
+  <p>"Same baby, same two futures, same one scan. What this project shows is that the missed track now has a cheap second pair of eyes the field didn't assume was there: a frozen model, never trained on a heart defect, catching roughly six in ten of these cases at high specificity. Not to make the call, not to license sending anyone home, just to say: look at this one again. It works alongside the person reading the scan, strongest exactly where there aren't enough expert eyes.</p>
+  <p><i class="cue">[the two ticks]</i> We opened on two questions. Does it work? Yes, off the shelf, and domain knowledge buys headroom where it counts. Is it useful? As a rule-out, honestly, yes.</p>
+  <div class="verbatim"><span class="vlbl">Verbatim close — then stop</span>"So here's the sentence I'd leave you with. <b>The general-purpose representations now available off the shelf are stronger than the fetal-imaging field has assumed. A light probe on what they already contain detects fetal heart disease without training a model from scratch. Thank you.</b>"</div>`,
+  trans:`Stop. Hold the room. → questions` },
+
+{ n:25, title:"Thank you / questions", dur:"≈10s", target:1030,
+  anchors:[
+    `"Thank you. I'm happy to take questions."`,
+    `Backup slides ready: calibration mechanism · per-lesion decision curves · engineering detail · reproduction`,
+    `<span class="cuechip">press q</span>Q&A kit is one tap away`
+  ],
+  script:`<p>"Thank you. I'm happy to take questions, and I have backup slides on the calibration mechanism, the per-lesion decision curves, the engineering detail, and the reproduction."</p>`,
+  trans:`Press q for the Q&A kit · e for elevator versions` }
+];
+
+const QA = [
+ {q:`"Why does an undetected duct-dependent baby collapse?" (Tom)`, a:`In utero the placenta does gas exchange and the duct is open, so it's silent. After birth the duct closes; in <b>HLHS</b> the body's systemic supply ran through it → cardiogenic shock; in <b>TGA</b> circulation is two parallel loops needing mixing through the duct and foramen → oxygen-resistant cyanosis. Caught antenatally: deliver at a cardiac centre, hold the duct open with prostaglandin as a bridge to surgery.`},
+ {q:`"No live demo — does that count against you?"`, a:`It isn't a software product, so a live app demo isn't the right fit (the guidance says that's fine). The demonstration is two things: the engineering <b>is</b> the controlled evaluation (the four pillars), and every result reproduces from released code with one command. I also built a working detection system on the proprietary iFIND data — it just isn't the research focus.`},
+ {q:`"What is the actual technical contribution?"`, a:`Four pillars: (1) the controlled backbone comparison (everything fixed but the representation); (2) the scale-matched control (<span class="num">+0.074</span> at matched ViT-L → domain not size); (3) the pre-specified falsification battery that localises where the constraint is <b>not</b>; (4) the clinical-utility analysis at screening prevalence. Plus the engineered pipeline (embed-once-and-cache, per-fold estimand, subject-clustered bootstrap) and the data-curation (coarctation flag decoded from an undocumented filename token).`},
+ {q:`"Isn't the domain gain just a bigger model?"`, a:`The scale-matched control: <span class="num">+0.012</span> size, <span class="num">+0.074</span> domain at matched ViT-L, interval [+0.062, +0.092].`},
+ {q:`"NPV 0.996 is near-trivial at 1%."`, a:`Agreed; reassure-everyone gives 0.99. The real increment is residual miss-risk ~1% → ~0.4%, plus the linear probe clearing refer-none on every fold.`},
+ {q:`"How do you know it's supervision, not the representation, that's the ceiling?"`, a:`Honest: I can't fully exclude the representation. But a linear probe pulls 0.91 out of those embeddings (UMAP silhouettes +0.018 / −0.011, ~zero → structure diffuse but present). Every architecture and sampling lever left the decision put. Clean tests I'd run next: a label-fraction learning curve and an unfreeze-last-block ablation.`},
+ {q:`"Did you address the over-prediction / try recalibration?"`, a:`The over-prediction test = training at the task's own prevalence: it narrows but doesn't reverse (transformer −0.0372 → −0.0282, still negative; linear +0.041, 5/5). Temperature scaling is monotonic, so it can't change AUROC or sens at a re-chosen threshold — a clean future experiment.`},
+ {q:`The Brier "paradox" (for Prof. Li)`, a:`The transformer has the lower Brier (0.110 vs 0.142), which naively says better calibrated. It isn't: Brier mixes calibration with sharpness — the transformer wins on sharpness while losing on the calibration term, and a fixed-threshold referral reads only the local calibration, which is what it's worst at.`},
+ {q:`⚠ "Is the +0.0290 in the dissertation?"`, a:`Be precise: the report's Fig 6.1 plotted the general linear probe (+0.0149) vs the domain transformer and named the general linear probe the best decider it showed. For the talk I add the domain linear probe to the same curve, recomputed from the same committed predictions (no new training), and it decides best at +0.0290. The report isn't wrong; the enhanced curve adds the config it didn't plot. <b>Safe fallback:</b> lead the decision result with the report's DINOv2-linear +0.0149.`, warn:true},
+ {q:`"Best ranker vs best decider — which would you deploy?"`, a:`For the referral decision at a fixed cost, the simple linear head; for ranking / sensitivity at a chosen specificity, the transformer. Head choice changes the decision at a fixed cost, but does not lift the ceiling; a service picks the head by the metric it runs on.`},
+ {q:`"External validation?"`, a:`Single cohort is a deliberate boundary. The named next step is a prospective external cohort (PROMETHEUS, the AI-second-reader RCT).`},
+ {q:`"iFIND / FetalCLIP overlap?"`, a:`Disjoint. FetalCLIP was pretrained on a separate corpus (Maani 2025); iFIND is held privately by Fraiya/Imperial. No overlap.`},
+ {q:`"Does lesion severity change the best decider?"`, a:`No: per-lesion decision curves keep the same ordering for lethal (HLHS, TGA) and non-lethal (AVSD, TOF). Head choice, not lesion type, drives the decision.`}
+];
+
+const ELEV = [
+ {h:"30 seconds", p:`"Frozen, general-purpose vision models, never trained on a heart defect, can already detect congenital heart disease on a fetal scan just by probing them — a task the field assumed needed a model trained from scratch. Domain pretraining adds a few points, and it pays off at the operating point a clinic would run, not in headline accuracy. As a tool it's an honest rule-out: strong at reassuring, weak at flagging. The contribution is the controlled evaluation that establishes all of that, and because the backbone is frozen and reused, the whole thing rides the improvement curve of foundation models for free."`},
+ {h:"60 seconds — add", p:`"I keep two questions separate: does it work, and is it useful at one-per-cent prevalence. It works: 0.825 for the general model, 0.911 for the domain one, and a scale-matched control shows most of that gain is domain knowledge, not size. It's useful as a rule-out: at 0.95 specificity it catches about three in five cases, but a positive flag is only about eleven per cent likely to be real at deployment prevalence. The head you pick changes the referral call, and a pre-specified battery shows the limit is the supervision, not any component I varied. Everything reproduces from one command."`}
+];
+
+/* ============================== ENGINE ============================== */
+const $ = s => document.querySelector(s);
+const TOTAL = SLIDES.length;
+let idx = 0;
+let scale = 1;
+
+// timer
+let tStart = null, tAcc = 0, tRunning = false;
+
+function fmt(s){ s=Math.max(0,Math.round(s)); const m=Math.floor(s/60); const r=s%60; return m+":"+String(r).padStart(2,'0'); }
+function fmtSigned(s){ const sign = s<0?'−':'+'; return sign+fmt(Math.abs(s)); }
+function elapsedSec(){ return tAcc + (tRunning && tStart!=null ? (Date.now()-tStart)/1000 : 0); }
+
+function loadState(){
+  try{
+    const i = sessionStorage.getItem('fyp_idx'); if(i!=null) idx = Math.min(TOTAL-1, Math.max(0, +i));
+    const sc = localStorage.getItem('fyp_scale'); if(sc) scale = +sc;
+    const hs = localStorage.getItem('fyp_hidescript'); if(hs==='1') document.body.classList.add('hidden-script');
+    const ts = sessionStorage.getItem('fyp_tstate');
+    if(ts){ const o=JSON.parse(ts); tAcc=o.acc||0; if(o.running){ tRunning=true; tStart=o.start; } }
+  }catch(e){}
+}
+function saveTimer(){ try{ sessionStorage.setItem('fyp_tstate', JSON.stringify({acc:tAcc, running:tRunning, start:tStart})); }catch(e){} }
+function applyScale(){ document.documentElement.style.setProperty('--s', scale); }
+
+function render(){
+  const s = SLIDES[idx];
+  $('#num').innerHTML = s.n + '<small>/'+TOTAL+'</small>';
+  let badges='';
+  if(s.fast) badges += '<span class="badge fast">FAST</span>';
+  if(s.vb)   badges += '<span class="badge vb">VERBATIM</span>';
+  if(s.key)  badges += '<span class="badge fast" style="background:rgba(92,207,230,.16);color:var(--accent);border-color:rgba(92,207,230,.4)">KEY</span>';
+  $('#ttl').innerHTML = s.title + badges;
+
+  let html = `<div class="dur">${s.dur} &nbsp;·&nbsp; target ⏱ ${fmt(s.target)}</div>`;
+  html += '<ul class="anchors">'+ s.anchors.map(a=>'<li>'+a+'</li>').join('') +'</ul>';
+  if(s.trans) html += `<div class="trans"><span class="lbl">TRANSITION →</span>${s.trans}</div>`;
+  html += `<div class="script"><div class="shead">📄 Full script (fallback)</div>${s.script}`;
+  if(s.why) html += `<div class="why">${s.why}</div>`;
+  html += `</div>`;
+  $('#card').innerHTML = html;
+  $('#scroll').scrollTop = 0;
+
+  // next preview
+  $('#nextsub').textContent = idx < TOTAL-1 ? ('→ ' + SLIDES[idx+1].n) : '✓ end';
+  $('#tgt').textContent = '⏱ '+fmt(s.target);
+
+  // dots
+  $('#pbar').style.width = ((idx+1)/TOTAL*100)+'%';
+  Array.from($('#dots').children).forEach((d,i)=>{ d.className = i===idx?'on':(i<idx?'done':''); });
+  // grid current
+  Array.from(document.querySelectorAll('.gcell')).forEach((c,i)=>c.classList.toggle('cur', i===idx));
+
+  try{ sessionStorage.setItem('fyp_idx', idx); }catch(e){}
+  updateClock();
+}
+
+function go(n){
+  const old = idx;
+  idx = Math.min(TOTAL-1, Math.max(0, n));
+  // auto-start timer on first advance away from slide 1
+  if(old===0 && idx>0 && !tRunning && tAcc===0){ startTimer(); }
+  render();
+}
+const next = ()=> idx<TOTAL-1 ? go(idx+1) : flashEnd();
+const prev = ()=> go(idx-1);
+function flashEnd(){ toast('Last slide — press q for Q&A'); }
+
+function updateClock(){
+  const el = elapsedSec();
+  $('#elapsed').textContent = fmt(el);
+  const d = $('#delta');
+  const s = SLIDES[idx];
+  if(!tRunning && tAcc===0){ d.className='idle'; d.textContent='start'; return; }
+  const head = s.target - el;             // seconds of headroom before behind schedule for this slide
+  d.textContent = fmtSigned(head);
+  d.className = head>=15 ? 'good' : (head>=-10 ? 'warn' : 'bad');
+}
+function startTimer(){ if(tRunning) return; tRunning=true; tStart=Date.now(); saveTimer(); toast('Timer started'); }
+function pauseTimer(){ if(!tRunning) return; tAcc=elapsedSec(); tRunning=false; tStart=null; saveTimer(); toast('Timer paused'); }
+function toggleTimer(){ tRunning?pauseTimer():startTimer(); updateClock(); }
+function resetTimer(){ tRunning=false; tStart=null; tAcc=0; saveTimer(); updateClock(); toast('Timer reset'); }
+
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1400); }
+
+function toggleScript(){ document.body.classList.toggle('hidden-script'); try{ localStorage.setItem('fyp_hidescript', document.body.classList.contains('hidden-script')?'1':'0'); }catch(e){} toast(document.body.classList.contains('hidden-script')?'Anchors only':'Full script shown'); }
+function bump(d){ scale = Math.min(2.2, Math.max(0.7, +(scale+d).toFixed(2))); applyScale(); try{ localStorage.setItem('fyp_scale', scale); }catch(e){} toast('Text '+Math.round(scale*100)+'%'); }
+function fs(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen?.(); } else { document.exitFullscreen?.(); } }
+
+// overlays
+function openOv(id){ closeOv(); $(id).classList.add('show'); }
+function closeOv(){ document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show')); }
+function anyOv(){ return !!document.querySelector('.overlay.show'); }
+
+/* build static UI */
+function buildDots(){ const c=$('#dots'); c.innerHTML=''; for(let i=0;i<TOTAL;i++){ const d=document.createElement('i'); c.appendChild(d);} }
+function buildGrid(){
+  const g=$('#grid'); g.innerHTML='';
+  SLIDES.forEach((s,i)=>{
+    const c=document.createElement('div'); c.className='gcell';
+    c.innerHTML=`<div class="gn">${s.n}${s.fast?' <span style="font-size:.5em;color:var(--warn)">FAST</span>':''}${s.vb?' <span style="font-size:.5em;color:var(--key)">VB</span>':''}</div><div class="gt">${s.title}</div><div class="gd">${s.dur} · ⏱${fmt(s.target)}</div>`;
+    c.onclick=()=>{ go(i); closeOv(); };
+    g.appendChild(c);
+  });
+}
+function buildQA(){ $('#qaBody').innerHTML = QA.map(x=>`<div class="qa ${x.warn?'warn':''}"><div class="q">${x.q}</div><div class="a">${x.a}</div></div>`).join(''); }
+function buildElev(){ $('#elevBody').innerHTML = ELEV.map(x=>`<div class="elev"><h3>${x.h}</h3><p>${x.p}</p></div>`).join(''); }
+function buildPrint(){
+  const strip = h => h.replace(/<span class="cuechip">.*?<\/span>/g,'').replace(/<[^>]+>/g, m=> m.startsWith('<b')||m==='</b>'?m:'').replace(/<b class="k">/g,'<b>');
+  let html = `<h1>FYP talk — anchor cheat sheet</h1><div class="psub">25 slides · ~17 min · targets shown as ⏱ cumulative. Bold = key number. Italic green = transition into next slide.</div><div class="pcols">`;
+  SLIDES.forEach(s=>{
+    html += `<div class="ps"><div class="ph"><span class="pnn">${s.n}</span> ${s.title} <span class="pd">${s.dur} · ⏱${fmt(s.target)}${s.fast?' · FAST':''}${s.vb?' · VERBATIM':''}</span></div><ul>`;
+    s.anchors.forEach(a=>{ html += '<li>'+strip(a)+'</li>'; });
+    html += `</ul>`;
+    if(s.trans) html += `<div class="pt">→ ${strip(s.trans)}</div>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  $('#print').innerHTML = html;
+}
+
+/* events */
+$('#next').onclick=e=>{e.stopPropagation();next();};
+$('#prev').onclick=e=>{e.stopPropagation();prev();};
+$('#eRight').onclick=next;
+$('#eLeft').onclick=prev;
+$('#num').onclick=()=>openOv('#overview');
+$('#clock').onclick=toggleTimer;
+$('#bScript').onclick=toggleScript;
+$('#bGrid').onclick=()=>openOv('#overview');
+$('#bQA').onclick=()=>openOv('#qaOv');
+$('#bMore').onclick=()=>openOv('#help');
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeOv);
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) closeOv(); }));
+
+document.addEventListener('keydown', e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const k=e.key;
+  if(k==='Escape'){ if(anyOv()){ closeOv(); e.preventDefault(); } return; }
+  if(anyOv()){
+    if(k==='q'||k==='e'||k==='o'){ closeOv(); } // allow toggling between overlays below
+  }
+  switch(k){
+    case ' ': case 'ArrowRight': case 'PageDown': case 'ArrowDown': case 'l': e.preventDefault(); if(!anyOv()) next(); break;
+    case 'ArrowLeft': case 'PageUp': case 'ArrowUp': case 'h': e.preventDefault(); if(!anyOv()) prev(); break;
+    case 'g': toggleScript(); break;
+    case 'o': openOv('#overview'); break;
+    case 'q': openOv('#qaOv'); break;
+    case 'e': openOv('#elevOv'); break;
+    case 't': toggleTimer(); break;
+    case 'r': resetTimer(); break;
+    case 'f': fs(); break;
+    case '+': case '=': bump(0.1); break;
+    case '-': case '_': bump(-0.1); break;
+    case 'Home': go(0); break;
+    case '?': openOv('#help'); break;
+  }
+});
+
+// tick the clock
+setInterval(()=>{ if(tRunning) { updateClock(); saveTimer(); } }, 1000);
+
+// init
+loadState(); applyScale(); buildDots(); buildGrid(); buildQA(); buildElev(); buildPrint(); render();
+</script>
+</body>
+</html>
