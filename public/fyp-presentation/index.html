@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0b0f17">
-<title>FYP Teleprompter — 25 slides</title>
+<title>FYP Teleprompter — 24 slides</title>
 <style>
   :root{
     --bg:#0b0f17; --bg2:#121826; --bg3:#0f1420; --line:#222c3c;
@@ -427,15 +427,14 @@ const SLIDES = [
 
 { n:11, title:"How I measure, and why", dur:"≈55s", target:430,
   anchors:[
-    `<span class="cuechip">left</span>One honest estimand: every metric computed <span class="hl">inside each fold, then averaged</span> (not pooled)`,
-    `Not cosmetic: AUROC <b class="k">0.911</b> per-fold vs <b class="k">0.902</b> on a single split`,
-    `<span class="cuechip">right</span>AUROC = ranking (a check, not headline) · Sens@95% spec = the operating point a programme runs`,
-    `PPV / NPV = what a flag or all-clear <span class="hl">mean</span> at 1% · Net benefit = catch vs false alarm (use once, flag the assumption)`
+    `<span class="cuechip">left · estimand</span>Every number = mean across <b class="k">5</b> subject-disjoint folds → each baby scored by a model that <span class="hl">never saw it</span>`,
+    `Cutoff set <span class="hl">inside each fold</span>, never pooled (pooling re-mixes the subjects the folds keep apart) · AUROC <b class="k">0.911</b> per-fold vs <b class="k">0.902</b> single split`,
+    `<span class="cuechip">right · metrics</span><b class="k">AUROC</b> = ranking only, a check · <b class="k">Sens@95% spec</b> = a programme refers only so many, so holds spec high & asks how many it still catches`,
+    `<b class="k">PPV/NPV</b> = Bayes at 1%: how likely a flag is truly affected, an all-clear truly healthy · <b class="k">Net benefit</b> = true referrals minus false, weighted by miss vs false-alarm`
   ],
-  script:`<p><i class="cue">[Two columns: estimand + metrics preview.]</i></p>
-  <p>"Two things about the measurement.</p>
-  <p><i class="cue">[left]</i> First, one honest estimand. The tempting thing is to pool every fold's predictions into one pile and then pick your operating threshold on the pile. But that reuses subjects the folds were built to keep apart, so the number flatters itself. Instead I compute every metric <b>inside</b> each fold and average. It's not cosmetic: the headline AUROC is <span class="num">0.911</span> done per-fold, against <span class="num">0.902</span> on a single held-out split.</p>
-  <p><i class="cue">[right]</i> Second, the metrics, and what each is <b>for</b>, so none of them is a surprise later. AUROC is ranking, I treat it as a check, not the headline. Sensitivity at ninety-five-per-cent specificity is the operating point a programme could actually run. PPV and NPV are what a flag or an all-clear <b>mean</b> at one-per-cent prevalence. And net benefit weighs a catch against a false alarm under an assumed cost ratio; I'll use it once, later, and I'll flag the assumption when I do."</p>`,
+  script:`<p><i class="cue">[Two columns: estimand + metrics.]</i></p>
+  <p><i class="cue">[left]</i> "First, the estimand. Every number is averaged over five subject-disjoint folds, and for a threshold metric I set the cutoff <b>inside each fold</b> rather than pooling them, which would re-mix the subjects the folds are meant to keep apart. And how you measure genuinely moves the headline: the same AUROC reads <span class="num">0.911</span> per-fold versus <span class="num">0.902</span> on a single split.</p>
+  <p><i class="cue">[right]</i> Second, the metrics, so nothing is a surprise later. AUROC is ranking, a check. Sensitivity at ninety-five-per-cent specificity is the operating point a programme can actually run, because it can only refer so many. PPV and NPV are just Bayes at one-per-cent prevalence: how much to trust a flag, or an all-clear. And net benefit weighs a catch against a false alarm under an assumed cost ratio."</p>`,
   trans:`"Right. Question one: does it work?"` },
 
 { n:12, title:"A general model that never saw a defect clears the floor", dur:"≈40s", target:470,
@@ -518,8 +517,8 @@ const SLIDES = [
 
 { n:18, title:"A battery built to break the decision: nothing moved it", dur:"≈50s", target:745, key:true,
   anchors:[
-    `<span class="cuechip">top group — could only HELP</span>20× data (lifted ranking) · bigger head (confounded with budget). <span class="hl">Neither moved the decision.</span>`,
-    `<span class="cuechip">bottom group — actually HURT discrimination</span>attention aggregator · subject hierarchy · dense motion · cardiac-view filter. <span class="hl">Didn't move it either.</span>`,
+    `<span class="cuechip">top group — could only HELP</span><b class="k">20× token budget</b> (feed ~20× more of each scan) → lifted ranking · <b class="k">added head capacity</b> (deeper head) → confounded with budget. <span class="hl">Neither moved the decision.</span>`,
+    `<span class="cuechip">bottom group — HURT discrimination</span><b class="k">attention-MIL</b> (weight informative clips, not a flat average) · <b class="k">subject hierarchy</b> (pool clip→subject in 2 stages) · <b class="k">dense-motion</b> (frames in tight bursts) · <b class="k">cardiac-view filter</b> (keep only on-view frames). <span class="hl">Didn't move it either.</span>`,
     `Across everything I varied, the decision <span class="hl">held</span>. Even at 20× budget, net benefit stays negative.`,
     `<span class="cuechip">honest hedge</span>Reasoning from what I ruled out, not a direct proof — designing tests that could've moved it is what makes this an evaluation, not a demo`
   ],
@@ -564,22 +563,9 @@ const SLIDES = [
   ],
   script:`<p><i class="cue">[sonographer_baseline. Move quickly.]</i></p>
   <p>"Quickly: this is the comparison with the UK national audit, at the best configuration I found, run at the baseline budget. <i class="cue">[caveat first]</i> It is <b>not</b> like-for-like, I'm reading the model at ninety-five-per-cent specificity while a national programme runs nearer ninety-nine, so I'm not claiming to beat humans. It's near the audit on hypoplastic left heart and behind on the rest. Where it has real value is as a triage or rule-out aid where antenatal detection is weakest today. I'd call that a hypothesis from one UK cohort."</p>`,
-  trans:`<i class="cue">[gear change, slow down]</i> "So that's what I found. Let me tell you what I think it means."` },
+  trans:`<i class="cue">[gear change, slow down]</i> "So that's what I found. Let me end on where it leaves the field."` },
 
-{ n:22, title:"The likely limit is the labels and the next model, not the architecture", dur:"≈40s", target:930,
-  anchors:[
-    `Across every axis and every pre-specified test, the referral decision <span class="hl">didn't move</span>`,
-    `Most consistent reading: the limit isn't architecture or scan amount — it's the <span class="hl">supervision</span> (one label/subject, only a few hundred affected babies)`,
-    `<span class="cuechip">honest</span>Reasoning from what I ruled out, not a proof; can't fully rule out the frozen rep — clean tests are future work`,
-    `Next gains: <span class="hl">richer labels + stronger open models</span>. A cleverer head won't lift the ceiling.`
-  ],
-  script:`<p><i class="cue">[Text. After all the axes. The talk is winding toward discussion.]</i></p>
-  <p>"Pulling the comparison together: across every axis and every pre-specified test, the referral decision didn't move. The reading most consistent with that is that the limit isn't the architecture or how much scan you feed it, it's the <b>supervision</b>: one label per subject, over only a few hundred affected babies.</p>
-  <p>I want to be honest that this is reasoning from what I ruled out, not a proof, and I can't fully rule out the frozen representation itself; the clean tests for that are future work. But it points somewhere useful: the next gains come from richer labels and stronger open models. A cleverer head won't lift the ceiling."</p>`,
-  why:`<span class="wl">if asked "how did you deduce that?"</span>Two strands. (1) The designed battery: every lever that could only have helped (more data, view filter, more capacity) left the decision unchanged → bottleneck isn't there. (2) A linear probe already pulls AUROC 0.91 from the frozen embeddings → the signal IS present, just diffuse → points to extracting a calibrated decision from few labels, not missing signal. Clean direct test = a label-fraction learning curve (future work).`,
-  trans:`"And because the model is frozen, this leaves the field somewhere genuinely exciting."` },
-
-{ n:23, title:"Frozen reuse rides the wave for free, and vets what's next", dur:"≈45s", target:975,
+{ n:22, title:"Frozen reuse rides the wave for free, and vets what's next", dur:"≈45s", target:935,
   anchors:[
     `<span class="cuechip">the exciting part</span>Backbone frozen & reused → this task gets to <span class="hl">ride the wave</span>`,
     `General models keep improving (paid by labs with resources none of us have) → a screen built this way inherits the gains <span class="hl">for free</span>`,
@@ -591,7 +577,7 @@ const SLIDES = [
   <p>And the evaluation isn't a one-off. It's a reusable yardstick: the same controlled setup can clinically vet <b>future</b> models, on both questions, does it work and is it useful. So it's a cheap bet, and an honest one."</p>`,
   trans:`"Let me close where we started."` },
 
-{ n:24, title:"One scan, two futures (CLOSE)", dur:"≈45s", target:1020, vb:true,
+{ n:23, title:"One scan, two futures (CLOSE)", dur:"≈45s", target:980, vb:true,
   anchors:[
     `<span class="cuechip">slow right down</span>Same baby, same two futures, same one scan`,
     `The missed track now has a cheap second pair of eyes: a frozen model, never trained on a defect, catching ~<b class="k">6 in 10</b> at high specificity`,
@@ -604,7 +590,7 @@ const SLIDES = [
   <div class="verbatim"><span class="vlbl">Verbatim close — then stop</span>"So here's the sentence I'd leave you with. <b>The general-purpose representations now available off the shelf are stronger than the fetal-imaging field has assumed. A light probe on what they already contain detects fetal heart disease without training a model from scratch. Thank you.</b>"</div>`,
   trans:`Stop. Hold the room. → questions` },
 
-{ n:25, title:"Thank you / questions", dur:"≈10s", target:1030,
+{ n:24, title:"Thank you / questions", dur:"≈10s", target:990,
   anchors:[
     `"Thank you. I'm happy to take questions."`,
     `Backup slides ready: calibration mechanism · per-lesion decision curves · engineering detail · reproduction`,
@@ -621,6 +607,7 @@ const QA = [
  {q:`"Isn't the domain gain just a bigger model?"`, a:`The scale-matched control: <span class="num">+0.012</span> size, <span class="num">+0.074</span> domain at matched ViT-L, interval [+0.062, +0.092].`},
  {q:`"NPV 0.996 is near-trivial at 1%."`, a:`Agreed; reassure-everyone gives 0.99. The real increment is residual miss-risk ~1% → ~0.4%, plus the linear probe clearing refer-none on every fold.`},
  {q:`"How do you know it's supervision, not the representation, that's the ceiling?"`, a:`Honest: I can't fully exclude the representation. But a linear probe pulls 0.91 out of those embeddings (UMAP silhouettes +0.018 / −0.011, ~zero → structure diffuse but present). Every architecture and sampling lever left the decision put. Clean tests I'd run next: a label-fraction learning curve and an unfreeze-last-block ablation.`},
+ {q:`"So where is the ceiling?" (moved off the main deck → now backup slide 26)`, a:`Nothing I varied moved the referral decision, so it isn't any component I changed. The reading most consistent with that is the <b>supervision</b>: each baby has just one label, sick or not, and only a few hundred are affected, which is very little to learn a calibrated decision from. Honest — it's an inference, not a proof: a linear probe still pulls <span class="num">0.91</span> out of the frozen features, so the signal's there, just diffuse. <b>No contradiction with riding the wave:</b> stronger models keep lifting the <i>ranking</i>; richer labels are what would lift the <i>decision</i>.`},
  {q:`"Did you address the over-prediction / try recalibration?"`, a:`The over-prediction test = training at the task's own prevalence: it narrows but doesn't reverse (transformer −0.0372 → −0.0282, still negative; linear +0.041, 5/5). Temperature scaling is monotonic, so it can't change AUROC or sens at a re-chosen threshold — a clean future experiment.`},
  {q:`The Brier "paradox" (for Prof. Li)`, a:`The transformer has the lower Brier (0.110 vs 0.142), which naively says better calibrated. It isn't: Brier mixes calibration with sharpness — the transformer wins on sharpness while losing on the calibration term, and a fixed-threshold referral reads only the local calibration, which is what it's worst at.`},
  {q:`⚠ "Is the +0.0290 in the dissertation?"`, a:`Be precise: the report's Fig 6.1 plotted the general linear probe (+0.0149) vs the domain transformer and named the general linear probe the best decider it showed. For the talk I add the domain linear probe to the same curve, recomputed from the same committed predictions (no new training), and it decides best at +0.0290. The report isn't wrong; the enhanced curve adds the config it didn't plot. <b>Safe fallback:</b> lead the decision result with the report's DINOv2-linear +0.0149.`, warn:true},
