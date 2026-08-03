@@ -6,10 +6,13 @@ const repoUrl = "https://github.com/abhivir-42/ai-data-science-platform-hackatho
 const agents = [
   { name: "Data Loader", description: "Ingests CSV files, infers schemas, prepares datasets for downstream agents.", icon: "📂" },
   { name: "Data Cleaning", description: "Generates Python/pandas code to fix missing values, handle outliers, normalize types.", icon: "🧹" },
+  { name: "Data Wrangling", description: "Joins and reshapes across multiple datasets: merges, aggregations, encodings, computed columns, consistent types.", icon: "🔗" },
+  { name: "EDA Tools", description: "Profiles a dataset on demand. Missingness maps, correlation funnels, Sweetviz and D-Tale reports.", icon: "🔍" },
   { name: "Visualization", description: "Generates interactive Plotly charts from natural language descriptions.", icon: "📊" },
   { name: "Feature Engineering", description: "Writes scikit-learn transformation code based on statistical properties of the data.", icon: "⚙️" },
   { name: "ML Training", description: "Orchestrates H2O AutoML runs and interprets leaderboard results.", icon: "🧠" },
   { name: "Prediction", description: "Runs inference on trained models and explains predictions.", icon: "🎯" },
+  { name: "Data Analysis", description: "Runs a full analysis end to end with structured inputs and outputs, mapping parameters between the other agents.", icon: "🧭" },
 ];
 
 const techStack = [
@@ -47,7 +50,7 @@ const demoSteps = [
         AI Data Science Platform
       </h1>
       <p class="text-lg text-muted-foreground mb-6">
-        8+ specialised AI agents for end-to-end data science
+        Nine specialised AI agents for end-to-end data science
       </p>
       <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
         I built this solo at Fetch.ai. The idea: instead of writing data science code yourself,
@@ -58,6 +61,13 @@ const demoSteps = [
       <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
         It's live with data scientists at Bosch and Fetch.ai, and non-technical users at HR teams.
         People who'd never written a line of Python are getting Kaggle-level results in minutes.
+      </p>
+      <p class="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-8 border-l-2 border-border pl-4">
+        Credit where it's due: three of the nine agents (data wrangling, feature engineering, and
+        the H2O ML agent) started from the open-source
+        <a href="https://github.com/business-science/ai-data-science-team" target="_blank" rel="noopener noreferrer" class="text-foreground hover:text-accent underline underline-offset-2">ai-data-science-team</a>
+        library. The supervisor, the intent parser, the structured-output layer, session and
+        state management, and the whole full-stack application around them are mine.
       </p>
       <div class="flex items-center gap-4">
         <a
@@ -94,7 +104,7 @@ const demoSteps = [
     <section class="pt-12 pb-12 border-b border-border">
       <p class="section-label">The Agents</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-8">
-        Six specialised agents handle every stage of the pipeline. A LangGraph supervisor
+        Nine specialised agents handle every stage of the pipeline. A LangGraph supervisor
         decomposes high-level goals into multi-agent workflows, decides which agents to invoke
         and in what order, and manages state between steps.
       </p>
@@ -212,13 +222,15 @@ User (Natural Language)
         v
   LangGraph Supervisor (<span class="text-foreground font-medium">LLM orchestration</span>)
         |
-   +----+----+----+----+----+
-   |    |    |    |    |    |
-   v    v    v    v    v    v
- Load Clean  Viz  Feat Train Predict
- Agent Agent Agent Agent Agent Agent
-   |    |    |    |    |    |
-   +----+----+----+----+----+
+        +--> Data Loader
+        +--> Data Cleaning
+        +--> Data Wrangling
+        +--> EDA Tools
+        +--> Visualisation
+        +--> Feature Engineering
+        +--> ML Training (H2O AutoML)
+        +--> Prediction
+        +--> Data Analysis
         |
         v
   <span class="text-foreground font-medium">LLM</span>: coding + reasoning
