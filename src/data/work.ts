@@ -19,7 +19,7 @@ export const work: WorkItem[] = [
     date: "2024–2025",
     tags: ["AI Agents", "LangChain", "FastAPI", "AutoML"],
     description:
-      "Solo-built platform with nine AI agents that coordinate across the full data science pipeline. Humans in the loop at every decision point. Live with data scientists at Bosch and Fetch.ai.",
+      "Platform with nine AI agents that coordinate across the full data science pipeline. Humans in the loop at every decision point. Live with data scientists at Fetch.ai.",
   },
   {
     title: "AI for Fetal Heart Ultrasound",

@@ -7,7 +7,7 @@ export const prerender = false;
 // Get a free API key at https://resend.com (3,000 emails/month free).
 // Without the key, submissions are logged and the user still sees a success message.
 
-const TO_EMAIL = "as9422@ic.ac.uk";
+const TO_EMAIL = "abhivir.42@gmail.com";
 const FROM_EMAIL = "contact@abhivir.com"; // must be a verified domain in Resend
 
 interface ContactPayload {

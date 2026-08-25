@@ -4,20 +4,20 @@ export const prerender = false;
 
 export const GET: APIRoute = () => {
   const now = {
-    updated: "2026-04-23",
-    location: "India through April (just back from YC Startup School in Bengaluru). Back in London from May.",
+    updated: "2026-08-25",
+    location: "Faridabad, India.",
     building: [
-      "MEng Thesis: AI for Fetal Heart Ultrasound at Imperial",
+      "AI agents and the harnesses around them: rebuilding what I shipped at Fetch.ai, properly",
+      "The family forging business outside Delhi",
       "abhivir.com: programmable digital home",
-      "Hathin Village: AI and WhatsApp automation for governance and schools",
     ],
     reading: [
       "Designing Data-Intensive Applications, Martin Kleppmann",
     ],
     thinking: [
-      "AI agents for India's underserved populations",
+      "Where to do the next serious thing, and who to do it with",
       "Finding a co-founder who complements what I'm good at",
-      "What the first product should be after graduation",
+      "What the first product should be",
     ],
   };
 
