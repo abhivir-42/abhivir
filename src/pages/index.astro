@@ -15,6 +15,16 @@ const featuredHighlightTitles = [
   "YC Top 25: Dinner with YC Partners",
   "Winner: Wintermute Crypto CTF",
 ];
+// Confirmed accurate by him on 1 Sep 2026 (anton/applications/master-record.md).
+const experience = [
+  { org: "Fetch.ai", role: "AI Engineer, Innovation Lab", when: "Apr – Sep 2025" },
+  { org: "DeepSearch Labs", role: "Machine Learning Engineer", when: "Jan – Mar 2025" },
+  { org: "Imperial College London", role: "AI Research, then MEng thesis at BioMedIA", when: "Oct 2024 – Jun 2026" },
+  { org: "Imperial College London", role: "Undergraduate Teaching Assistant", when: "Oct 2024 – Mar 2025" },
+  { org: "Govt. of Uttarakhand", role: "Software Engineer, Dept. of Rural Development", when: "Jul – Sep 2024" },
+  { org: "Optiver", role: "Quantitative Trader, Trading Academy", when: "Nov – Dec 2023" },
+];
+
 const featuredHighlights = featuredHighlightTitles
   .map((title) => highlights.find((h) => h.title === title))
   .filter((h): h is NonNullable<typeof h> => Boolean(h));
@@ -36,19 +46,44 @@ const featuredHighlights = featuredHighlightTitles
           class="w-20 h-20 md:w-24 md:h-24 rounded-sm object-cover border border-border shrink-0"
         />
       </div>
+      <p class="font-content text-xl md:text-2xl text-foreground leading-snug max-w-2xl">
+        I build AI agent systems, and the harnesses underneath them.
+      </p>
       <div class="max-w-2xl space-y-4 text-sm text-muted-foreground leading-relaxed mt-6">
         <p>
-          22, from Faridabad. MEng Computing (AI and Machine Learning) from Imperial College London,
-          First Class Honours.
-          Before that, IIT Delhi. Before that, a lot of competitive exams.
+          At Fetch.ai I was the only engineer on a platform that turns a sentence about a dataset
+          into a trained model. Version one was a fixed pipeline and it worked on every dataset I
+          had tested it on, which was the tell. I rebuilt it as nine agents under a supervisor,
+          with logging on every call, guardrails and evals, because I could not debug the thing I
+          had. Seven Dockerised services by the end.
         </p>
         <p>
-          I like building things end-to-end. I like hard problems and I like shipping.
+          I found out afterwards that the industry had names for most of it. On Imperial's NLP
+          leaderboard I measured the thing directly: working by hand I came 10th of 340, my agent
+          system running unsupervised came 22nd, and the two together came 1st. The harness was
+          the difference, not the model.
         </p>
         <p>
-          Back in India, building.
+          22, from Faridabad. MEng Computing (AI and Machine Learning) from Imperial, First Class
+          Honours. Before that, a year at IIT Delhi.
         </p>
       </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="pt-12 pb-12 border-b border-border">
+      <p class="section-label">Experience</p>
+      <ul class="divide-y divide-border">
+        {experience.map((job) => (
+          <li class="py-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <div class="flex flex-wrap items-baseline gap-x-3">
+              <span class="text-sm font-medium text-foreground">{job.org}</span>
+              <span class="text-sm text-muted-foreground">{job.role}</span>
+            </div>
+            <span class="text-xs font-mono text-muted-foreground shrink-0">{job.when}</span>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- Highlights -->

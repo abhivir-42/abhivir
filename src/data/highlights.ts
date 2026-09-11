@@ -74,9 +74,9 @@ export const highlights: HighlightItem[] = [
   },
   // 7. Pintos & WACC
   {
-    title: "Pintos & WACC: Best in Cohort",
+    title: "Pintos & WACC: Top 5 of 240",
     caption:
-      "Operating system and compiler from scratch. Top marks (95%) out of 230 at Imperial.",
+      "An operating system in C and a compiler in Scala, both from scratch, in second year at Imperial. 91.19 across the 15-credit module.",
     date: "2024",
     category: "academic",
     placeholder: true,
