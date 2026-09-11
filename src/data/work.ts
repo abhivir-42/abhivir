@@ -16,7 +16,7 @@ export const work: WorkItem[] = [
     slug: "data-pilot",
     tier: "flagship",
     featured: true,
-    date: "2024–2025",
+    date: "Apr – Sep 2025",
     tags: ["AI Agents", "LangChain", "FastAPI", "AutoML"],
     description:
       "Solo-built platform with nine AI agents that coordinate across the full data science pipeline. Humans in the loop at every decision point. Live with data scientists at Fetch.ai.",
@@ -47,7 +47,7 @@ export const work: WorkItem[] = [
     date: "Oct 2025 – Jun 2026",
     tags: ["Foundation Models", "Medical Imaging", "PyTorch"],
     description:
-      "MEng thesis. Does a vision model that has never seen a medical image already encode the fetal heart well enough to detect disease? It does. Light heads on frozen DINOv2 embeddings reach 0.911 AUROC on four auditable lesions, training no new model at all.",
+      "MEng thesis. A controlled backbone swap on 4,128 fetal ultrasound subjects, training no new model. FetalCLIP wins discrimination at 0.911 AUROC against DINOv2's 0.818. DINOv2 wins the decision: at 1% prevalence and a 0.20 screening threshold it is the only one of the two with positive net benefit, on all five folds. The model that wins the ranking loses the decision.",
     href: "/papers/fetal-chd-thesis.pdf",
   },
   {
