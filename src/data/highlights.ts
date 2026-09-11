@@ -51,6 +51,16 @@ export const highlights: HighlightItem[] = [
     image: "/photos/morgan-stanley.jpg",
     placeholder: false,
   },
+  // 8. YC Startup School India
+  {
+    title: "YC Top 25: Dinner with YC Partners",
+    caption:
+      "YC Startup School in Bengaluru. Top 25 of 25,000 builders picked for the dinner with YC partners Jared Friedman, Jon Xu, Ankit Gupta, and Arnav Sahu (Peak XV).",
+    date: "Apr 2026",
+    category: "event",
+    image: "/photos/yc.png",
+    placeholder: false,
+  },
   // 5. Wintermute
   {
     title: "Winner: Wintermute Crypto CTF",
@@ -70,36 +80,6 @@ export const highlights: HighlightItem[] = [
     date: "2025",
     category: "building",
     image: "/photos/robot-photo.jpg",
-    placeholder: false,
-  },
-  // 7. Pintos & WACC
-  {
-    title: "Pintos & WACC: Top 5 of 240",
-    caption:
-      "An operating system in C and a compiler in Scala, both from scratch, in second year at Imperial. 91.19 across the 15-credit module.",
-    date: "2024",
-    category: "academic",
-    placeholder: true,
-  },
-  // 8. YC Startup School: Top 25 Dinner
-  {
-    title: "YC Top 25: Dinner with YC Partners",
-    caption:
-      "Top 25 of 25,000 builders selected for an exclusive dinner with YC partners Jared Friedman, Jon Xu, Ankit Gupta, and Arnav Sahu (Peak XV).",
-    date: "Apr 2026",
-    category: "event",
-    image: "/photos/yc.png",
-    placeholder: false,
-    href: "/blog/india-ai-summit",
-  },
-  // 8b. YC Startup School (attended)
-  {
-    title: "YC Startup School India",
-    caption:
-      "Attended in Bengaluru. Awarded $25k+ in credits.",
-    date: "Apr 2026",
-    category: "event",
-    image: "/photos/yc.png",
     placeholder: false,
   },
   // 9. Optiver
@@ -155,34 +135,6 @@ export const highlights: HighlightItem[] = [
     image: "/photos/technothlon.jpg",
     placeholder: false,
   },
-  // 14. Emotional TTS
-  {
-    title: "Emotional TTS: 2,000+ HuggingFace Downloads",
-    caption:
-      "Fine-tuned Parler-TTS with emotional expressiveness. Published on HuggingFace, over 2,000 downloads.",
-    date: "2025",
-    category: "building",
-    placeholder: true,
-  },
-  // 15. KVPY
-  {
-    title: "KVPY Scholar",
-    caption:
-      "Kishore Vaigyanik Protsahan Yojana. National fellowship for excellence in math and science.",
-    date: "2021",
-    category: "academic",
-    placeholder: true,
-  },
-  // 16. COVID App
-  {
-    title: "COVID App for Gurdwara",
-    caption:
-      "Built a supply chain management app during COVID for a local Gurdwara.",
-    date: "2020",
-    category: "building",
-    placeholder: true,
-  },
-
   // Events: photos but lower priority
   {
     title: "Fetch.ai Presentation",
