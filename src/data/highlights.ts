@@ -14,7 +14,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "Imperial College London",
     caption:
-      "MEng Computing (AI & ML). Final year.",
+      "MEng Computing (AI and Machine Learning). First Class Honours, and four rising years: 63.7, 67.7, 71.9, 73.3.",
     date: "2022–2026",
     category: "academic",
     image: "/photos/imperial.jpg",
@@ -85,11 +85,12 @@ export const highlights: HighlightItem[] = [
   {
     title: "YC Top 25: Dinner with YC Partners",
     caption:
-      "Top 25 of 25,000 builders selected for an exclusive dinner with YC partners Jared Friedman, Jon Xu, Ankit Gupta, and Arnav Sahu (Peak XV). Writeup coming.",
+      "Top 25 of 25,000 builders selected for an exclusive dinner with YC partners Jared Friedman, Jon Xu, Ankit Gupta, and Arnav Sahu (Peak XV).",
     date: "Apr 2026",
     category: "event",
     image: "/photos/yc.png",
     placeholder: false,
+    href: "/blog/india-ai-summit",
   },
   // 8b. YC Startup School (attended)
   {
@@ -189,7 +190,7 @@ export const highlights: HighlightItem[] = [
       "Presenting the AI Data Science Platform at Fetch.ai.",
     date: "2025",
     category: "event",
-    image: "/photos/fetch-ai-presentation.PNG",
+    image: "/photos/fetch-ai-presentation.jpg",
     placeholder: false,
   },
   {
