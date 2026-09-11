@@ -12,7 +12,7 @@ const agents = [
   { name: "Feature Engineering", description: "Writes scikit-learn transformation code based on statistical properties of the data.", icon: "⚙️" },
   { name: "ML Training", description: "Orchestrates H2O AutoML runs and interprets leaderboard results.", icon: "🧠" },
   { name: "Prediction", description: "Runs inference on trained models and explains predictions.", icon: "🎯" },
-  { name: "Data Analysis", description: "Runs a full analysis end to end with structured inputs and outputs, mapping parameters between the other agents.", icon: "🧭" },
+  { name: "Data Analysis", description: "Runs a full analysis start to finish with structured inputs and outputs, mapping parameters between the other agents.", icon: "🧭" },
 ];
 
 const techStack = [
@@ -21,6 +21,7 @@ const techStack = [
   { layer: "LLM", items: "OpenAI-compatible API" },
   { layer: "ML", items: "H2O AutoML, scikit-learn, XGBoost, MLflow" },
   { layer: "Infrastructure", items: "PostgreSQL, Redis, Celery, Docker (7 services)" },
+  { layer: "Interfaces", items: "Web app, CLI, and an MCP server" },
 ];
 
 const demoSteps = [
@@ -35,7 +36,7 @@ const demoSteps = [
 
 <BaseLayout
   title="AI Data Science Platform · Abhivir Singh"
-  description="Solo-built platform with nine AI agents for end-to-end data science. Live with data scientists at Fetch.ai."
+  description="Solo-built platform with nine AI agents that take a CSV to a trained model. Live with data scientists at Fetch.ai."
 >
   <div class="editorial-container">
 
@@ -50,17 +51,19 @@ const demoSteps = [
         AI Data Science Platform
       </h1>
       <p class="text-lg text-muted-foreground mb-6">
-        Nine specialised AI agents for end-to-end data science
+        Nine agents that do the whole pipeline, from raw CSV to a trained model
       </p>
       <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
         I built this solo at Fetch.ai. The idea: instead of writing data science code yourself,
-        describe what you want in natural language and let a team of AI agents handle the pipeline.
+        describe what you want in natural language and let nine agents do it.
         Each agent is specialised. A supervisor agent orchestrates them. Humans stay in the loop
         at every decision point.
       </p>
       <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
         It's live with data scientists at Fetch.ai, and non-technical users at HR teams.
         People who'd never written a line of Python are getting Kaggle-level results in minutes.
+        It ships three ways: the web app, a CLI, and an MCP server I built a few months after the
+        protocol came out. The MCP server took the least work and got used the most.
       </p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-8 border-l-2 border-border pl-4">
         Credit where it's due: three of the nine agents (data wrangling, feature engineering, and
@@ -86,10 +89,9 @@ const demoSteps = [
       <p class="section-label">Harness Engineering</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <p class="text-sm text-muted-foreground leading-relaxed">
-          This project is fundamentally about harness engineering: designing the environment,
-          constraints, and feedback loops that let AI agents do reliable work. The human's job
-          isn't to write code. It's to specify intent, set architectural boundaries, and build
-          the scaffolding that keeps agents on track.
+          This project is about harness engineering: building the environment and the feedback
+          loops that let agents do reliable work. The human specifies intent and sets the
+          boundaries. The agents write the code.
         </p>
         <p class="text-sm text-muted-foreground leading-relaxed">
           I built this before the term existed. The problems were the same: agents hallucinate,
@@ -104,7 +106,7 @@ const demoSteps = [
     <section class="pt-12 pb-12 border-b border-border">
       <p class="section-label">The Agents</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-8">
-        Nine specialised agents handle every stage of the pipeline. A LangGraph supervisor
+        Nine agents cover the pipeline. A LangGraph supervisor
         decomposes high-level goals into multi-agent workflows, decides which agents to invoke
         and in what order, and manages state between steps.
       </p>
@@ -125,7 +127,7 @@ const demoSteps = [
     <section class="pt-12 pb-12 border-b border-border">
       <p class="section-label">How the LLM is Used</p>
       <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-10">
-        The LLM isn't a chat wrapper. It's the execution engine behind every agent. Three modes:
+        Every agent runs on the LLM in one of three modes.
       </p>
 
       <div class="space-y-10">

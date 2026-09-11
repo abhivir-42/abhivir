@@ -1,32 +1,28 @@
 ---
-title: "AI + Human = Better Than Either Alone"
-description: "How harness engineering beat state-of-the-art on an NLP competition."
+title: "10th, 22nd, 1st"
+description: "Me alone, my agent system alone, and the two together, on the same leaderboard."
 date: "2026-03-27"
 tags: ["ai", "nlp", "harness-engineering"]
 ---
 
 **[Read the paper (PDF)](/papers/nlp-semeval-paper.pdf)**
 
-I competed in SemEval 2022 Task 4: detecting patronising and condescending language directed at vulnerable communities. 340 students. I ranked 10th manually writing detection systems and tuning models.
+Imperial's NLP course runs SemEval-2022 Task 4 as a competition: detect patronising and condescending language aimed at vulnerable people. 340 of us, one leaderboard. Writing the detection systems and tuning the models by hand, I came 10th.
 
-Then I built an AI agent system to do the same task. No human involvement. One shot, no prompt engineering. It ranked 22nd. Better than me, but not as good as my best manual work.
+Then I built an agent system to do the same task. No human in the loop, one shot, no prompt engineering. Then I put myself back in, directing the agents and checking what they produced.
 
-But when I added myself back in, directing the agents, refining prompts, verifying outputs, the system ranked 1st on the leaderboard.
-
-## The Numbers
+## The numbers
 
 - Me alone: 10/340
 - My system alone: 22/340
-- Me + system: 1/340
+- Me and the system: 1/340
 
-## What This Means
+The winning run was a context-enriched DeBERTa with focal loss, a community-context prefix, a five-seed ensemble and a tuned threshold, at a 9.5:1 class imbalance. F1 0.61, against a RoBERTa baseline of 0.48.
 
-The AI agent system I built is powerful. Left to its own devices, it's above-average but not exceptional. But the system + human judgment is unbeatable. The AI does the heavy lifting. I add direction and verification.
+The middle number is the one people skip. Left alone, the agent system was above average and nothing more. It was beaten by 21 students working by hand, including me. If you had shown me only that result I would have concluded that agents were not ready for this.
 
-This is harness engineering: designing the right constraints, feedback loops, and human-in-the-loop architecture so that AI systems do reliable work.
+The gap between 22nd and 1st is not a better model. It is the same model, wrapped in something that catches it when it goes wrong. I wrote the guardrails and the logging because I could not otherwise tell whether an output was reasoned or invented, and I could not improve what I could not see.
 
-When I started building the system, I didn't call it that. OpenAI published that term later. But I was solving the same problems: how do you keep agents on track? How do you verify they haven't hallucinated? How do you build a system that stays reliable?
+I did not have a word for this at the time. The industry settled on one later.
 
-I built guardrails, prompt injection protection, agent logging, and orchestration patterns from first principles. The system needs structure. Humans need to stay in the loop.
-
-The system alone is useful. System + human is unbeatable.
+The part worth taking seriously is the size of that gap. Twenty-one places, on the same task, with the same model underneath. Everyone is comparing models. Nobody I was competing against was measuring what the wrapper was worth.
