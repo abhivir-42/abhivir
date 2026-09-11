@@ -88,9 +88,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
   } else {
-    // No API key configured — log the submission so it shows up in
-    // Cloudflare Pages function logs. Set RESEND_API_KEY to enable delivery.
-    console.log("[contact form submission]", { name, email, message });
+    // No API key configured. Say so rather than confirming a message that
+    // only exists in a log line nobody reads.
+    console.error("[contact] RESEND_API_KEY missing, message NOT delivered", {
+      name,
+      email,
+    });
+    return new Response(JSON.stringify({ error: "Delivery not configured" }), {
+      status: 503,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   return new Response(JSON.stringify({ ok: true }), {

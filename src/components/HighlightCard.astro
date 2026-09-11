@@ -32,6 +32,10 @@ const linkProps = href
       <img
         src={image}
         alt={title}
+        loading="lazy"
+        decoding="async"
+        width="800"
+        height="600"
         class="w-full h-full object-cover"
         style={imagePosition ? `object-position: ${imagePosition}` : undefined}
       />

@@ -138,7 +138,7 @@ export const highlights: HighlightItem[] = [
   {
     title: "Hosting Thomas Wolf & Peter Steinberger",
     caption:
-      "Hugging Face CEO and Peter Steinberger at the AI, Blockchain Club at Imperial. Head of Data.",
+      "Thomas Wolf, co-founder of Hugging Face, and Peter Steinberger at the AI and Blockchain Club at Imperial. Co-founder and Head of Data.",
     date: "2026",
     category: "leadership",
     image: "/photos/peter-steinberger.jpeg",

@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Not found · Abhivir Singh"
+  description="That page does not exist."
+  noindex={true}
+>
+  <div class="editorial-container">
+    <section class="pt-20 pb-16">
+      <p class="text-xs font-mono text-muted-foreground mb-4">404</p>
+      <h1
+        class="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4"
+      >
+        That page does not exist
+      </h1>
+      <p class="text-base text-muted-foreground max-w-xl mb-8">
+        The link may be old, or I may have moved something. The work is all
+        still here.
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm">
+        <a href="/" class="text-foreground hover:text-accent underline underline-offset-4">Home</a>
+        <a href="/work/" class="text-foreground hover:text-accent underline underline-offset-4">Work</a>
+        <a href="/blog/" class="text-foreground hover:text-accent underline underline-offset-4">Writing</a>
+        <a href="/contact/" class="text-foreground hover:text-accent underline underline-offset-4">Contact</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

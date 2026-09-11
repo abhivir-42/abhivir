@@ -167,7 +167,7 @@ export const work: WorkItem[] = [
     date: "2024–2025",
     tags: ["AI", "Leadership", "Community"],
     description:
-      "Head of Data. Hosted Hugging Face CEO Thomas Wolf and Peter Steinberger. Now run by juniors.",
+      "Co-founder and Head of Data. Hosted Thomas Wolf, co-founder of Hugging Face, and Peter Steinberger. Now run by juniors.",
   },
   {
     title: "Secretary, DoCSoc",

@@ -12,6 +12,8 @@ interface Props {
   type?: string;
   /** ISO date, for articles. */
   publishedAt?: string;
+  /** Keep this page out of search results. */
+  noindex?: boolean;
 }
 
 const {
@@ -21,10 +23,12 @@ const {
   image = "/og.png",
   type = "website",
   publishedAt,
+  noindex = false,
 } = Astro.props;
 
 const SITE = "https://abhivir.com";
-const canonical = new URL(Astro.url.pathname.replace(/\/+$/, "") || "/", SITE).href;
+const path = Astro.url.pathname;
+const canonical = new URL(path === "/" ? "/" : path.replace(/\/*$/, "/"), SITE).href;
 const ogImage = new URL(image, SITE).href;
 
 const person = {
@@ -42,12 +46,9 @@ const person = {
       name: "Imperial College London",
       sameAs: "https://www.imperial.ac.uk/",
     },
-    {
-      "@type": "CollegeOrUniversity",
-      name: "Indian Institute of Technology Delhi",
-      sameAs: "https://home.iitd.ac.in/",
-    },
   ],
+  description:
+    "MEng Computing (Artificial Intelligence and Machine Learning), Imperial College London, First Class Honours. Read one year at IIT Delhi before transferring.",
   knowsAbout: [
     "AI agents",
     "Large language models",
@@ -69,6 +70,18 @@ const person = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="author" content="Abhivir Singh" />
+    <meta name="color-scheme" content="light dark" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <script is:inline>
+      // Set before first paint so the page never flashes the wrong ground.
+      try {
+        const stored = localStorage.getItem("theme");
+        const dark = stored
+          ? stored === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", dark);
+      } catch (e) {}
+    </script>
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
