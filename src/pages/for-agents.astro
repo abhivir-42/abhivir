@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { agentResume } from "../data/agent-resume";
+
+const { published, updatedLong, markdown, html, words } = agentResume;
+
+// Inlined as JSON so the copy is synchronous on click. Safari drops the
+// clipboard permission if the write happens after an await.
+const payload = JSON.stringify(markdown).replace(/</g, "\\u003c");
+---
+
+<BaseLayout
+  title="Resume for agents · Abhivir Singh"
+  description="The long-form resume of Abhivir Singh, in Markdown, written to be read whole by an AI agent."
+  noindex={!published}
+>
+  <div class="editorial-container">
+    {!published && (
+      <p class="mt-8 text-xs font-mono text-muted-foreground border border-border px-3 py-2 inline-block">
+        Draft. Not indexed and not linked from the site yet.
+      </p>
+    )}
+
+    <section class="pt-16 pb-10 border-b border-border">
+      <p class="section-label">Resume, long form</p>
+      <h1 class="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+        For agents
+      </h1>
+      <p class="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
+        A resume has to fit on one page, so most of it gets left out. This is all of it, written in
+        Markdown so an AI agent can read it whole. Copy it into whichever one you use and ask it
+        what you would ask me.
+      </p>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          id="copy-resume"
+          class="inline-flex items-center gap-2 text-sm font-medium text-background bg-foreground px-4 py-2 rounded-sm border border-foreground hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          <span data-label>Copy Markdown</span>
+        </button>
+        <a
+          href="/resume.md"
+          class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
+        >
+          Open raw
+        </a>
+        <a
+          href="/resume.md"
+          download="abhivir-singh-resume.md"
+          class="inline-flex items-center gap-2 text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-sm hover:bg-card transition-colors border border-border"
+        >
+          Download .md
+        </a>
+      </div>
+
+      <p class="mt-4 text-xs font-mono text-muted-foreground">
+        Updated {updatedLong} · {words.toLocaleString("en-GB")} words ·
+        <span class="select-all">abhivir.com/resume.md</span>
+      </p>
+      <p id="copy-status" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <article class="prose max-w-3xl pt-10 pb-16" set:html={html} />
+  </div>
+
+  <script type="application/json" id="agent-resume-markdown" set:html={payload} />
+
+  <script is:inline>
+    (() => {
+      const button = document.getElementById("copy-resume");
+      const source = document.getElementById("agent-resume-markdown");
+      const status = document.getElementById("copy-status");
+      if (!button || !source) return;
+
+      const label = button.querySelector("[data-label]");
+      const text = JSON.parse(source.textContent || '""');
+      let timer;
+
+      const show = (message) => {
+        label.textContent = message;
+        status.textContent = message;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          label.textContent = "Copy Markdown";
+          status.textContent = "";
+        }, 2000);
+      };
+
+      // For browsers or contexts without the async clipboard API.
+      const fallback = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        let ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {}
+        area.remove();
+        return ok;
+      };
+
+      button.addEventListener("click", () => {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(
+            () => show("Copied"),
+            () => show(fallback() ? "Copied" : "Copy failed. Use Open raw."),
+          );
+        } else {
+          show(fallback() ? "Copied" : "Copy failed. Use Open raw.");
+        }
+      });
+    })();
+  </script>
+</BaseLayout>

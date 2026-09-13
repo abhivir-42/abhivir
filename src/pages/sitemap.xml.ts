@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
+import { agentResume } from "../data/agent-resume";
 
 const SITE = "https://abhivir.com";
 
@@ -18,8 +19,12 @@ const staticRoutes = [
 
 export const GET: APIRoute = async () => {
   const posts = await getCollection("blog");
+  const routes = agentResume.published
+    ? [...staticRoutes, { path: "/for-agents/", priority: "0.8" }]
+    : staticRoutes;
+
   const urls = [
-    ...staticRoutes.map((r) => ({ loc: `${SITE}${r.path}`, priority: r.priority, lastmod: undefined })),
+    ...routes.map((r) => ({ loc: `${SITE}${r.path}`, priority: r.priority, lastmod: undefined })),
     ...posts
       .filter((post) => post.data.description)
       .map((post) => ({
