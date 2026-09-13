@@ -28,7 +28,7 @@ export const work: WorkItem[] = [
     date: "Jan – Mar 2026",
     tags: ["NLP", "DeBERTa", "Agents"],
     description:
-      "Detecting condescending language at a 9.5:1 class imbalance. By hand, without AI support as the department required, a context-enriched DeBERTa with focal loss: F1 0.61 against a 0.48 baseline, 10th of 340, 29 of 30 for the report. Then my agent system on GPT-4o came 22nd unsupervised and 1st with me in the loop.",
+      "Detecting condescending language at a 9.5:1 class imbalance. By hand, without AI support as the department required, a DeBERTa-v3 model with a community-aware prefix and focal loss: F1 0.59 on the dev set against a 0.48 baseline, 10th of 340, 29 of 30 for the report. Then my agent system on GPT-4o came 22nd unsupervised and 1st with me in the loop.",
     href: "/blog/nlp-harness-engineering",
   },
   {

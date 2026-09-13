@@ -7,7 +7,7 @@ tags: ["ai", "nlp", "harness-engineering"]
 
 **[Read the paper (PDF)](/papers/nlp-semeval-paper.pdf)**
 
-Imperial's NLP course runs SemEval-2022 Task 4 as a competition: detect patronising and condescending language aimed at vulnerable people. 340 of us, one leaderboard. Working by hand, without AI support as the department required, I built a context-enriched DeBERTa with focal loss, a community-context prefix, a five-seed ensemble and a tuned threshold, for a 9.5:1 class imbalance. F1 0.61, against a RoBERTa baseline of 0.48. It came 10th.
+Imperial's NLP course runs SemEval-2022 Task 4 as a competition: detect patronising and condescending language aimed at vulnerable people. 340 of us, one leaderboard. Working by hand, without AI support as the department required, I built a DeBERTa-v3 model with a community-aware input prefix, focal loss for a 9.5:1 class imbalance, and a tuned decision threshold. F1 0.59 on the official dev set, against a RoBERTa baseline of 0.48. It came 10th.
 
 Then, to benchmark it, I ran my data science agent system on the same task. Unsupervised, on GPT-4o, one shot, no prompt engineering. Then I put myself back in the loop.
 
