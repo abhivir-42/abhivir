@@ -7,9 +7,9 @@ tags: ["ai", "nlp", "harness-engineering"]
 
 **[Read the paper (PDF)](/papers/nlp-semeval-paper.pdf)**
 
-Imperial's NLP course runs SemEval-2022 Task 4 as a competition: detect patronising and condescending language aimed at vulnerable people. 340 of us, one leaderboard. Writing the detection systems and tuning the models by hand, I came 10th.
+Imperial's NLP course runs SemEval-2022 Task 4 as a competition: detect patronising and condescending language aimed at vulnerable people. 340 of us, one leaderboard. Working by hand, without AI support as the department required, I came 10th.
 
-Then I built an agent system to do the same task. No human in the loop, one shot, no prompt engineering. Then I put myself back in, directing the agents and checking what they produced.
+Then, to benchmark it, I ran my data science agent system on the same task. Unsupervised, on GPT-4o, one shot, no prompt engineering. Then I put myself back in the loop.
 
 ## The numbers
 
@@ -17,12 +17,12 @@ Then I built an agent system to do the same task. No human in the loop, one shot
 - My system alone: 22/340
 - Me and the system: 1/340
 
-The winning run was a context-enriched DeBERTa with focal loss, a community-context prefix, a five-seed ensemble and a tuned threshold, at a 9.5:1 class imbalance. F1 0.61, against a RoBERTa baseline of 0.48.
+The project's model was a context-enriched DeBERTa with focal loss, a community-context prefix, a five-seed ensemble and a tuned threshold, at a 9.5:1 class imbalance. F1 0.61, against a RoBERTa baseline of 0.48.
 
-The middle number is the one people skip. Left alone, the agent system was above average and nothing more. It was beaten by 21 students working by hand, including me. If you had shown me only that result I would have concluded that agents were not ready for this.
+The middle number is the one people skip. Left alone, the agent system was above average and nothing more: 21 entries finished ahead of it, mine among them. If you had shown me only that result I would have concluded agents were not ready for this.
 
-The gap between 22nd and 1st is not a better model. It is the same model, wrapped in something that catches it when it goes wrong. I wrote the guardrails and the logging because I could not otherwise tell whether an output was reasoned or invented, and I could not improve what I could not see.
+Putting myself back in meant directing the agents, refining the prompts and checking what came out. It also meant building what that needed: guardrails, logging on every agent, and orchestration I could follow, because otherwise I could not tell a reasoned output from an invented one.
 
 I did not have a word for this at the time. The industry settled on one later.
 
-The part worth taking seriously is the size of that gap. Twenty-one places, on the same task, with the same model underneath. Everyone is comparing models. Nobody I was competing against was measuring what the wrapper was worth.
+What I would not have guessed is how far the two together finished ahead of either one alone.

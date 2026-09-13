@@ -47,7 +47,7 @@ export const work: WorkItem[] = [
     date: "Oct 2025 – Jun 2026",
     tags: ["Foundation Models", "Medical Imaging", "PyTorch"],
     description:
-      "MEng thesis. A controlled backbone swap on 4,128 fetal ultrasound subjects, training no new model. FetalCLIP wins discrimination at 0.911 AUROC against DINOv2's 0.818. DINOv2 wins the decision: at 1% prevalence and a 0.20 screening threshold it is the only one of the two with positive net benefit, on all five folds. The model that wins the ranking loses the decision.",
+      "MEng thesis. A controlled backbone swap on 4,128 fetal ultrasound subjects, training no new model. Holding the head fixed, domain pretraining adds 0.053 to 0.086 AUROC, and FetalCLIP with a transformer head reaches 0.911. At a 0.20 screening threshold that model does worse than referring nobody on all five folds, while the DINOv2 linear probe does better on all five. The model that wins the ranking loses the decision.",
     href: "/papers/fetal-chd-thesis.pdf",
   },
   {
@@ -58,7 +58,7 @@ export const work: WorkItem[] = [
     date: "2023–2024",
     tags: ["C", "Scala", "Systems Programming"],
     description:
-      "An operating system in C and a compiler in Scala, both from scratch, in second year. Top 5 of 240 on the OS. 91.19 across the 15-credit module. The year after, I was paid to teach it: three two-hour labs a week, twenty students.",
+      "An operating system in C and a compiler in Scala, both from scratch, in second year. 91.19 across the 15-credit module. The year after, I was paid to teach it: three two-hour labs a week, twenty students.",
   },
   {
     title: "Emotional Text-to-Speech",

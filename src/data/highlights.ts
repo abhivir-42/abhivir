@@ -23,10 +23,10 @@ export const highlights: HighlightItem[] = [
   },
   // 2. IIT Delhi
   {
-    title: "IIT Delhi, B.Tech",
+    title: "IIT Delhi",
     caption:
-      "Admitted for B.Tech through JEE Advanced, top 0.1% nationally. Transferred to Imperial CS after one year to specialise in AI.",
-    date: "2021",
+      "JEE Advanced, All India Rank 723. A year of Biochemical Engineering and Biotechnology, then I left to start again at Imperial and study AI.",
+    date: "2021–2022",
     category: "academic",
     image: "/photos/IITD.JPG",
     placeholder: false,
