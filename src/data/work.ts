@@ -142,12 +142,12 @@ export const work: WorkItem[] = [
       "5th fastest CUDA kernel in the cohort at Imperial.",
   },
   {
-    title: "Winner: Wintermute Crypto CTF",
+    title: "Wintermute Crypto CTF",
     tier: "notable",
-    date: "2026",
+    date: "2025",
     tags: ["Cryptography", "ZKP", "CTF"],
     description:
-      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
+      "One of three prize winners in the capture the flag run with Wintermute inside Imperial's Principles of Distributed Ledgers module. I taught myself zero knowledge proofs and elliptic curve cryptography to enter.",
     href: "https://www.linkedin.com/posts/matt-styles-b69a33108_crypto-internship-digitalassets-activity-7399061077201670144-PxiO",
   },
 

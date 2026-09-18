@@ -63,10 +63,10 @@ export const highlights: HighlightItem[] = [
   },
   // 5. Wintermute
   {
-    title: "Winner: Wintermute Crypto CTF",
+    title: "Wintermute Crypto CTF: prize winner",
     caption:
-      "Self-taught Zero Knowledge Proofs and elliptic curve cryptography to compete and win.",
-    date: "2026",
+      "One of three prize winners in the capture the flag run with Wintermute inside Imperial's Principles of Distributed Ledgers module. I taught myself zero knowledge proofs and elliptic curve cryptography to enter.",
+    date: "2025",
     category: "competition",
     image: "/photos/wintermute-ctf.jpeg",
     placeholder: false,
