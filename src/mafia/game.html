@@ -12,6 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
 :root{
+  --sil-far:#1c1610; --sil-near:#130f0b; --sil-fig:#050403;
   --bg:#0e0b09; --card:#1a1410; --card2:#241c15; --line:#352a20; --line2:#4a3b2c;
   --ink:#f3e9d6; --muted:#a8977e;
   --red:#d42a3a; --red2:#8e1220; --gold:#d9ad55; --green:#4cc46f; --blue:#9cc2ff;
@@ -26,8 +27,21 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.4}
 body{min-height:100vh;min-height:100dvh;transition:background .6s}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blinds{position:absolute;left:-30%;right:-30%;top:-10%;height:75%;background:repeating-linear-gradient(-24deg,rgba(255,230,190,.045) 0 16px,transparent 16px 44px);-webkit-mask-image:radial-gradient(ellipse 60% 70% at 75% 15%,#000,transparent 70%);mask-image:radial-gradient(ellipse 60% 70% at 75% 15%,#000,transparent 70%)}
+.city{position:absolute;left:0;right:0;bottom:0;width:100%;height:46vh;max-height:420px}
+.city .far{fill:var(--sil-far)}.city .near{fill:var(--sil-near)}.city .win{fill:var(--gold);opacity:.22}
+.city .post{fill:#090706;stroke:#090706}.city .fig{fill:var(--sil-fig)}
+.city .smoke{stroke:#efe2c8;stroke-opacity:.14;fill:none;animation:smoke 6s ease-in-out infinite}
+@keyframes smoke{0%,100%{stroke-opacity:.05;transform:translateY(0)}50%{stroke-opacity:.16;transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.city .smoke{animation:none}}
+body.night{--sil-far:#13203d;--sil-near:#0c1529;--sil-fig:#03060d}
+body.night .blinds{opacity:.6}
+.hand{font-size:64px;text-align:center;margin:18px 0 4px}
+.rsel{flex:none;background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:9px;padding:6px 8px;font:600 13px var(--ui)}
+.rsel.r-mafia{border-color:var(--red);color:#ff8f99}.rsel.r-angel{border-color:#3b67ad;color:#9cc2ff}.rsel.r-sheriff{border-color:var(--gold);color:var(--gold)}
 body.night{background:radial-gradient(900px 520px at 85% -10%,#1d2e57 0%,var(--night) 60%) fixed var(--night)}
-#app{max-width:560px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
+#app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
 body.host #app{max-width:720px}
 a{color:var(--gold)}
 .logo{font-family:var(--display);font-size:68px;letter-spacing:.06em;text-align:center;margin:30px 0 0;line-height:1;text-shadow:0 3px 0 var(--red2)}
@@ -171,6 +185,44 @@ summary{cursor:pointer}
 </style>
 </head>
 <body>
+<div id="bg" aria-hidden="true">
+<div class="blinds"></div>
+<svg class="city" viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice">
+<defs>
+<linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe2a6" stop-opacity=".2"/><stop offset="1" stop-color="#ffe2a6" stop-opacity="0"/></linearGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#ffe2a6" stop-opacity=".45"/><stop offset="1" stop-color="#ffe2a6" stop-opacity="0"/></radialGradient>
+</defs>
+<g class="far">
+<rect x="0" y="168" width="40" height="132"/><rect x="36" y="130" width="28" height="170"/><rect x="49" y="112" width="2" height="20"/>
+<rect x="60" y="186" width="46" height="114"/><rect x="100" y="148" width="32" height="152"/><rect x="128" y="176" width="50" height="124"/>
+<polygon points="172,300 172,124 184,104 196,124 196,300"/><rect x="192" y="160" width="40" height="140"/><rect x="228" y="198" width="30" height="102"/>
+<rect x="330" y="140" width="30" height="160"/><rect x="343" y="122" width="2" height="20"/><rect x="356" y="172" width="44" height="128"/>
+</g>
+<g class="win">
+<rect x="8" y="182" width="3" height="4"/><rect x="42" y="150" width="3" height="4"/><rect x="50" y="170" width="3" height="4"/><rect x="108" y="166" width="3" height="4"/><rect x="116" y="190" width="3" height="4"/>
+<rect x="140" y="196" width="3" height="4"/><rect x="180" y="140" width="3" height="4"/><rect x="200" y="176" width="3" height="4"/><rect x="214" y="200" width="3" height="4"/><rect x="338" y="160" width="3" height="4"/><rect x="366" y="190" width="3" height="4"/>
+</g>
+<g class="near">
+<rect x="0" y="222" width="62" height="78"/><rect x="56" y="206" width="40" height="94"/><rect x="92" y="232" width="70" height="68"/><rect x="156" y="214" width="32" height="86"/>
+<rect x="184" y="242" width="54" height="58"/><rect x="352" y="226" width="48" height="74"/><rect x="0" y="284" width="400" height="16"/>
+</g>
+<path d="M277 111 L287 111 L346 286 L220 286 Z" fill="url(#cone)"/>
+<circle cx="282" cy="112" r="28" fill="url(#glow)"/>
+<g class="post">
+<rect x="259" y="118" width="4" height="168"/><rect x="255" y="280" width="12" height="6"/>
+<path d="M261 121 Q261 104 280 104" fill="none" stroke-width="3"/><path d="M274 102 h16 l-3 9 h-10 z"/>
+</g>
+<g class="fig" transform="translate(304 165)">
+<path d="M-9 9 L-8 1 Q-4 -1 0 1 Q4 -1 8 1 L9 9 Z"/><ellipse cx="0" cy="9.5" rx="17" ry="3"/>
+<path d="M-6 11 Q-7 20 -3 22 L3 22 Q7 20 6 11 Z"/>
+<path d="M-5 20 L-12 14 L-9 26 Z M5 20 L12 14 L9 26 Z"/>
+<path d="M-5 21 L-17 26 Q-21 28 -21 36 L-23 92 Q-12 96 0 95 Q12 96 23 92 L21 36 Q21 28 17 26 L5 21 Z"/>
+<path d="M-11 94 L-10 118 L-4 118 L-2 95 Z M2 95 L4 118 L10 118 L11 94 Z"/>
+<path d="M-14 118 h11 v3 h-12 z M3 118 h12 v3 h-11 z"/>
+<path class="smoke" d="M9 17 C15 9 5 1 13 -9 C19 -17 11 -25 17 -35" fill="none" stroke-width="1.2"/>
+</g>
+</svg>
+</div>
 <div id="app"></div>
 <noscript><p style="padding:20px">This game needs JavaScript.</p></noscript>
 <script>
@@ -261,7 +313,7 @@ function rulesHTML() {
   <li>Night: mafia pick a kill, the angel saves one, the sheriff checks one.</li>
   <li>Morning: the narrator reads who died.</li>
   <li>Everyone secretly names two. The top two go on trial.</li>
-  <li>15 seconds each to defend, then everyone votes. Loser dies.</li>
+  <li>15 seconds each to defend, then a show of hands. Loser dies.</li>
   <li>Town wins when the mafia are gone. Mafia win when they match the town.</li>
   </ol><button class="btn ghost sm" data-a="home:rules">Close</button></div>`;
 }
@@ -317,7 +369,7 @@ function caseFile(hist) {
     : `<div class="cf"><div class="cfh">Day ${e.round}</div>
     <div class="small">${Object.entries(e.noms || {}).map(([v, ts]) => `${esc(NM(v))} → ${ts.map(t => esc(NM(t))).join(' & ')}`).join('<br>') || 'No ballots'}</div>
     <div>Trial: ${(e.trial || []).map(t => `<b>${esc(NM(t))}</b>`).join(' vs ') || 'nobody'}</div>
-    <div class="small">${Object.entries(e.votes || {}).map(([v, t]) => `${esc(NM(v))} → ${esc(NM(t))}`).join('<br>') || 'No votes'}</div>
+    <div class="small">${e.hands ? 'Hands: ' + (Object.entries(e.hands).map(([t, k]) => `${esc(NM(t))} ${k}`).join(', ') || 'not counted') : Object.entries(e.votes || {}).map(([v, t]) => `${esc(NM(v))} → ${esc(NM(t))}`).join('<br>') || 'No votes'}</div>
     <div>${e.victim ? `☠︎ <b>${esc(NM(e.victim))}</b>` : 'Nobody executed'}</div></div>`).join('');
 }
 function statsLines(hist, players) {
@@ -353,6 +405,36 @@ function beep(freq = 880, dur = 0.1, type = 'sine', vol = 0.15) {
   try { if (!AC) return; const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = freq; o.connect(g); g.connect(AC.destination); const t = AC.currentTime; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.start(t); o.stop(t + dur + 0.02); } catch (e) {}
 }
 function buzz() { beep(196, 0.6, 'sawtooth', 0.12); try { navigator.vibrate && navigator.vibrate([220, 80, 220]); } catch (e) {} }
+// The opening sting, played on the first tap (browsers block sound before one):
+// a revolver cylinder spins and cocks, a low brass stab, then a mandolin tremolo
+// down A-G-F-E over vinyl crackle. All synthesized, no audio files.
+let introDone = false;
+function playIntro() {
+  if (!AC || introDone) return; introDone = true;
+  try { if (sessionStorage.getItem('mafia-intro' + NS)) return; sessionStorage.setItem('mafia-intro' + NS, '1'); } catch (e) {}
+  try {
+    const out = AC.createGain(); out.gain.value = 0.55; out.connect(AC.destination);
+    const t0 = AC.currentTime + 0.05;
+    const noise = (dur, fn) => { const b = AC.createBuffer(1, Math.ceil(AC.sampleRate * dur), AC.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = fn(i, d.length); const src = AC.createBufferSource(); src.buffer = b; return src; };
+    const env = (g, t, peak, a, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+    const cr = noise(4.6, () => Math.random() < 0.0012 ? (Math.random() * 2 - 1) * 0.7 : (Math.random() * 2 - 1) * 0.01);
+    const crf = AC.createBiquadFilter(); crf.type = 'highpass'; crf.frequency.value = 1200;
+    const crg = AC.createGain(); crg.gain.setValueAtTime(0.0001, t0); crg.gain.linearRampToValueAtTime(0.35, t0 + 0.4); crg.gain.setValueAtTime(0.35, t0 + 3.7); crg.gain.linearRampToValueAtTime(0.0001, t0 + 4.6);
+    cr.connect(crf); crf.connect(crg); crg.connect(out); cr.start(t0); cr.stop(t0 + 4.6);
+    const click = (t, vol, freq) => { const src = noise(0.03, (i, n) => (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3)); const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 3; const g = AC.createGain(); g.gain.value = vol; src.connect(f); f.connect(g); g.connect(out); src.start(t); };
+    let t = t0 + 0.15, gap = 0.11;
+    for (let i = 0; i < 9; i++) { click(t, 0.5, 3200 + rnd(600)); t += gap; gap *= i < 4 ? 0.78 : 1.32; }
+    click(t + 0.12, 1.1, 1700); click(t + 0.16, 0.8, 2600);
+    const tb = t + 0.6;
+    for (const [f, v] of [[55, 0.5], [110, 0.35], [130.81, 0.18], [164.81, 0.22]]) {
+      const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f;
+      const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(1100, tb); lp.frequency.exponentialRampToValueAtTime(220, tb + 1.4);
+      const g = AC.createGain(); env(g, tb, v, 0.02, 1.8); o.connect(lp); lp.connect(g); g.connect(out); o.start(tb); o.stop(tb + 2);
+    }
+    const pluck = (pt, f, v) => { for (const det of [0, 4]) { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = det; const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(4200, pt); lp.frequency.exponentialRampToValueAtTime(900, pt + 0.08); const g = AC.createGain(); env(g, pt, v, 0.004, 0.09); o.connect(lp); lp.connect(g); g.connect(out); o.start(pt); o.stop(pt + 0.12); } };
+    [[440, 0.42], [392, 0.42], [349.23, 0.42], [329.63, 1.1]].reduce((tt, [f, d]) => { for (let x = 0; x < d; x += 0.06) pluck(tt + x, f, 0.05 * (1 - (x / d) * 0.6)); return tt + d; }, tb + 0.45);
+  } catch (e) {}
+}
 let wakeLock = null;
 async function keepAwake() { try { if ('wakeLock' in navigator && document.visibilityState === 'visible' && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {} }
 let toastT = null;
@@ -367,10 +449,16 @@ function copy(text) { try { navigator.clipboard.writeText(text).then(() => toast
 // ============================================================
 const H = { st: null, peer: null, conns: new Map(), seen: {}, net: 'starting', sent: new Map(), pending: [], pendConns: new Map(), drawer: null, blur: false, ptp: null, trialSel: null, armed: null, armT: null, rulesOpen: false, tries: 0, qr: {} };
 
-function defaultSettings() { return { mafia: 'auto', angel: 1, sheriff: 1, sheriffSees: 'role', angelNoRepeat: 1, nomPicks: 2, trialSize: 2, selfNominate: 1, defenseSec: 15, finalVote: 'public', revealOnDeath: 0 }; }
-function newGame(room) { return { v: 1, room, created: Date.now(), phase: 'lobby', round: 0, settings: defaultSettings(), players: {}, order: [], ready: {}, night: null, dawn: null, nom: null, trial: null, vote: null, verdict: null, lastSaved: null, history: [], log: [], winner: null, timer: null }; }
+function defaultSettings() { return { mafia: 'auto', angel: 1, sheriff: 1, sheriffSees: 'role', angelNoRepeat: 1, nomPicks: 2, trialSize: 2, selfNominate: 1, defenseSec: 15, finalVote: 'hands', revealOnDeath: 0, dealMode: 'random' }; }
+function newGame(room) { return { v: 1, room, created: Date.now(), phase: 'lobby', round: 0, settings: defaultSettings(), players: {}, order: [], assign: {}, ready: {}, night: null, dawn: null, nom: null, trial: null, vote: null, verdict: null, lastSaved: null, history: [], log: [], winner: null, timer: null }; }
 function autoMafia(n) { return Math.max(1, Math.floor((n + 1) / 4)); }
 function mafiaCount(st) { const n = st.order.length; const m = st.settings.mafia === 'auto' ? autoMafia(n) : st.settings.mafia; return Math.max(1, Math.min(m, Math.max(1, n - 1))); }
+function roleCounts(st) {
+  const n = st.order.length;
+  if (st.settings.dealMode === 'pick') { const c = { mafia: 0, angel: 0, sheriff: 0, town: 0 }; for (const id of st.order) c[(st.assign || {})[id] || 'town']++; return c; }
+  const m = mafiaCount(st), a = st.settings.angel ? 1 : 0, sh = st.settings.sheriff ? 1 : 0;
+  return { mafia: m, angel: a, sheriff: sh, town: n - m - a - sh };
+}
 function alive() { return H.st.order.filter(id => H.st.players[id].alive); }
 function roleAlive(r) { return H.st.order.find(id => H.st.players[id].role === r && H.st.players[id].alive) || null; }
 function aliveMafia() { return alive().filter(id => H.st.players[id].role === 'mafia'); }
@@ -502,7 +590,7 @@ function viewFor(pid) {
     case 'dawn': case 'day': v.dawn = st.dawn && { round: st.dawn.round, died: st.dawn.died, story: st.dawn.story }; break;
     case 'nominate': v.nom = { mine: st.nom.ballots[pid] || null, count: al.filter(id => st.nom.ballots[id]).length, total: al.length }; break;
     case 'trial': v.trial = { defendants: st.trial.defendants }; break;
-    case 'vote': { const vt = st.vote; v.vote = { options: vt.options, mine: vt.ballots[pid] || null, count: al.filter(id => vt.ballots[id]).length, total: al.length, closed: vt.closed, tie: vt.tie }; break; }
+    case 'vote': { const vt = st.vote; v.vote = { mode: vt.mode || 'phones', options: vt.options, mine: vt.ballots[pid] || null, count: al.filter(id => vt.ballots[id]).length, total: al.length, closed: vt.closed, tie: vt.tie }; break; }
     case 'verdict': { const vd = st.verdict; v.verdict = { round: vd.round, victim: vd.victim, story: vd.story, counts: vd.counts, options: vd.options, ballots: s.finalVote === 'public' ? vd.ballots : null, role: vd.victim && s.revealOnDeath ? st.players[vd.victim].role : null }; break; }
     case 'over': v.over = { winner: st.winner, history: st.history }; break;
   }
@@ -561,12 +649,18 @@ function voteAct(pid, x) {
   vt.ballots[pid] = x.target; commit();
 }
 function deal() {
-  const st = H.st, ids = st.order.slice(), n = ids.length, m = mafiaCount(st);
-  const roles = []; for (let i = 0; i < m; i++) roles.push('mafia');
-  if (st.settings.angel) roles.push('angel'); if (st.settings.sheriff) roles.push('sheriff');
-  if (roles.length > n) return toast('More special cards than players.');
-  while (roles.length < n) roles.push('town');
-  shuffle(roles);
+  const st = H.st, ids = st.order.slice(), n = ids.length, c = roleCounts(st);
+  let roles;
+  if (st.settings.dealMode === 'pick') {
+    roles = ids.map(id => (st.assign || {})[id] || 'town');
+    st.settings.angel = c.angel ? 1 : 0; st.settings.sheriff = c.sheriff ? 1 : 0;
+  } else {
+    roles = []; for (let i = 0; i < c.mafia; i++) roles.push('mafia');
+    if (st.settings.angel) roles.push('angel'); if (st.settings.sheriff) roles.push('sheriff');
+    if (roles.length > n) return toast('More special cards than players.');
+    while (roles.length < n) roles.push('town');
+    shuffle(roles);
+  }
   const jacks = shuffle(['s', 'c', 'h', 'd']); let ji = 0; const used = new Set();
   ids.forEach((id, i) => {
     const r = roles[i]; let card;
@@ -577,7 +671,7 @@ function deal() {
     const p = st.players[id]; p.role = r; p.card = card; p.alive = true; delete p.death;
   });
   Object.assign(st, { phase: 'deal', round: 0, ready: {}, history: [], lastSaved: null, night: null, dawn: null, nom: null, trial: null, vote: null, verdict: null, timer: null, winner: null });
-  logEv(`Cards dealt: ${m} mafia${st.settings.angel ? ', an angel' : ''}${st.settings.sheriff ? ', a sheriff' : ''}, ${roles.filter(r => r === 'town').length} townspeople.`);
+  logEv(`Cards dealt${st.settings.dealMode === 'pick' ? ' (narrator picked)' : ''}: ${roles.filter(r => r === 'mafia').length} mafia, ${roles.filter(r => r === 'town').length} town.`);
   commit();
 }
 function startNight() {
@@ -607,10 +701,10 @@ function closeVote() {
   vt.closed = true; vt.tie = leaders; logEv(max ? 'The vote tied.' : 'Nobody voted.'); commit();
 }
 function doVerdict(victim) {
-  const st = H.st, vt = st.vote || { ballots: {}, options: [] };
+  const st = H.st, vt = st.vote || { ballots: {}, options: [] }, hands = vt.mode === 'hands';
   if (victim) { const p = st.players[victim]; p.alive = false; p.death = { how: 'town', round: st.round }; }
-  st.verdict = { round: st.round, victim, counts: tally(vt.ballots), ballots: { ...vt.ballots }, options: vt.options, story: victim ? tell(EXECUTIONS, NM(victim)) : SPARED };
-  st.history.push({ type: 'day', round: st.round, noms: { ...(st.nom ? st.nom.ballots : {}) }, trial: st.trial ? st.trial.defendants : [], votes: { ...vt.ballots }, victim });
+  st.verdict = { round: st.round, victim, counts: hands ? { ...(vt.hands || {}) } : tally(vt.ballots), ballots: hands ? {} : { ...vt.ballots }, options: vt.options, story: victim ? tell(EXECUTIONS, NM(victim)) : SPARED };
+  st.history.push({ type: 'day', round: st.round, noms: { ...(st.nom ? st.nom.ballots : {}) }, trial: st.trial ? st.trial.defendants : [], votes: hands ? {} : { ...vt.ballots }, hands: hands ? { ...(vt.hands || {}) } : null, victim });
   Object.assign(st, { phase: 'verdict', vote: null, nom: null, trial: null, timer: null });
   logEv(victim ? `The town executed ${NM(victim)}.` : 'The town spared everyone.');
   commit();
@@ -679,8 +773,9 @@ function hostAct(cmd, v) {
       logEv(`On trial: ${sel.map(NM).join(' vs ')}.`); return commit();
     }
     case 'def': { const [pid, secs, label] = v.split(':'); st.timer = { id: rid(5), label, pid, dur: Number(secs), start: Date.now() }; return commit(); }
-    case 'vote': { const d = st.trial.defendants; st.vote = { round: st.round, options: d.length === 1 ? [d[0], '__spare'] : d.slice(), ballots: {}, closed: false, tie: null }; st.phase = 'vote'; st.timer = null; logEv('The vote opened.'); return commit(); }
+    case 'vote': { const d = st.trial.defendants; st.vote = { round: st.round, options: d.length === 1 ? [d[0], '__spare'] : d.slice(), ballots: {}, closed: false, tie: null, mode: st.settings.finalVote === 'hands' ? 'hands' : 'phones', hands: {} }; st.phase = 'vote'; st.timer = null; logEv('The vote opened.'); return commit(); }
     case 'closevote': return closeVote();
+    case 'hand': { const vt = st.vote; if (!vt) return; const [pid, d] = v.split(':'); vt.hands = vt.hands || {}; vt.hands[pid] = Math.max(0, (vt.hands[pid] || 0) + Number(d)); return commit(); }
     case 'revote': { const vt = st.vote; if (vt.tie && vt.tie.length > 1) vt.options = vt.tie.slice(); vt.ballots = {}; vt.closed = false; vt.tie = null; logEv('Revote.'); return commit(); }
     case 'spare': return doVerdict(null);
     case 'elim': return doVerdict(v);
@@ -802,7 +897,7 @@ function houseRules(open) {
     <label class="lb">On trial</label>${seg('trialSize', [[2, '2'], [3, '3']])}
     <label class="lb">Name yourself</label>${seg('selfNominate', [[1, 'Yes'], [0, 'No']])}
     <label class="lb">Defense</label>${seg('defenseSec', [[10, '10s'], [15, '15s'], [20, '20s'], [30, '30s']])}
-    <label class="lb">Final vote</label>${seg('finalVote', [['public', 'Public'], ['secret', 'Secret']])}
+    <label class="lb">Final vote</label>${seg('finalVote', [['hands', 'Show of hands'], ['public', 'Phones, public'], ['secret', 'Phones, secret']])}
     <label class="lb">On death</label>${seg('revealOnDeath', [[0, 'Hide card'], [1, 'Show card']])}`;
   if (open) return `<div class="panel"><h3>Rules</h3>${body}</div>`;
   return `<div class="panel"><button class="btn ghost" style="margin:0;text-align:left" data-a="h:rules">House rules ${H.rulesOpen ? '▴' : '▾'}</button>${H.rulesOpen ? body : ''}</div>`;
@@ -814,20 +909,23 @@ function drawQR() {
   el.innerHTML = H.qr[url];
 }
 function hLobby() {
-  const st = H.st, s = st.settings, n = st.order.length, m = mafiaCount(st);
-  const specials = (s.angel ? 1 : 0) + (s.sheriff ? 1 : 0); const town = n - m - specials;
-  const warn = n < 4 ? 'Need 4+ players' : town < 0 ? 'Too many special cards' : m >= n - m ? 'Too many mafia' : '';
+  const st = H.st, s = st.settings, n = st.order.length, pickMode = s.dealMode === 'pick';
+  const c = roleCounts(st), m = c.mafia, town = c.town;
+  const warn = n < 4 ? 'Need 4+ players' : town < 0 ? 'Too many special cards' : !m ? 'Pick at least one mafia' : c.angel > 1 ? 'One angel max' : c.sheriff > 1 ? 'One sheriff max' : m >= n - m ? 'Too many mafia' : '';
   const tog = key => `<div class="seg"><button class="${s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=1">In</button><button class="${!s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=0">Out</button></div>`;
+  const roleSel = id => { const r = (st.assign || {})[id] || 'town'; return `<select class="rsel gm r-${r}" data-assign="${id}" aria-label="Role for ${esc(st.players[id].name)}">${['town', 'mafia', 'angel', 'sheriff'].map(x => `<option value="${x}" ${r === x ? 'selected' : ''}>${x === 'town' ? 'Town' : ROLES[x].name}</option>`).join('')}</select>`; };
   return `<div class="panel center"><div class="small muted">Friends scan to join</div><div class="qr" id="qr" data-url="${esc(joinLink())}"></div>
     <div class="row center"><button class="btn sm gold" data-a="h:share">Share link</button><button class="btn sm" data-a="h:copy">Copy</button></div></div>
   <div class="panel"><h3>Players · ${n}</h3>
-    ${n ? st.order.map(id => { const p = st.players[id]; return `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}</span>${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}<button class="x" data-a="h:kick" data-v="${id}" aria-label="Remove ${esc(p.name)}">×</button></div>`; }).join('') : '<p class="muted">Waiting for scans…</p>'}
+    ${n ? st.order.map(id => { const p = st.players[id]; return `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}</span>${pickMode ? roleSel(id) : ''}${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}<button class="x" data-a="h:kick" data-v="${id}" aria-label="Remove ${esc(p.name)}">×</button></div>`; }).join('') : '<p class="muted">Waiting for scans…</p>'}
     <form data-f="h:add" class="row" style="margin-top:10px;flex-wrap:nowrap"><input class="in" id="addIn" maxlength="20" placeholder="+ Player without a phone" autocomplete="off"><button class="btn sm" type="submit" style="margin:0">Add</button></form></div>
-  <div class="panel"><h3>Cards</h3>
-    <div class="deckrow"><span>Mafia</span><div class="step"><button data-a="h:mafia" data-v="-1" aria-label="Fewer mafia">−</button><b>${m}</b><button data-a="h:mafia" data-v="+1" aria-label="More mafia">+</button></div></div>
+  <div class="panel"><h3>Roles</h3>
+    <div class="seg" style="margin-bottom:6px"><button class="${!pickMode ? 'on' : ''}" data-a="h:set" data-v="dealMode=random">Random deal</button><button class="${pickMode ? 'on' : ''}" data-a="h:set" data-v="dealMode=pick">I pick</button></div>
+    ${pickMode ? `<p class="small muted">Set each role in the list above.</p><div class="small">Mafia <b>${m}</b> · Angel <b>${c.angel}</b> · Sheriff <b>${c.sheriff}</b> · Town <b>${Math.max(0, town)}</b></div>`
+    : `<div class="deckrow"><span>Mafia</span><div class="step"><button data-a="h:mafia" data-v="-1" aria-label="Fewer mafia">−</button><b>${m}</b><button data-a="h:mafia" data-v="+1" aria-label="More mafia">+</button></div></div>
     <div class="deckrow"><span>Angel</span>${tog('angel')}</div>
     <div class="deckrow"><span>Sheriff</span>${tog('sheriff')}</div>
-    <div class="deckrow" style="border:0"><span>Town</span><b>${Math.max(0, town)}</b></div>
+    <div class="deckrow" style="border:0"><span>Town</span><b>${Math.max(0, town)}</b></div>`}
     ${warn && n ? `<p class="err">${warn}</p>` : ''}</div>
   ${houseRules(false)}
   <button class="btn red big" data-a="h:deal" ${warn ? 'disabled' : ''}>Deal cards</button>`;
@@ -919,12 +1017,23 @@ function hTrial() {
   ${tm ? `<div class="center"><div class="muted">${esc(NM(tm.pid))}</div><div class="timer" data-timer></div></div>` : ''}
   <div class="say">${tm ? `${esc(NM(tm.pid))}, ${tm.dur} seconds. Go.` : `${esc(NM(t.defendants[0]))} first. ${s.defenseSec} seconds each.`}</div>
   ${t.defendants.map(id => `<div class="panel row"><span class="tn"><b>${esc(NM(id))}</b> <span class="small muted gm">${t.counts[id] || 0}</span></span><button class="btn sm gold" data-a="h:def" data-v="${id}:${s.defenseSec}:Defense">${s.defenseSec}s</button><button class="btn sm" data-a="h:def" data-v="${id}:5:Rebuttal">5s</button></div>`).join('')}
-  <button class="btn red big" data-a="h:vote">Open the vote</button>`;
+  <button class="btn red big" data-a="h:vote">${s.finalVote === 'hands' ? 'Show of hands' : 'Open the vote'}</button>`;
 }
 function hVote() {
-  const st = H.st, vt = st.vote, al = alive(), c = tally(vt.ballots);
+  const st = H.st, vt = st.vote, al = alive();
+  const opts = vt.options.filter(o => o !== '__spare');
+  if (vt.mode === 'hands') {
+    const hc = vt.hands || {}; const max = Math.max(0, ...opts.map(o => hc[o] || 0));
+    const lead = max ? opts.filter(o => (hc[o] || 0) === max) : [];
+    return `<div class="say">${opts.map(id => `Hands up to kill ${esc(NM(id))}.`).join(' ')}</div>
+    ${opts.map(id => `<div class="panel"><div class="row" style="flex-wrap:nowrap"><span class="tn"><b>${esc(NM(id))}</b></span><div class="step"><button data-a="h:hand" data-v="${id}:-1" aria-label="One fewer hand">−</button><b>${hc[id] || 0}</b><button data-a="h:hand" data-v="${id}:1" aria-label="One more hand">+</button></div></div>
+      <button class="btn ${lead.length === 1 && lead[0] === id ? 'red' : ''}" data-a="h:elim" data-v="${id}">Kill ${esc(NM(id))}</button></div>`).join('')}
+    <p class="center small muted">${al.length} alive${lead.length > 1 ? ' · tie' : ''}</p>
+    <button class="btn ghost" data-a="h:spare">Spare everyone</button>`;
+  }
+  const c = tally(vt.ballots);
   const inn = al.filter(id => vt.ballots[id]), missing = al.filter(id => !vt.ballots[id]);
-  let h = `<div class="say">Vote: ${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join(' or ')}${vt.options.includes('__spare') ? ', or spare' : ''}.</div>
+  let h = `<div class="say">Vote: ${opts.map(id => esc(NM(id))).join(' or ')}${vt.options.includes('__spare') ? ', or spare' : ''}.</div>
   <div class="panel"><b>${inn.length}/${al.length}</b> in${missing.length ? ` <span class="small muted">· waiting: ${missing.map(id => esc(NM(id))).join(', ')}</span>` : ' ✓'}<div>${!vt.closed ? offlineButton('vote', missing) : ''}</div></div>
   <div class="panel gm">${bars(c, vt.options)}<details><summary class="small muted">Who voted what</summary>${inn.map(id => `<div class="prow small"><span class="tn">${esc(NM(id))} ${mini(st.players[id].card)}</span><span>→ <b>${esc(NM(vt.ballots[id]))}</b></span></div>`).join('')}</details></div>`;
   if (vt.closed) {
@@ -938,7 +1047,7 @@ function hVerdict() {
   const st = H.st, vd = st.verdict;
   return `${paperHTML('The Evening Verdict', `Day ${vd.round}`, vd.victim ? `Town executes ${NM(vd.victim)}` : 'Town spares all', vd.story)}
   <button class="btn sm" data-a="h:reroll">New story</button>
-  <div class="panel gm">${vd.victim ? `<p><b>${esc(NM(vd.victim))}</b> was ${mini(st.players[vd.victim].card)} ${roleBadge(st.players[vd.victim].role)}</p>` : ''}${bars(vd.counts, vd.options)}</div>
+  <div class="panel gm">${vd.victim ? `<p><b>${esc(NM(vd.victim))}</b> was ${mini(st.players[vd.victim].card)} ${roleBadge(st.players[vd.victim].role)}</p>` : ''}${Object.values(vd.counts || {}).some(Boolean) ? bars(vd.counts, vd.options) : ''}</div>
   ${winBanner() || `<button class="btn red big" data-a="h:night">Night falls</button>`}`;
 }
 function hOver() {
@@ -1140,8 +1249,9 @@ function pTrial(v) {
 }
 function pVote(v) {
   const vt = v.vote;
-  let h = `<div class="kicker">Vote</div><div class="versus">${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>`;
+  let h = `<div class="kicker">${vt.mode === 'hands' ? 'Show of hands' : 'Vote'}</div><div class="versus">${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>`;
   if (!v.me.alive) return h + ghost(v);
+  if (vt.mode === 'hands') return h + `<div class="hand">✋︎</div><p class="center muted">Hands up when the narrator calls your pick.</p>`;
   if (vt.closed) return h + `<div class="locked">${vt.tie && vt.tie.length ? 'Tie' : 'Counting…'}</div><p class="center muted">Narrator decides.</p>`;
   if (vt.mine && !P.editing) h += `<div class="locked">Voted ✓</div>${secret('vote', 'Hold to see', `<p>${vt.mine === '__spare' ? 'Spare' : 'Kill <b>' + esc(NM(vt.mine)) + '</b>'}</p>`)}<button class="btn" data-a="p:change">Change</button>`;
   else h += `${tiles(vt.options, { sel: P.sel })}<button class="btn red" data-a="p:lock" ${P.sel.length ? '' : 'disabled'}>Vote</button>`;
@@ -1152,7 +1262,7 @@ function pVerdict(v) {
   let h = paperHTML('The Evening Verdict', `Day ${vd.round}`, vd.victim ? `Town executes ${NM(vd.victim)}` : 'Town spares all', vd.story);
   if (vd.victim === v.me.id) h += `<div class="panel warnp center"><b>That's you.</b> No talking.</div>`;
   if (vd.role) h += `<p class="center">${esc(NM(vd.victim))} was ${roleBadge(vd.role)}</p>`;
-  h += `<div class="panel">${bars(vd.counts, vd.options)}${vd.ballots ? `<div style="margin-top:10px">${Object.entries(vd.ballots).map(([who, t]) => `<div class="prow small"><span class="tn">${esc(NM(who))}</span><span>→ <b>${esc(NM(t))}</b></span></div>`).join('')}</div>` : ''}</div>`;
+ if (Object.values(vd.counts || {}).some(Boolean)) h += `<div class="panel">${bars(vd.counts, vd.options)}${vd.ballots ? `<div style="margin-top:10px">${Object.entries(vd.ballots).map(([who, t]) => `<div class="prow small"><span class="tn">${esc(NM(who))}</span><span>→ <b>${esc(NM(t))}</b></span></div>`).join('')}</div>` : ''}</div>`;
   return h;
 }
 function pOver(v) {
@@ -1213,17 +1323,22 @@ function render() {
   drawQR(); tick();
 }
 document.addEventListener('click', e => {
+  unlockAudio(); playIntro();
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
   e.preventDefault();
   const a = el.dataset.a, v = el.dataset.v || ''; const [ns, cmd] = a.split(':');
   if (ns === 'home') homeAct(cmd); else if (ns === 'h') hostAct(cmd, v); else if (ns === 'ptp') ptpAct(cmd, v); else if (ns === 'p') playerAct(cmd, v);
+});
+document.addEventListener('change', e => {
+  const el = e.target.closest('select[data-assign]'); if (!el || MODE !== 'host') return;
+  H.st.assign = H.st.assign || {}; H.st.assign[el.dataset.assign] = el.value; commit();
 });
 document.addEventListener('submit', e => {
   e.preventDefault(); const f = e.target.dataset.f; if (!f) return; const [ns, cmd] = f.split(':');
   if (ns === 'home') homeAct(cmd); else if (ns === 'h') hostAct(cmd, '');
 });
 // Press-and-hold reveals. Releasing anywhere hides it again.
-document.addEventListener('pointerdown', e => { unlockAudio(); const el = e.target.closest('[data-hold]'); if (el) { HOLD = el.dataset.hold; el.classList.add('show'); } });
+document.addEventListener('pointerdown', e => { unlockAudio(); playIntro(); const el = e.target.closest('[data-hold]'); if (el) { HOLD = el.dataset.hold; el.classList.add('show'); } });
 const unhold = () => { if (!HOLD) return; HOLD = null; document.querySelectorAll('[data-hold].show').forEach(x => x.classList.remove('show')); };
 document.addEventListener('pointerup', unhold); document.addEventListener('pointercancel', unhold); window.addEventListener('blur', unhold);
 document.addEventListener('contextmenu', e => { if (e.target.closest('[data-hold]')) e.preventDefault(); });
