@@ -37,6 +37,7 @@ body{min-height:100vh;min-height:100dvh;transition:background .6s}
 @media (prefers-reduced-motion:reduce){.city .smoke{animation:none}}
 body.night{--sil-far:#13203d;--sil-near:#0c1529;--sil-fig:#03060d}
 body.night .blinds{opacity:.6}
+.rec{font-size:13px;color:var(--muted);margin:6px 0 10px}.rec b{color:var(--ink)}
 .hand{font-size:64px;text-align:center;margin:18px 0 4px}
 .rsel{flex:none;background:var(--card2);color:var(--ink);border:1px solid var(--line2);border-radius:9px;padding:6px 8px;font:600 13px var(--ui)}
 .rsel.r-mafia{border-color:var(--red);color:#ff8f99}.rsel.r-angel{border-color:#3b67ad;color:#9cc2ff}.rsel.r-sheriff{border-color:var(--gold);color:var(--gold)}
@@ -449,13 +450,17 @@ function copy(text) { try { navigator.clipboard.writeText(text).then(() => toast
 // ============================================================
 const H = { st: null, peer: null, conns: new Map(), seen: {}, net: 'starting', sent: new Map(), pending: [], pendConns: new Map(), drawer: null, blur: false, ptp: null, trialSel: null, armed: null, armT: null, rulesOpen: false, tries: 0, qr: {} };
 
-function defaultSettings() { return { mafia: 'auto', angel: 1, sheriff: 1, sheriffSees: 'role', angelNoRepeat: 1, nomPicks: 2, trialSize: 2, selfNominate: 1, defenseSec: 15, finalVote: 'hands', revealOnDeath: 0, dealMode: 'random' }; }
+function defaultSettings() { return { mafia: 'auto', angel: 1, sheriff: 1, sheriffSees: 'role', angelNoRepeat: 1, nomPicks: 2, trialSize: 2, selfNominate: 1, defenseSec: 15, finalVote: 'hands', revealOnDeath: 0, autoRoles: 1, dealMode: 'random' }; }
 function newGame(room) { return { v: 1, room, created: Date.now(), phase: 'lobby', round: 0, settings: defaultSettings(), players: {}, order: [], assign: {}, ready: {}, night: null, dawn: null, nom: null, trial: null, vote: null, verdict: null, lastSaved: null, history: [], log: [], winner: null, timer: null }; }
 function autoMafia(n) { return Math.max(1, Math.floor((n + 1) / 4)); }
+// Recommended deck for n players: about one mafia in four (the video's 12 had 3), an angel from 5 up, always a sheriff.
+function recommend(n) { return { mafia: autoMafia(n), angel: n >= 5 ? 1 : 0, sheriff: 1 }; }
+function manualRoles(st) { const s = st.settings; if (s.autoRoles === 0) return; const r = recommend(st.order.length); s.mafia = r.mafia; s.angel = r.angel; s.sheriff = r.sheriff; s.autoRoles = 0; }
 function mafiaCount(st) { const n = st.order.length; const m = st.settings.mafia === 'auto' ? autoMafia(n) : st.settings.mafia; return Math.max(1, Math.min(m, Math.max(1, n - 1))); }
 function roleCounts(st) {
   const n = st.order.length;
   if (st.settings.dealMode === 'pick') { const c = { mafia: 0, angel: 0, sheriff: 0, town: 0 }; for (const id of st.order) c[(st.assign || {})[id] || 'town']++; return c; }
+  if (st.settings.autoRoles !== 0) { const r = recommend(n); return { ...r, town: n - r.mafia - r.angel - r.sheriff }; }
   const m = mafiaCount(st), a = st.settings.angel ? 1 : 0, sh = st.settings.sheriff ? 1 : 0;
   return { mafia: m, angel: a, sheriff: sh, town: n - m - a - sh };
 }
@@ -653,14 +658,14 @@ function deal() {
   let roles;
   if (st.settings.dealMode === 'pick') {
     roles = ids.map(id => (st.assign || {})[id] || 'town');
-    st.settings.angel = c.angel ? 1 : 0; st.settings.sheriff = c.sheriff ? 1 : 0;
   } else {
     roles = []; for (let i = 0; i < c.mafia; i++) roles.push('mafia');
-    if (st.settings.angel) roles.push('angel'); if (st.settings.sheriff) roles.push('sheriff');
+    if (c.angel) roles.push('angel'); if (c.sheriff) roles.push('sheriff');
     if (roles.length > n) return toast('More special cards than players.');
     while (roles.length < n) roles.push('town');
     shuffle(roles);
   }
+  st.settings.angel = c.angel ? 1 : 0; st.settings.sheriff = c.sheriff ? 1 : 0;
   const jacks = shuffle(['s', 'c', 'h', 'd']); let ji = 0; const used = new Set();
   ids.forEach((id, i) => {
     const r = roles[i]; let card;
@@ -743,8 +748,9 @@ function hostAct(cmd, v) {
       const c = H.conns.get(v); if (c) { safeSend(c, { t: 'err', code: 'kicked', msg: 'Removed by the narrator.' }); setTimeout(() => { try { c.close(); } catch (e) {} }, 300); H.conns.delete(v); }
       delete st.players[v]; st.order = st.order.filter(x => x !== v); logEv(`${p.name} left the table.`); return commit();
     }
-    case 'mafia': if (v === 'auto') st.settings.mafia = 'auto'; else st.settings.mafia = Math.max(1, Math.min(Math.max(1, st.order.length - 1), mafiaCount(st) + Number(v))); return commit();
-    case 'set': { const [k, val] = v.split('='); st.settings[k] = /^\d+$/.test(val) ? Number(val) : val; return commit(); }
+    case 'mafia': manualRoles(st); st.settings.mafia = Math.max(1, Math.min(Math.max(1, st.order.length - 1), mafiaCount(st) + Number(v))); return commit();
+    case 'recommend': st.settings.autoRoles = 1; st.settings.mafia = 'auto'; return commit();
+    case 'set': { const [k, val] = v.split('='); if (k === 'angel' || k === 'sheriff') manualRoles(st); st.settings[k] = /^\d+$/.test(val) ? Number(val) : val; return commit(); }
     case 'deal': return deal();
     case 'night': return startNight();
     case 'nk': { const n = st.night; if (!n) return; n.killFinal = v; n.killOverride = true; return commit(); }
@@ -912,7 +918,9 @@ function hLobby() {
   const st = H.st, s = st.settings, n = st.order.length, pickMode = s.dealMode === 'pick';
   const c = roleCounts(st), m = c.mafia, town = c.town;
   const warn = n < 4 ? 'Need 4+ players' : town < 0 ? 'Too many special cards' : !m ? 'Pick at least one mafia' : c.angel > 1 ? 'One angel max' : c.sheriff > 1 ? 'One sheriff max' : m >= n - m ? 'Too many mafia' : '';
-  const tog = key => `<div class="seg"><button class="${s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=1">In</button><button class="${!s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=0">Out</button></div>`;
+  const tog = key => `<div class="seg"><button class="${c[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=1">In</button><button class="${!c[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=0">Out</button></div>`;
+  const r = recommend(n), isRec = m === r.mafia && c.angel === r.angel && c.sheriff === r.sheriff;
+  const recLine = n >= 4 ? `<div class="rec">${isRec ? '<span class="ok">✓</span> ' : ''}Recommended for ${n}: <b>${r.mafia} mafia</b>${r.angel ? ' · <b>angel</b>' : ''}${r.sheriff ? ' · <b>sheriff</b>' : ''}${!isRec && !pickMode ? ' <button class="chip" data-a="h:recommend">Use</button>' : ''}</div>` : '';
   const roleSel = id => { const r = (st.assign || {})[id] || 'town'; return `<select class="rsel gm r-${r}" data-assign="${id}" aria-label="Role for ${esc(st.players[id].name)}">${['town', 'mafia', 'angel', 'sheriff'].map(x => `<option value="${x}" ${r === x ? 'selected' : ''}>${x === 'town' ? 'Town' : ROLES[x].name}</option>`).join('')}</select>`; };
   return `<div class="panel center"><div class="small muted">Friends scan to join</div><div class="qr" id="qr" data-url="${esc(joinLink())}"></div>
     <div class="row center"><button class="btn sm gold" data-a="h:share">Share link</button><button class="btn sm" data-a="h:copy">Copy</button></div></div>
@@ -921,6 +929,7 @@ function hLobby() {
     <form data-f="h:add" class="row" style="margin-top:10px;flex-wrap:nowrap"><input class="in" id="addIn" maxlength="20" placeholder="+ Player without a phone" autocomplete="off"><button class="btn sm" type="submit" style="margin:0">Add</button></form></div>
   <div class="panel"><h3>Roles</h3>
     <div class="seg" style="margin-bottom:6px"><button class="${!pickMode ? 'on' : ''}" data-a="h:set" data-v="dealMode=random">Random deal</button><button class="${pickMode ? 'on' : ''}" data-a="h:set" data-v="dealMode=pick">I pick</button></div>
+    ${recLine}
     ${pickMode ? `<p class="small muted">Set each role in the list above.</p><div class="small">Mafia <b>${m}</b> · Angel <b>${c.angel}</b> · Sheriff <b>${c.sheriff}</b> · Town <b>${Math.max(0, town)}</b></div>`
     : `<div class="deckrow"><span>Mafia</span><div class="step"><button data-a="h:mafia" data-v="-1" aria-label="Fewer mafia">−</button><b>${m}</b><button data-a="h:mafia" data-v="+1" aria-label="More mafia">+</button></div></div>
     <div class="deckrow"><span>Angel</span>${tog('angel')}</div>
@@ -1023,12 +1032,8 @@ function hVote() {
   const st = H.st, vt = st.vote, al = alive();
   const opts = vt.options.filter(o => o !== '__spare');
   if (vt.mode === 'hands') {
-    const hc = vt.hands || {}; const max = Math.max(0, ...opts.map(o => hc[o] || 0));
-    const lead = max ? opts.filter(o => (hc[o] || 0) === max) : [];
     return `<div class="say">${opts.map(id => `Hands up to kill ${esc(NM(id))}.`).join(' ')}</div>
-    ${opts.map(id => `<div class="panel"><div class="row" style="flex-wrap:nowrap"><span class="tn"><b>${esc(NM(id))}</b></span><div class="step"><button data-a="h:hand" data-v="${id}:-1" aria-label="One fewer hand">−</button><b>${hc[id] || 0}</b><button data-a="h:hand" data-v="${id}:1" aria-label="One more hand">+</button></div></div>
-      <button class="btn ${lead.length === 1 && lead[0] === id ? 'red' : ''}" data-a="h:elim" data-v="${id}">Kill ${esc(NM(id))}</button></div>`).join('')}
-    <p class="center small muted">${al.length} alive${lead.length > 1 ? ' · tie' : ''}</p>
+    ${opts.map(id => `<button class="btn red" data-a="h:elim" data-v="${id}">Kill ${esc(NM(id))}</button>`).join('')}
     <button class="btn ghost" data-a="h:spare">Spare everyone</button>`;
   }
   const c = tally(vt.ballots);
