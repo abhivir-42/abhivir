@@ -93,6 +93,9 @@ input.code{text-transform:uppercase;letter-spacing:.4em;text-align:center;font-f
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{padding:8px 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line2);color:var(--ink);font:600 14px var(--ui);cursor:pointer}
 .seg button.on{background:var(--gold);color:#1b140a;border-color:var(--gold)}
+.setrow{margin-top:8px}
+summary{padding:2px 0}
+details[open] summary{margin-bottom:8px}
 .rules ol{padding-left:20px;margin:6px 0}.rules li{margin:8px 0;color:#e3d7bf}
 .secret{position:relative;border-radius:14px;border:1px dashed var(--line2);background:rgba(0,0,0,.35);padding:14px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:pointer;min-height:70px;margin:12px 0}
 .secret .sb{visibility:hidden}
@@ -202,13 +205,14 @@ const joinLink = () => location.origin + location.pathname + '?room=' + H.st.roo
 
 let MODE = 'home'; // home | join | host | player
 let HOLD = null;
+let RULES_OPEN = false;
 
 // ---------------- content ----------------
 const ROLES = {
-  mafia: { name: 'Mafia', goal: 'Kill the town one night at a time. You win the moment your crew equals or outnumbers everyone else. Lie about everything.', night: 'You are mafia. Choose who dies tonight. Your whole crew has to land on the same name.' },
-  angel: { name: 'Angel', goal: 'Each night, protect one person from the mafia. You can protect yourself, but never the same person two nights in a row.', night: 'You are the angel. Choose who to protect tonight.' },
-  sheriff: { name: 'Sheriff', goal: 'Each night, investigate one person and learn the truth about them. Choose carefully when, and whether, to share it.', night: 'You are the sheriff. Choose who to investigate. You see the answer the moment you lock in.' },
-  town: { name: 'Townsperson', goal: 'Find the mafia and vote them out. You have no powers, only your judgment. You can still lie about what you are.', night: 'You are a townsperson. Tap a hunch. Everyone taps every night, so nobody can tell who is who.' }
+  mafia: { name: 'Mafia', goal: 'Kill the town. Win when you match their numbers.', night: 'Pick who dies. Your crew must agree.' },
+  angel: { name: 'Angel', goal: 'Save one person a night. Never the same one twice in a row.', night: 'Pick who to save.' },
+  sheriff: { name: 'Sheriff', goal: 'Check one person a night. You see the truth.', night: 'Pick who to check.' },
+  town: { name: 'Townsperson', goal: 'Find the mafia. Vote them out.', night: 'Pick your hunch.' }
 };
 const SUIT = { s: '♠︎', h: '♥︎', c: '♣︎', d: '♦︎' };
 const NIGHT_DEATHS = [
@@ -251,14 +255,15 @@ const SPARED = 'The town argued, shouted, and could not decide. Everyone walks h
 const tell = (arr, name) => pick(arr).split('{n}').join(name || '');
 
 function rulesHTML() {
-  return `<div class="panel rules"><h3>How it works</h3><ol>
-  <li><b>The deal.</b> Everyone gets a secret card. Jacks are <b>mafia</b>. The ace is the <b>angel</b>. The king is the <b>sheriff</b>. Everyone else is a <b>townsperson</b>. Anyone can lie about what they are.</li>
-  <li><b>Night.</b> Heads down, eyes on your own phone. The mafia agree on someone to kill. The angel protects one person, never the same one twice in a row, themselves included. The sheriff investigates one person and learns the truth. Townspeople tap a hunch, so every phone looks busy.</li>
-  <li><b>Morning.</b> The narrator reads who died, or announces a quiet night. Then you argue.</li>
-  <li><b>Nominations.</b> Everyone secretly writes two names. Only the narrator sees the ballots. The two most-named go on trial.</li>
-  <li><b>Trial.</b> Each accused gets 15 seconds to defend themselves, no interruptions. Then one vote each, and the loser dies.</li>
-  <li><b>Winning.</b> The town wins when every mafia member is dead. The mafia win the moment they equal or outnumber everyone else.</li>
-  </ol></div>`;
+  if (!RULES_OPEN) return `<div class="center"><button class="btn ghost sm" data-a="home:rules">? How to play</button></div>`;
+  return `<div class="panel rules"><ol>
+  <li>J = Mafia · A = Angel · K = Sheriff · the rest = Town.</li>
+  <li>Night: mafia pick a kill, the angel saves one, the sheriff checks one.</li>
+  <li>Morning: the narrator reads who died.</li>
+  <li>Everyone secretly names two. The top two go on trial.</li>
+  <li>15 seconds each to defend, then everyone votes. Loser dies.</li>
+  <li>Town wins when the mafia are gone. Mafia win when they match the town.</li>
+  </ol><button class="btn ghost sm" data-a="home:rules">Close</button></div>`;
 }
 
 // ---------------- small UI pieces ----------------
@@ -293,27 +298,27 @@ function roleInfo(me) {
   if (!me.role) return '';
   const r = ROLES[me.role]; const pl = PL();
   let h = `<div class="rinfo"><div class="rname r-${me.role}">${r.name}</div><p>${r.goal}</p>`;
-  if (me.role === 'mafia') { const crew = me.crew || []; h += crew.length ? `<p><b>Your crew:</b> ${crew.map(id => esc(NM(id)) + (pl[id] && !pl[id].alive ? ' (dead)' : '')).join(', ')}</p>` : `<p><b>You work alone.</b></p>`; }
-  if (me.role === 'angel' && me.lastSaved) h += `<p>Last night you protected ${esc(NM(me.lastSaved))}, so you can't pick them tonight.</p>`;
-  if (me.role === 'sheriff' && me.checks && me.checks.length) h += `<p><b>What you know:</b><br>${me.checks.map(c => `Night ${c.round}: ${resultText(c.target, c.result)}`).join('<br>')}</p>`;
+  if (me.role === 'mafia') { const crew = me.crew || []; h += crew.length ? `<p><b>Crew:</b> ${crew.map(id => esc(NM(id)) + (pl[id] && !pl[id].alive ? ' ☠︎' : '')).join(', ')}</p>` : `<p><b>You work alone.</b></p>`; }
+  if (me.role === 'angel' && me.lastSaved) h += `<p>Not ${esc(NM(me.lastSaved))} again tonight.</p>`;
+  if (me.role === 'sheriff' && me.checks && me.checks.length) h += `<p>${me.checks.map(c => `N${c.round}: ${resultText(c.target, c.result)}`).join('<br>')}</p>`;
   return h + '</div>';
 }
 function cardPeek(me, key = 'card') {
-  return `<div class="peek" data-hold="${key}"><div class="backc">${cardBack()}</div><div class="face">${cardFace(me.card, me.role)}${roleInfo(me)}</div><div class="peekhint">Press and hold to look</div></div>`;
+  return `<div class="peek" data-hold="${key}"><div class="backc">${cardBack()}</div><div class="face">${cardFace(me.card, me.role)}${roleInfo(me)}</div><div class="peekhint">Hold to look</div></div>`;
 }
 function secret(key, cover, body) { return `<div class="secret" data-hold="${key}"><div class="sc">${cover}</div><div class="sb">${body}</div></div>`; }
 function caseFile(hist) {
-  if (!hist || !hist.length) return '<p class="muted">Nothing happened. Suspicious.</p>';
+  if (!hist || !hist.length) return '<p class="muted">Nothing happened.</p>';
   return hist.map(e => e.type === 'night' ? `<div class="cf"><div class="cfh">Night ${e.round}</div>
-    <div>Mafia ${e.killFinal ? `went for <b>${esc(NM(e.killFinal))}</b>` : 'chose nobody'}${Object.keys(e.kill || {}).length ? ` <span class="muted small">(${Object.entries(e.kill).map(([m, t]) => `${esc(NM(m))} → ${t ? esc(NM(t)) : 'nobody'}`).join(', ')}${e.override ? '; narrator decided' : ''})</span>` : ''}</div>
-    ${e.angel ? `<div>Angel protected <b>${e.save ? esc(NM(e.save)) : 'nobody'}</b>${e.saved ? ' <span class="badge b-angel">saved a life</span>' : ''}</div>` : ''}
-    ${e.sheriff ? `<div>Sheriff checked ${e.check ? resultText(e.check, e.checkResult) : '<b>nobody</b>'}</div>` : ''}
-    <div>${e.died ? `<b>${esc(NM(e.died))}</b> died.` : 'Nobody died.'}</div></div>`
+    <div>Mafia → <b>${e.killFinal ? esc(NM(e.killFinal)) : 'nobody'}</b>${Object.keys(e.kill || {}).length ? ` <span class="muted small">(${Object.entries(e.kill).map(([m, t]) => `${esc(NM(m))}: ${t ? esc(NM(t)) : '–'}`).join(', ')})</span>` : ''}</div>
+    ${e.angel ? `<div>Angel → <b>${e.save ? esc(NM(e.save)) : 'nobody'}</b>${e.saved ? ' ✓' : ''}</div>` : ''}
+    ${e.sheriff ? `<div>Sheriff → ${e.check ? resultText(e.check, e.checkResult) : '<b>nobody</b>'}</div>` : ''}
+    <div>${e.died ? `☠︎ <b>${esc(NM(e.died))}</b>` : 'Nobody died'}</div></div>`
     : `<div class="cf"><div class="cfh">Day ${e.round}</div>
-    <div>Ballots: ${Object.entries(e.noms || {}).map(([v, ts]) => `${esc(NM(v))} → ${ts.map(t => esc(NM(t))).join(' & ')}`).join('; ') || 'none'}</div>
-    <div>On trial: ${(e.trial || []).map(t => `<b>${esc(NM(t))}</b>`).join(' vs ') || 'nobody'}</div>
-    <div>Votes: ${Object.entries(e.votes || {}).map(([v, t]) => `${esc(NM(v))} → ${esc(NM(t))}`).join('; ') || 'none'}</div>
-    <div>${e.victim ? `<b>${esc(NM(e.victim))}</b> was executed.` : 'Nobody was executed.'}</div></div>`).join('');
+    <div class="small">${Object.entries(e.noms || {}).map(([v, ts]) => `${esc(NM(v))} → ${ts.map(t => esc(NM(t))).join(' & ')}`).join('<br>') || 'No ballots'}</div>
+    <div>Trial: ${(e.trial || []).map(t => `<b>${esc(NM(t))}</b>`).join(' vs ') || 'nobody'}</div>
+    <div class="small">${Object.entries(e.votes || {}).map(([v, t]) => `${esc(NM(v))} → ${esc(NM(t))}`).join('<br>') || 'No votes'}</div>
+    <div>${e.victim ? `☠︎ <b>${esc(NM(e.victim))}</b>` : 'Nobody executed'}</div></div>`).join('');
 }
 function statsLines(hist, players) {
   const lines = []; const hits = {}, tries = {}, nomc = {};
@@ -322,23 +327,23 @@ function statsLines(hist, players) {
     if (e.type === 'day') for (const ts of Object.values(e.noms || {})) for (const t of ts) nomc[t] = (nomc[t] || 0) + 1;
   }
   const best = Object.keys(tries).sort((a, b) => (hits[b] || 0) - (hits[a] || 0) || tries[a] - tries[b])[0];
-  if (best && hits[best]) lines.push(`Sharpest nose: <b>${esc(NM(best))}</b>. Their night hunches landed on mafia ${hits[best]} of ${tries[best]} times.`);
+  if (best && hits[best]) lines.push(`Best hunches: <b>${esc(NM(best))}</b> (${hits[best]}/${tries[best]})`);
   const mn = Object.keys(nomc).sort((a, b) => nomc[b] - nomc[a])[0];
-  if (mn) lines.push(`Most accused: <b>${esc(NM(mn))}</b>, named on ${nomc[mn]} ballot${nomc[mn] === 1 ? '' : 's'}.`);
+  if (mn) lines.push(`Most accused: <b>${esc(NM(mn))}</b> (${nomc[mn]})`);
   const ex = hist.filter(e => e.type === 'day' && e.victim);
   const mex = ex.filter(e => players[e.victim] && players[e.victim].role === 'mafia').length;
-  if (ex.length) lines.push(`The town executed ${mex} mafia and ${ex.length - mex} of its own.`);
+  if (ex.length) lines.push(`Town executed ${mex} mafia, ${ex.length - mex} innocent`);
   const saves = hist.filter(e => e.type === 'night' && e.saved).length;
-  if (saves) lines.push(`The angel saved ${saves === 1 ? 'a life' : saves + ' lives'}.`);
+  if (saves) lines.push(`Angel saves: ${saves}`);
   return lines;
 }
 function overHTML(w, hist, players, order) {
-  const head = w === 'town' ? ['The town wins', 'Every member of the mafia is dead.'] : w === 'mafia' ? ['The mafia wins', 'The mafia equal or outnumber the town. Nobody is safe.'] : ['Game over', 'The narrator called it.'];
+  const head = w === 'town' ? 'Town wins' : w === 'mafia' ? 'Mafia wins' : 'Game over';
   const st = statsLines(hist, players);
-  return `<div class="win ${w}"><h2>${head[0]}</h2><p>${head[1]}</p></div>
-  <div class="panel"><h3>Everyone's card</h3><div class="cards">${order.map(id => { const p = players[id]; return `<div class="cardrow">${mini(p.card)}<div style="min-width:0"><div class="tn"><b>${esc(p.name)}</b></div><div class="small">${roleBadge(p.role)} <span class="muted">${p.alive ? 'survived' : deathText(p.death)}</span></div></div></div>`; }).join('')}</div></div>
-  ${st.length ? `<div class="panel"><h3>The numbers</h3>${st.map(l => `<p>${l}</p>`).join('')}</div>` : ''}
-  <div class="panel"><h3>The case file</h3>${caseFile(hist)}</div>`;
+  return `<div class="win ${w}"><h2>${head}</h2></div>
+  <div class="cards">${order.map(id => { const p = players[id]; return `<div class="cardrow">${mini(p.card)}<div style="min-width:0"><div class="tn"><b>${esc(p.name)}</b></div><div class="small">${roleBadge(p.role)}${p.alive ? '' : ' ☠︎'}</div></div></div>`; }).join('')}</div>
+  ${st.length ? `<div class="panel">${st.map(l => `<div style="padding:3px 0">${l}</div>`).join('')}</div>` : ''}
+  <details class="panel"><summary><b>Full story</b></summary>${caseFile(hist)}</details>`;
 }
 
 // ---------------- sound, wake lock, toast ----------------
@@ -434,15 +439,15 @@ function hostHello(c, d) {
     H.pending = H.pending.filter(r => r.pid !== same.id);
     const req = { id: rid(6), pid: same.id, token, name };
     H.pending.push(req); H.pendConns.set(req.id, c); c.reqId = req.id;
-    safeSend(c, { t: 'wait', msg: `"${name}" already has a seat. Asking the narrator to let this phone take it.` });
+    safeSend(c, { t: 'wait', msg: 'Asking the narrator to let you back in…' });
     beep(660, 0.15); render(); return;
   }
-  safeSend(c, { t: 'err', code: 'started', msg: 'This game has already started. The narrator can add you when the next one begins.' });
+  safeSend(c, { t: 'err', code: 'started', msg: 'Game already started.' });
 }
 function bind(c, pid) {
   c.pid = pid;
   const old = H.conns.get(pid);
-  if (old && old !== c) { safeSend(old, { t: 'err', code: 'moved', msg: 'This seat was opened on another phone.' }); setTimeout(() => { try { old.close(); } catch (e) {} }, 300); }
+  if (old && old !== c) { safeSend(old, { t: 'err', code: 'moved', msg: 'Opened on another phone.' }); setTimeout(() => { try { old.close(); } catch (e) {} }, 300); }
   H.conns.set(pid, c); H.seen[pid] = Date.now(); H.sent.delete(pid);
   const p = H.st.players[pid];
   safeSend(c, { t: 'welcome', pid, token: p.token, name: p.name, room: H.st.room });
@@ -454,7 +459,7 @@ function approve(reqId, ok) {
   if (!r) return render();
   if (c) c.reqId = null;
   if (ok && H.st.players[r.pid]) { H.st.players[r.pid].token = r.token; logEv(`${r.name} took their seat on a new phone.`); if (c && c.open) bind(c, r.pid); commit(); }
-  else { if (c) safeSend(c, { t: 'err', code: 'denied', msg: 'That name is taken at this table. Try another.' }); render(); }
+  else { if (c) safeSend(c, { t: 'err', code: 'denied', msg: 'Name taken. Try another.' }); render(); }
 }
 function commit() { store.set('mafia-host', H.st); broadcast(); render(); }
 function broadcast() { for (const pid of H.conns.keys()) pushView(pid); }
@@ -640,8 +645,8 @@ function hostAct(cmd, v) {
       i.value = ''; logEv(`${name} sat down (no phone).`); return commit();
     }
     case 'kick': {
-      const p = st.players[v]; if (!p) return; if (st.phase !== 'lobby') return toast('Mid-game, use Kill in Players instead.');
-      const c = H.conns.get(v); if (c) { safeSend(c, { t: 'err', code: 'kicked', msg: 'The narrator took you off the table.' }); setTimeout(() => { try { c.close(); } catch (e) {} }, 300); H.conns.delete(v); }
+      const p = st.players[v]; if (!p) return; if (st.phase !== 'lobby') return toast('Use Players → Kill mid-game');
+      const c = H.conns.get(v); if (c) { safeSend(c, { t: 'err', code: 'kicked', msg: 'Removed by the narrator.' }); setTimeout(() => { try { c.close(); } catch (e) {} }, 300); H.conns.delete(v); }
       delete st.players[v]; st.order = st.order.filter(x => x !== v); logEv(`${p.name} left the table.`); return commit();
     }
     case 'mafia': if (v === 'auto') st.settings.mafia = 'auto'; else st.settings.mafia = Math.max(1, Math.min(Math.max(1, st.order.length - 1), mafiaCount(st) + Number(v))); return commit();
@@ -652,7 +657,7 @@ function hostAct(cmd, v) {
     case 'nkclear': { const n = st.night; if (!n) return; n.killOverride = false; resolveKill(); return commit(); }
     case 'ns': { const a = roleAlive('angel'); if (!a) return; const e = act(a, 'night', { target: v }); if (e) toast(e); return; }
     case 'nc': { const s = roleAlive('sheriff'); if (!s) return; const e = act(s, 'night', { target: v }); if (e) toast(e); return; }
-    case 'dawn': { const ns = nightStatus(); if (!ns.all && !armed('dawn', `Wait: ${ns.why.join(', ')}. Tap again to wake anyway.`)) return; return doDawn(); }
+    case 'dawn': { const ns = nightStatus(); if (!ns.all && !armed('dawn', `${ns.why.join(', ')}. Tap again to wake anyway.`)) return; return doDawn(); }
     case 'reroll': {
       if (st.dawn && (st.phase === 'dawn' || st.phase === 'day')) st.dawn.story = st.dawn.died ? tell(NIGHT_DEATHS, NM(st.dawn.died)) : tell(QUIET);
       else if (st.verdict && st.phase === 'verdict') st.verdict.story = st.verdict.victim ? tell(EXECUTIONS, NM(st.verdict.victim)) : SPARED;
@@ -680,10 +685,10 @@ function hostAct(cmd, v) {
     case 'spare': return doVerdict(null);
     case 'elim': return doVerdict(v);
     case 'end': return endGame(v);
-    case 'forceend': if (!armed('end' + v, 'Tap again to end the game and reveal every card.')) return; H.drawer = null; return endGame(v);
+    case 'forceend': if (!armed('end' + v, 'Tap again to end')) return; H.drawer = null; return endGame(v);
     case 'rematch': return rematch();
     case 'newroom': {
-      if (!armed('newroom', 'Tap again to close this room. Everyone will need a new code.')) return;
+      if (!armed('newroom', 'Tap again to close')) return;
       try { H.peer && H.peer.destroy(); } catch (e) {}
       store.del('mafia-host'); H.st = null; H.conns.clear(); H.drawer = null; MODE = 'home';
       history.replaceState(null, '', location.pathname); return render();
@@ -692,7 +697,7 @@ function hostAct(cmd, v) {
     case 'no': return approve(v, false);
     case 'life': {
       const p = st.players[v]; if (!p || st.phase === 'lobby') return;
-      if (!armed('life' + v, `Tap again to ${p.alive ? 'kill' : 'revive'} ${p.name}.`)) return;
+      if (!armed('life' + v)) return;
       p.alive = !p.alive; if (!p.alive) p.death = { how: 'narrator', round: st.round }; else delete p.death;
       logEv(`The narrator ${p.alive ? 'revived' : 'removed'} ${p.name}.`); resolveKill(); return commit();
     }
@@ -730,28 +735,23 @@ function ptpAct(cmd, v) {
 }
 function ptpHTML() {
   const st = H.st, x = H.ptp; const nm = esc(NM(x.pid));
-  const label = { deal: 'Showing cards', nom: 'Nomination ballots', vote: 'Final vote' }[x.kind];
   if (x.stage === 'list') {
     const pend = ptpPending();
-    return `<div class="phase">Pass the phone</div><p class="muted">${label}. Tap the name of whoever is holding this phone.</p>
-      ${pend.length ? tiles(pend, { act: 'ptp:who' }) : '<p>Everyone is done.</p>'}
-      <button class="btn" data-a="ptp:close">Back to the narrator screen</button>`;
+    return `<div class="phase">Pass the phone</div>${pend.length ? tiles(pend, { act: 'ptp:who' }) : '<p>Everyone\'s done.</p>'}<button class="btn" data-a="ptp:close">Back</button>`;
   }
-  if (x.stage === 'hand') return `<div class="center" style="padding-top:40px"><div class="muted">Hand the phone to</div><h2 style="font-size:42px">${nm}</h2>
+  if (x.stage === 'hand') return `<div class="center" style="padding-top:40px"><div class="muted">Give the phone to</div><h2 style="font-size:42px">${nm}</h2>
       <button class="btn gold big" data-a="ptp:go">I'm ${nm}</button><button class="btn ghost" data-a="ptp:list">Wrong person</button></div>`;
-  if (x.stage === 'done') return `<div class="center" style="padding-top:60px"><h2>Done, ${nm}.</h2><p class="muted">Hand the phone back to the narrator.</p>
-      <button class="btn" data-a="ptp:list">Narrator: next person</button></div>`;
+  if (x.stage === 'done') return `<div class="center" style="padding-top:60px"><h2>Done ✓</h2><p class="muted">Hand it back.</p><button class="btn" data-a="ptp:list">Next person</button></div>`;
   const p = st.players[x.pid];
   if (x.kind === 'deal') {
     const me = { card: p.card, role: p.role, crew: st.order.filter(id => id !== x.pid && st.players[id].role === 'mafia') };
-    return `<h2 class="center">${nm}, your card</h2>${cardPeek(me, 'ptpcard')}<button class="btn gold" data-a="ptp:submit">Got it</button>`;
+    return `<h2 class="center">${nm}</h2>${cardPeek(me, 'ptpcard')}<button class="btn gold" data-a="ptp:submit">Got it</button>`;
   }
   if (x.kind === 'nom') {
     const k = nomNeed(); const ids = alive().filter(id => st.settings.selfNominate || id !== x.pid);
-    return `<h2>${nm}, write ${k === 1 ? 'one name' : k + ' names'}</h2><p class="muted">Only the narrator will see this.</p>
-      ${tiles(ids, { sel: x.sel, act: 'ptp:pick' })}<button class="btn red" data-a="ptp:submit" ${x.sel.length === k ? '' : 'disabled'}>Fold it into the hat</button>`;
+    return `<h2>${nm}: pick ${k}</h2>${tiles(ids, { sel: x.sel, act: 'ptp:pick' })}<button class="btn red" data-a="ptp:submit" ${x.sel.length === k ? '' : 'disabled'}>Submit</button>`;
   }
-  return `<h2>${nm}, who dies?</h2>${tiles(st.vote.options, { sel: x.sel, act: 'ptp:pick' })}<button class="btn red" data-a="ptp:submit" ${x.sel.length ? '' : 'disabled'}>Cast my vote</button>`;
+  return `<h2>${nm}: vote</h2>${tiles(st.vote.options, { sel: x.sel, act: 'ptp:pick' })}<button class="btn red" data-a="ptp:submit" ${x.sel.length ? '' : 'disabled'}>Vote</button>`;
 }
 
 // ---- narrator screens ----
@@ -761,52 +761,51 @@ function hostHTML() {
   let h = hbar();
   if (H.drawer === 'players') return h + playersDrawer();
   if (H.drawer === 'menu') return h + menuDrawer();
-  h += H.pending.map(r => `<div class="panel warnp"><b>${esc(r.name)}</b> wants to take the seat <b>${esc(NM(r.pid))}</b> on a new phone.<div class="row" style="margin-top:8px"><button class="btn sm gold" data-a="h:ok" data-v="${r.id}">Let them in</button><button class="btn sm" data-a="h:no" data-v="${r.id}">No</button></div></div>`).join('');
+  h += H.pending.map(r => `<div class="panel warnp"><b>${esc(r.name)}</b> rejoining on a new phone?<div class="row" style="margin-top:8px"><button class="btn sm gold" data-a="h:ok" data-v="${r.id}">Let in</button><button class="btn sm" data-a="h:no" data-v="${r.id}">No</button></div></div>`).join('');
   h += `<div class="phase">${phaseLabel(st)}</div>`;
   const f = { lobby: hLobby, deal: hDeal, night: hNight, dawn: hDawn, day: hDay, nominate: hNom, trial: hTrial, vote: hVote, verdict: hVerdict, over: hOver }[st.phase];
   return h + (f ? f() : '');
 }
 function phaseLabel(st) {
   const r = st.round;
-  return { lobby: 'The lobby', deal: 'The deal', night: `Night ${r}`, dawn: `Morning ${r}`, day: `Day ${r}`, nominate: `Day ${r}: nominations`, trial: `Day ${r}: the trial`, vote: `Day ${r}: the vote`, verdict: `Day ${r}: the verdict`, over: 'Game over' }[st.phase] || '';
+  return { lobby: 'Lobby', deal: 'Cards', night: `Night ${r}`, dawn: `Morning ${r}`, day: `Day ${r}`, nominate: 'Nominations', trial: 'Trial', vote: 'Vote', verdict: 'Verdict', over: 'Game over' }[st.phase] || '';
 }
 function hbar() {
-  const st = H.st; const withPhone = st.order.filter(id => st.players[id].token).length; const on = st.order.filter(isConn).length;
-  const net = { online: ['on', 'Live'], starting: ['warn', 'Opening the table'], reconnecting: ['warn', 'Reconnecting'], reclaiming: ['warn', 'Reclaiming the room'], taken: ['', 'Room open on another device'], nolib: ['', 'Offline: pass-the-phone only'] }[H.net] || ['', ''];
-  return `<div class="hbar"><span class="hroom">ROOM <b>${st.room}</b></span><span class="dot ${net[0]}"></span><span class="small muted">${net[1]} · ${on}/${withPhone} phones</span><span style="flex:1"></span>
-    <button class="ib ${H.blur ? 'on' : ''}" data-a="h:blur">${H.blur ? 'Secrets hidden' : 'Hide secrets'}</button>
+  const st = H.st; const on = st.order.filter(isConn).length;
+  const net = { online: ['on', 'Live'], starting: ['warn', 'Starting'], reconnecting: ['warn', 'Reconnecting'], reclaiming: ['warn', 'Reconnecting'], taken: ['', 'Open on another device'], nolib: ['', 'Offline'] }[H.net] || ['', ''];
+  return `<div class="hbar"><span class="dot ${net[0]}"></span><span class="small muted">${net[1]} · ${on} phone${on === 1 ? '' : 's'}</span><span style="flex:1"></span>
+    <button class="ib ${H.blur ? 'on' : ''}" data-a="h:blur">${H.blur ? 'Hidden' : 'Hide'}</button>
     <button class="ib ${H.drawer === 'players' ? 'on' : ''}" data-a="h:drawer" data-v="players">Players</button>
     <button class="ib ${H.drawer === 'menu' ? 'on' : ''}" data-a="h:drawer" data-v="menu">Menu</button></div>`;
 }
 function playersDrawer() {
   const st = H.st;
   return `<div class="panel"><div class="row"><h3 style="flex:1;margin:0">Players</h3><button class="btn sm" data-a="h:close">Done</button></div>
-    ${st.order.map(id => { const p = st.players[id]; return `<div class="prow ${p.alive ? '' : 'is-dead'}">${av(p.name)}<span class="tn">${esc(p.name)}${p.alive ? '' : ` <span class="small muted">(${deathText(p.death)})</span>`}</span>${p.role ? `<span class="gm">${mini(p.card)} ${roleBadge(p.role)}</span>` : ''}${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}${st.phase !== 'lobby' ? `<button class="btn sm" data-a="h:life" data-v="${id}">${H.armed === 'life' + id ? 'Sure?' : p.alive ? 'Kill' : 'Revive'}</button>` : ''}</div>`; }).join('') || '<p class="muted">Nobody yet.</p>'}
-    <p class="small muted">Green dot: their phone is connected right now. Kill and Revive are for fixing mistakes.</p></div>`;
+    ${st.order.map(id => { const p = st.players[id]; return `<div class="prow ${p.alive ? '' : 'is-dead'}">${av(p.name)}<span class="tn">${esc(p.name)}</span>${p.role ? `<span class="gm">${mini(p.card)} ${roleBadge(p.role)}</span>` : ''}${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}${st.phase !== 'lobby' ? `<button class="btn sm" data-a="h:life" data-v="${id}">${H.armed === 'life' + id ? 'Sure?' : p.alive ? 'Kill' : 'Revive'}</button>` : ''}</div>`; }).join('') || '<p class="muted">Nobody yet.</p>'}</div>`;
 }
 function menuDrawer() {
   const st = H.st; const inGame = !['lobby', 'over'].includes(st.phase);
   return `<div class="panel"><div class="row"><h3 style="flex:1;margin:0">Menu</h3><button class="btn sm" data-a="h:close">Done</button></div>
-    <p class="small muted">Invite more people: <a href="#" data-a="h:share">share the room link</a></p></div>
+    <button class="btn sm" data-a="h:share">Share join link</button></div>
     ${houseRules(true)}
-    ${inGame ? `<div class="panel"><h3>End the game now</h3><div class="row"><button class="btn sm" data-a="h:forceend" data-v="town">${H.armed === 'endtown' ? 'Sure?' : 'Town wins'}</button><button class="btn sm" data-a="h:forceend" data-v="mafia">${H.armed === 'endmafia' ? 'Sure?' : 'Mafia wins'}</button><button class="btn sm" data-a="h:forceend" data-v="none">${H.armed === 'endnone' ? 'Sure?' : 'No winner'}</button></div></div>` : ''}
-    <div class="panel"><h3>Log</h3>${st.log.slice(-40).reverse().map(l => `<div class="small" style="padding:3px 0"><span class="muted">${new Date(l.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span> <span class="gm">${esc(l.text)}</span></div>`).join('') || '<p class="muted">Empty.</p>'}</div>
+    ${inGame ? `<div class="panel"><h3>End now</h3><div class="row"><button class="btn sm" data-a="h:forceend" data-v="town">${H.armed === 'endtown' ? 'Sure?' : 'Town wins'}</button><button class="btn sm" data-a="h:forceend" data-v="mafia">${H.armed === 'endmafia' ? 'Sure?' : 'Mafia wins'}</button><button class="btn sm" data-a="h:forceend" data-v="none">${H.armed === 'endnone' ? 'Sure?' : 'No winner'}</button></div></div>` : ''}
+    <details class="panel"><summary><b>Log</b></summary>${st.log.slice(-40).reverse().map(l => `<div class="small" style="padding:3px 0"><span class="muted">${new Date(l.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span> <span class="gm">${esc(l.text)}</span></div>`).join('') || '<p class="muted">Empty.</p>'}</details>
     ${rulesHTML()}
-    <button class="btn ghost" data-a="h:newroom">${H.armed === 'newroom' ? 'Tap again to close the room' : 'Close this room'}</button>`;
+    <button class="btn ghost" data-a="h:newroom">${H.armed === 'newroom' ? 'Tap again to close' : 'Close this game'}</button>`;
 }
 function houseRules(open) {
   const s = H.st.settings;
   const seg = (key, opts) => `<div class="seg">${opts.map(([val, label]) => `<button class="${String(s[key]) === String(val) ? 'on' : ''}" data-a="h:set" data-v="${key}=${val}">${label}</button>`).join('')}</div>`;
-  const body = `<label class="lb">The sheriff learns</label>${seg('sheriffSees', [['role', 'Their exact role'], ['side', 'Mafia or not']])}
-    <label class="lb">The angel</label>${seg('angelNoRepeat', [[1, 'Never the same save twice in a row'], [0, 'Any save']])}
-    <label class="lb">Names per nomination ballot</label>${seg('nomPicks', [[1, '1'], [2, '2'], [3, '3']])}
-    <label class="lb">People on trial</label>${seg('trialSize', [[2, '2'], [3, '3']])}
-    <label class="lb">Nominating yourself</label>${seg('selfNominate', [[1, 'Allowed'], [0, 'Not allowed']])}
-    <label class="lb">Defense time</label>${seg('defenseSec', [[10, '10s'], [15, '15s'], [20, '20s'], [30, '30s']])}
-    <label class="lb">The final vote</label>${seg('finalVote', [['public', 'Public, like raised hands'], ['secret', 'Secret, only you see']])}
-    <label class="lb">When someone dies</label>${seg('revealOnDeath', [[0, 'Keep their card hidden'], [1, 'Flip their card']])}`;
-  if (open) return `<div class="panel"><h3>House rules</h3>${body}</div>`;
-  return `<div class="panel"><button class="btn ghost" style="margin:0;text-align:left" data-a="h:rules">House rules ${H.rulesOpen ? '▴' : '▾'} <span class="small muted">defaults follow the video</span></button>${H.rulesOpen ? body : ''}</div>`;
+  const body = `<label class="lb">Sheriff sees</label>${seg('sheriffSees', [['role', 'Exact role'], ['side', 'Mafia or not']])}
+    <label class="lb">Angel</label>${seg('angelNoRepeat', [[1, 'No repeat saves'], [0, 'Any']])}
+    <label class="lb">Names per ballot</label>${seg('nomPicks', [[1, '1'], [2, '2'], [3, '3']])}
+    <label class="lb">On trial</label>${seg('trialSize', [[2, '2'], [3, '3']])}
+    <label class="lb">Name yourself</label>${seg('selfNominate', [[1, 'Yes'], [0, 'No']])}
+    <label class="lb">Defense</label>${seg('defenseSec', [[10, '10s'], [15, '15s'], [20, '20s'], [30, '30s']])}
+    <label class="lb">Final vote</label>${seg('finalVote', [['public', 'Public'], ['secret', 'Secret']])}
+    <label class="lb">On death</label>${seg('revealOnDeath', [[0, 'Hide card'], [1, 'Show card']])}`;
+  if (open) return `<div class="panel"><h3>Rules</h3>${body}</div>`;
+  return `<div class="panel"><button class="btn ghost" style="margin:0;text-align:left" data-a="h:rules">House rules ${H.rulesOpen ? '▴' : '▾'}</button>${H.rulesOpen ? body : ''}</div>`;
 }
 function drawQR() {
   const el = document.getElementById('qr'); if (!el || typeof qrcode === 'undefined') return;
@@ -817,34 +816,30 @@ function drawQR() {
 function hLobby() {
   const st = H.st, s = st.settings, n = st.order.length, m = mafiaCount(st);
   const specials = (s.angel ? 1 : 0) + (s.sheriff ? 1 : 0); const town = n - m - specials;
-  const warn = n < 4 ? 'You need at least 4 players.' : town < 0 ? 'More special cards than players.' : m >= n - m ? 'Too many mafia: they would win on the spot.' : '';
+  const warn = n < 4 ? 'Need 4+ players' : town < 0 ? 'Too many special cards' : m >= n - m ? 'Too many mafia' : '';
   const tog = key => `<div class="seg"><button class="${s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=1">In</button><button class="${!s[key] ? 'on' : ''}" data-a="h:set" data-v="${key}=0">Out</button></div>`;
-  return `<div class="panel center"><div class="small muted">Friends scan this, or go to the link and type</div><div class="roomcode">${st.room}</div>
-    <div class="qr" id="qr" data-url="${esc(joinLink())}"></div>
-    <div class="small muted" style="word-break:break-all">${esc(location.host + location.pathname)} · room ${st.room}</div>
-    <div class="row center" style="margin-top:6px"><button class="btn sm" data-a="h:share">Share link</button><button class="btn sm" data-a="h:copy">Copy link</button></div></div>
-  <div class="panel"><h3>At the table (${n})</h3>
-    ${n ? st.order.map(id => { const p = st.players[id]; return `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}</span>${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}<button class="x" data-a="h:kick" data-v="${id}" aria-label="Remove ${esc(p.name)}">×</button></div>`; }).join('') : '<p class="muted">Nobody yet. Show them the code.</p>'}
-    <form data-f="h:add" class="row" style="margin-top:10px;flex-wrap:nowrap"><input class="in" id="addIn" maxlength="20" placeholder="Add someone without a phone" autocomplete="off"><button class="btn sm" type="submit" style="margin:0">Add</button></form></div>
-  <div class="panel"><h3>The deck</h3>
-    <div class="deckrow"><span>Mafia <span class="muted small">(jacks)</span></span><div class="step"><button data-a="h:mafia" data-v="-1" aria-label="Fewer mafia">−</button><b>${m}</b><button data-a="h:mafia" data-v="+1" aria-label="More mafia">+</button></div></div>
-    <div class="small muted" style="padding-top:6px">${s.mafia === 'auto' ? 'Automatic: about one in four players.' : `Suggested for ${n}: ${autoMafia(n)}. <a href="#" data-a="h:mafia" data-v="auto">Use that</a>`}</div>
-    <div class="deckrow"><span>Angel <span class="muted small">(ace)</span></span>${tog('angel')}</div>
-    <div class="deckrow"><span>Sheriff <span class="muted small">(king)</span></span>${tog('sheriff')}</div>
-    <div class="deckrow" style="border:0"><span>Townspeople</span><b>${Math.max(0, town)}</b></div>
+  return `<div class="panel center"><div class="small muted">Friends scan to join</div><div class="qr" id="qr" data-url="${esc(joinLink())}"></div>
+    <div class="row center"><button class="btn sm gold" data-a="h:share">Share link</button><button class="btn sm" data-a="h:copy">Copy</button></div></div>
+  <div class="panel"><h3>Players · ${n}</h3>
+    ${n ? st.order.map(id => { const p = st.players[id]; return `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}</span>${p.token ? `<span class="dot ${isConn(id) ? 'on' : ''}"></span>` : '<span class="small muted">no phone</span>'}<button class="x" data-a="h:kick" data-v="${id}" aria-label="Remove ${esc(p.name)}">×</button></div>`; }).join('') : '<p class="muted">Waiting for scans…</p>'}
+    <form data-f="h:add" class="row" style="margin-top:10px;flex-wrap:nowrap"><input class="in" id="addIn" maxlength="20" placeholder="+ Player without a phone" autocomplete="off"><button class="btn sm" type="submit" style="margin:0">Add</button></form></div>
+  <div class="panel"><h3>Cards</h3>
+    <div class="deckrow"><span>Mafia</span><div class="step"><button data-a="h:mafia" data-v="-1" aria-label="Fewer mafia">−</button><b>${m}</b><button data-a="h:mafia" data-v="+1" aria-label="More mafia">+</button></div></div>
+    <div class="deckrow"><span>Angel</span>${tog('angel')}</div>
+    <div class="deckrow"><span>Sheriff</span>${tog('sheriff')}</div>
+    <div class="deckrow" style="border:0"><span>Town</span><b>${Math.max(0, town)}</b></div>
     ${warn && n ? `<p class="err">${warn}</p>` : ''}</div>
   ${houseRules(false)}
-  <button class="btn red big" data-a="h:deal" ${warn ? 'disabled' : ''}>Deal the cards</button>
-  <p class="small muted center">You're the narrator, so you don't get a card. You'll see every role, every ballot and who goes on trial.</p>`;
+  <button class="btn red big" data-a="h:deal" ${warn ? 'disabled' : ''}>Deal cards</button>`;
 }
 function offlineButton(kind, pending) {
-  return pending.length ? `<button class="btn sm" data-a="h:ptp" data-v="${kind}">Collect on this phone</button>` : '';
+  return pending.length ? `<button class="btn sm" data-a="h:ptp" data-v="${kind}">Collect on my phone</button>` : '';
 }
 function hDeal() {
   const st = H.st; const ready = st.order.filter(id => st.ready[id]);
   const pend = st.order.filter(id => !st.ready[id]);
-  return `<div class="say">Everyone, look at your card. Press and hold it to see. Tap "Got it", then keep your phone face down.</div>
-  <div class="panel"><h3>Seen their card: ${ready.length}/${st.order.length}</h3>
+  return `<div class="say">Look at your card. Tap Got it.</div>
+  <div class="panel"><h3>Seen · ${ready.length}/${st.order.length}</h3>
     ${st.order.map(id => { const p = st.players[id]; return `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}</span><span class="gm">${mini(p.card)} ${roleBadge(p.role)}</span>${st.ready[id] ? '<span class="ok">✓</span>' : '<span class="small muted">…</span>'}</div>`; }).join('')}
     ${offlineButton('deal', pend)}</div>
   <button class="btn red big" data-a="h:night">Night falls</button>`;
@@ -857,86 +852,84 @@ function hNight() {
   const targets = al.filter(id => st.players[id].role !== 'mafia');
   const pend = al.filter(id => !playerNightDone(id));
   const chip = (cmd, id, on) => `<button class="chip ${on ? 'on' : ''}" data-a="h:${cmd}" data-v="${id}">${esc(NM(id))}</button>`;
-  let h = `<div class="moon"></div><div class="say">Everybody, heads down. Look only at your own phone. Pick a name and lock it in. Everyone picks, even townspeople, so nobody can tell who's who.</div>`;
-  h += `<div class="panel"><h3><span class="badge b-mafia">Mafia</span> <span class="small muted">${maf.length} alive</span></h3><div class="gm">
-    ${maf.map(id => `<div class="prow">${av(NM(id))}<span class="tn">${esc(NM(id))}</span><span>${n.kill[id] ? '→ <b>' + esc(NM(n.kill[id])) + '</b>' : '<span class="muted">choosing…</span>'}</span></div>`).join('')}
-    <p>${n.killFinal ? `Target: <b class="tred">${esc(NM(n.killFinal))}</b> <span class="small muted">${n.killOverride ? '(you set this)' : '(they agree)'}</span>` : '<span class="muted">No agreed target yet.</span>'}</p>
-    <div class="small muted">Or set it yourself, if they pointed:</div><div>${targets.map(id => chip('nk', id, n.killFinal === id)).join('')}${n.killOverride ? '<button class="chip" data-a="h:nkclear">Let them decide</button>' : ''}</div></div></div>`;
+  const setRow = chips => `<div class="setrow"><span class="small muted">Set:</span> ${chips}</div>`;
+  let h = `<div class="moon"></div><div class="say">Heads down. Pick on your phone.</div>`;
+  h += `<div class="panel"><h3><span class="badge b-mafia">Mafia</span></h3><div class="gm">
+    ${maf.map(id => `<div class="prow">${av(NM(id))}<span class="tn">${esc(NM(id))}</span><span>${n.kill[id] ? '→ <b>' + esc(NM(n.kill[id])) + '</b>' : '<span class="muted">…</span>'}</span></div>`).join('')}
+    <p>${n.killFinal ? `Target: <b class="tred">${esc(NM(n.killFinal))}</b>` : '<span class="muted">Not agreed yet</span>'}</p>
+    ${setRow(targets.map(id => chip('nk', id, n.killFinal === id)).join('') + (n.killOverride ? '<button class="chip" data-a="h:nkclear">Undo</button>' : ''))}</div></div>`;
   if (s.angel && ang) {
     h += `<div class="panel"><h3><span class="badge b-angel">Angel</span> <span class="gm">${esc(NM(ang))}</span></h3>`;
-    if (st.players[ang].alive) h += `<div class="gm"><p>${n.save ? `Protecting <b>${esc(NM(n.save))}</b>` : '<span class="muted">choosing…</span>'}</p>${s.angelNoRepeat && st.lastSaved ? `<div class="small muted">Can't protect ${esc(NM(st.lastSaved))} two nights running.</div>` : ''}
-      <div class="small muted">Or set it yourself:</div><div>${al.filter(id => !(s.angelNoRepeat && id === st.lastSaved)).map(id => chip('ns', id, n.save === id)).join('')}</div></div>`;
-    else h += `<p class="muted">The angel is dead. Call for them anyway so nobody notices.</p>`;
+    if (st.players[ang].alive) h += `<div class="gm"><p>${n.save ? `Saving <b>${esc(NM(n.save))}</b>` : '<span class="muted">…</span>'}</p>
+      ${setRow(al.filter(id => !(s.angelNoRepeat && id === st.lastSaved)).map(id => chip('ns', id, n.save === id)).join(''))}</div>`;
+    else h += `<p class="muted">Dead. Call them anyway.</p>`;
     h += `</div>`;
   }
   if (s.sheriff && sh) {
     h += `<div class="panel"><h3><span class="badge b-sheriff">Sheriff</span> <span class="gm">${esc(NM(sh))}</span></h3>`;
-    if (st.players[sh].alive) h += `<div class="gm">${n.check ? `<p>Checked: ${resultText(n.check, shown(n.checkResult))} <span class="small muted">Their phone shows it.</span></p>` : `<p class="muted">choosing…</p><div class="small muted">Or enter it yourself, then tell them with a thumbs up or down:</div><div>${al.filter(id => id !== sh).map(id => chip('nc', id, false)).join('')}</div>`}</div>`;
-    else h += `<p class="muted">The sheriff is dead. Call for them anyway so nobody notices.</p>`;
+    if (st.players[sh].alive) h += `<div class="gm">${n.check ? `<p>${resultText(n.check, shown(n.checkResult))}</p>` : `<p class="muted">…</p>${setRow(al.filter(id => id !== sh).map(id => chip('nc', id, false)).join(''))}`}</div>`;
+    else h += `<p class="muted">Dead. Call them anyway.</p>`;
     h += `</div>`;
   }
-  const town = al.filter(id => st.players[id].role === 'town');
-  h += `<div class="panel"><h3><span class="badge b-town">Town</span> <span class="small muted">${town.filter(id => n.hunch[id]).length}/${town.length} hunches in</span></h3><p class="small muted">Townspeople tap a hunch so their phones look busy too. It only feeds the stats at the end, so don't wait for it.</p></div>`;
-  h += `<p class="center"><b>${al.length - pend.length}/${al.length}</b> locked in${pend.length ? `<br><span class="small muted">Waiting on ${pend.map(id => esc(NM(id))).join(', ')}</span>` : ''}</p>`;
-  h += `<button class="btn red big" data-a="h:dawn">${H.armed === 'dawn' ? 'Tap again to wake them anyway' : 'Wake the town'}</button>`;
+  h += `<p class="center"><b>${al.length - pend.length}/${al.length}</b> in${pend.length ? ` <span class="small muted">· waiting: ${pend.map(id => esc(NM(id))).join(', ')}</span>` : ''}</p>`;
+  h += `<button class="btn red big" data-a="h:dawn">${H.armed === 'dawn' ? 'Tap again to wake anyway' : 'Wake up'}</button>`;
   return h;
 }
 function nightSummary(e) {
   if (!e) return '';
-  const lines = [];
-  lines.push(e.killFinal ? `The mafia went for <b>${esc(NM(e.killFinal))}</b>.` : 'The mafia chose nobody.');
-  if (e.angel) lines.push(`The angel protected <b>${e.save ? esc(NM(e.save)) : 'nobody'}</b>${e.saved ? ', and it worked.' : '.'}`);
-  if (e.sheriff) lines.push(e.check ? `The sheriff checked: ${resultText(e.check, shown(e.checkResult))}` : 'The sheriff checked nobody.');
-  return lines.map(l => `<p>${l}</p>`).join('');
+  const lines = [`Mafia → <b>${e.killFinal ? esc(NM(e.killFinal)) : 'nobody'}</b>`];
+  if (e.angel) lines.push(`Angel → <b>${e.save ? esc(NM(e.save)) : 'nobody'}</b>${e.saved ? ' ✓ saved' : ''}`);
+  if (e.sheriff) lines.push(`Sheriff → ${e.check ? resultText(e.check, shown(e.checkResult)) : 'nobody'}`);
+  return lines.map(l => `<div style="padding:3px 0">${l}</div>`).join('');
 }
 function winBanner() {
   const w = winner(); if (!w) return '';
-  return `<div class="win ${w}"><h2>${w === 'town' ? 'The town wins' : 'The mafia wins'}</h2><p>${w === 'town' ? 'Every member of the mafia is dead.' : 'The mafia now equal or outnumber the town.'}</p><button class="btn gold" data-a="h:end" data-v="${w}">Reveal every card</button><button class="btn ghost sm" data-a="h:${H.st.phase === 'dawn' ? 'noms' : 'night'}">Keep playing anyway</button></div>`;
+  return `<div class="win ${w}"><h2>${w === 'town' ? 'Town wins' : 'Mafia wins'}</h2><button class="btn gold" data-a="h:end" data-v="${w}">Reveal cards</button><button class="btn ghost sm" data-a="h:${H.st.phase === 'dawn' ? 'noms' : 'night'}">Keep playing</button></div>`;
 }
 function hDawn() {
   const st = H.st, d = st.dawn;
-  return `<div class="say">Everybody, wake up. Then read the paper out loud.</div>
+  return `<div class="say">Wake up. Then read this.</div>
   ${paperHTML('The Morning Ledger', `Morning ${d.round}`, d.died ? `${NM(d.died)} found dead` : 'A quiet night', d.story)}
-  <button class="btn sm" data-a="h:reroll">Different story</button>
-  <div class="panel gm"><h3>What really happened</h3>${nightSummary(st.history[st.history.length - 1])}</div>
-  ${winBanner() || `<div class="panel"><h3>Start the day</h3><div class="seg">${[0, 3, 5, 8].map(m => `<button data-a="h:day" data-v="${m}">${m ? m + ' min to talk' : 'Talk, no clock'}</button>`).join('')}</div>
-  <button class="btn" data-a="h:noms" style="margin-top:12px">Skip straight to nominations</button></div>`}`;
+  <button class="btn sm" data-a="h:reroll">New story</button>
+  <div class="panel gm">${nightSummary(st.history[st.history.length - 1])}</div>
+  ${winBanner() || `<div class="panel"><h3>Talk time</h3><div class="seg">${[0, 3, 5, 8].map(m => `<button data-a="h:day" data-v="${m}">${m ? m + ' min' : 'No clock'}</button>`).join('')}</div>
+  <button class="btn" data-a="h:noms" style="margin-top:12px">Skip to nominations</button></div>`}`;
 }
 function hDay() {
   const st = H.st;
-  return `<div class="say">Who did it? Talk it out. Accuse, defend, lie.</div>
-  ${st.timer ? `<div class="timer" data-timer></div><div class="row center"><button class="btn sm" data-a="h:tplus">+1 min</button><button class="btn sm" data-a="h:tstop">Stop the clock</button></div>` : '<p class="muted center">No clock. Open nominations when the table is ready.</p>'}
+  return `<div class="say">Who did it?</div>
+  ${st.timer ? `<div class="timer" data-timer></div><div class="row center"><button class="btn sm" data-a="h:tplus">+1 min</button><button class="btn sm" data-a="h:tstop">Stop</button></div>` : ''}
   <button class="btn red big" data-a="h:noms">Open nominations</button>`;
 }
 function hNom() {
   const st = H.st, nm = st.nom, al = alive(), k = nomNeed();
   const sug = suggestTrial(); const sel = H.trialSel || sug.top; const c = sug.counts; const max = Math.max(1, ...Object.values(c));
   const inn = al.filter(id => nm.ballots[id]); const missing = al.filter(id => !nm.ballots[id]);
-  return `<div class="say">Everyone, write ${k === 1 ? 'one name' : k + ' names'} on your phone. Nobody sees your ballot but me.</div>
-  <div class="panel"><h3>${inn.length}/${al.length} ballots in</h3>${missing.length ? `<div class="small muted">Waiting on ${missing.map(id => esc(NM(id))).join(', ')}</div>` : '<div class="ok small">Everyone has voted.</div>'}${offlineButton('nom', missing)}</div>
-  <div class="panel gm"><h3>The tally</h3><p class="small muted">Gold goes on trial. Tap a name to swap.</p>
+  return `<div class="say">Pick ${k === 1 ? 'one name' : k + ' names'} on your phone.</div>
+  <div class="panel"><b>${inn.length}/${al.length}</b> in${missing.length ? ` <span class="small muted">· waiting: ${missing.map(id => esc(NM(id))).join(', ')}</span>` : ' ✓'}<div>${offlineButton('nom', missing)}</div></div>
+  <div class="panel gm"><h3>Tally <span class="small muted">· tap to swap</span></h3>
     ${sug.sorted.length ? sug.sorted.map(id => `<button class="bar ${sel.includes(id) ? 'sel' : ''}" data-a="h:tp" data-v="${id}"><span class="bn">${esc(NM(id))}</span><span class="bt"><span class="bf" style="width:${c[id] / max * 100}%"></span></span><span class="bc">${c[id]}</span></button>`).join('') : '<p class="muted">No ballots yet.</p>'}
-    ${sug.tie && !H.trialSel ? `<p class="warn">Tie for the last spot between ${sug.tied.map(id => esc(NM(id))).join(', ')}. Tap to choose, or call a quick revote out loud.</p>` : ''}</div>
-  <div class="panel gm"><h3>Who wrote what</h3>${inn.map(id => `<div class="prow">${av(NM(id))}<span class="tn">${esc(NM(id))} ${mini(st.players[id].card)}</span><span class="small">${nm.ballots[id].map(t => esc(NM(t))).join(' & ')}</span></div>`).join('') || '<p class="muted">Nothing yet.</p>'}</div>
+    ${sug.tie && !H.trialSel ? `<p class="warn">Tie: ${sug.tied.map(id => esc(NM(id))).join(', ')}. Tap one.</p>` : ''}</div>
+  <details class="panel gm"><summary><b>Ballots</b></summary>${inn.map(id => `<div class="prow">${av(NM(id))}<span class="tn">${esc(NM(id))} ${mini(st.players[id].card)}</span><span class="small">${nm.ballots[id].map(t => esc(NM(t))).join(' & ')}</span></div>`).join('') || '<p class="muted">Nothing yet.</p>'}</details>
   <button class="btn red big" data-a="h:trial" ${sel.length ? '' : 'disabled'}>Put ${sel.length ? sel.map(id => esc(NM(id))).join(' & ') : 'them'} on trial</button>`;
 }
 function hTrial() {
   const st = H.st, t = st.trial, s = st.settings, tm = st.timer;
   return `<div class="kicker">On trial</div><div class="versus">${t.defendants.map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>
-  ${tm ? `<div class="center"><div class="muted">${esc(tm.label)}: <b>${esc(NM(tm.pid))}</b></div><div class="timer" data-timer></div></div>` : ''}
-  <div class="say">${tm ? `${esc(NM(tm.pid))}, you have ${tm.dur} seconds. No interruptions.` : `Each of you gets ${s.defenseSec} seconds to defend yourself. No interruptions. ${esc(NM(t.defendants[0]))} goes first.`}</div>
-  ${t.defendants.map(id => `<div class="panel"><div class="row"><span class="tn"><b>${esc(NM(id))}</b> <span class="small muted gm">${t.counts[id] || 0} ballots</span></span></div><div class="row"><button class="btn sm gold" data-a="h:def" data-v="${id}:${s.defenseSec}:Defense">Defense, ${s.defenseSec}s</button><button class="btn sm" data-a="h:def" data-v="${id}:5:Rebuttal">Rebuttal, 5s</button></div></div>`).join('')}
+  ${tm ? `<div class="center"><div class="muted">${esc(NM(tm.pid))}</div><div class="timer" data-timer></div></div>` : ''}
+  <div class="say">${tm ? `${esc(NM(tm.pid))}, ${tm.dur} seconds. Go.` : `${esc(NM(t.defendants[0]))} first. ${s.defenseSec} seconds each.`}</div>
+  ${t.defendants.map(id => `<div class="panel row"><span class="tn"><b>${esc(NM(id))}</b> <span class="small muted gm">${t.counts[id] || 0}</span></span><button class="btn sm gold" data-a="h:def" data-v="${id}:${s.defenseSec}:Defense">${s.defenseSec}s</button><button class="btn sm" data-a="h:def" data-v="${id}:5:Rebuttal">5s</button></div>`).join('')}
   <button class="btn red big" data-a="h:vote">Open the vote</button>`;
 }
 function hVote() {
   const st = H.st, vt = st.vote, al = alive(), c = tally(vt.ballots);
   const inn = al.filter(id => vt.ballots[id]), missing = al.filter(id => !vt.ballots[id]);
-  let h = `<div class="say">One vote each. ${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join(' or ')}${vt.options.includes('__spare') ? ', or spare them' : ''}. Who dies?</div>
-  <div class="panel"><h3>${inn.length}/${al.length} votes in</h3>${missing.length ? `<div class="small muted">Waiting on ${missing.map(id => esc(NM(id))).join(', ')}</div>` : '<div class="ok small">Everyone has voted.</div>'}${!vt.closed ? offlineButton('vote', missing) : ''}</div>
-  <div class="panel gm"><h3>Live count</h3>${bars(c, vt.options)}${inn.map(id => `<div class="prow small"><span class="tn">${esc(NM(id))} ${mini(st.players[id].card)}</span><span>→ <b>${esc(NM(vt.ballots[id]))}</b></span></div>`).join('')}</div>`;
+  let h = `<div class="say">Vote: ${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join(' or ')}${vt.options.includes('__spare') ? ', or spare' : ''}.</div>
+  <div class="panel"><b>${inn.length}/${al.length}</b> in${missing.length ? ` <span class="small muted">· waiting: ${missing.map(id => esc(NM(id))).join(', ')}</span>` : ' ✓'}<div>${!vt.closed ? offlineButton('vote', missing) : ''}</div></div>
+  <div class="panel gm">${bars(c, vt.options)}<details><summary class="small muted">Who voted what</summary>${inn.map(id => `<div class="prow small"><span class="tn">${esc(NM(id))} ${mini(st.players[id].card)}</span><span>→ <b>${esc(NM(vt.ballots[id]))}</b></span></div>`).join('')}</details></div>`;
   if (vt.closed) {
-    h += `<div class="panel warnp"><h3>${Object.keys(vt.ballots).length ? "It's a tie" : 'Nobody voted'}</h3><button class="btn" data-a="h:revote">Revote${vt.tie && vt.tie.length > 1 && vt.tie.length < vt.options.length ? ' between ' + vt.tie.map(id => esc(NM(id))).join(' & ') : ''}</button>
-    ${(vt.tie || []).filter(o => o !== '__spare').map(id => `<button class="btn" data-a="h:elim" data-v="${id}">Eliminate ${esc(NM(id))}</button>`).join('')}
+    h += `<div class="panel warnp"><h3>${Object.keys(vt.ballots).length ? 'Tie' : 'No votes'}</h3><button class="btn" data-a="h:revote">Revote</button>
+    ${(vt.tie || []).filter(o => o !== '__spare').map(id => `<button class="btn" data-a="h:elim" data-v="${id}">Kill ${esc(NM(id))}</button>`).join('')}
     <button class="btn ghost" data-a="h:spare">Spare everyone</button></div>`;
   } else h += `<button class="btn red big" data-a="h:closevote">Close the vote</button>`;
   return h;
@@ -944,13 +937,13 @@ function hVote() {
 function hVerdict() {
   const st = H.st, vd = st.verdict;
   return `${paperHTML('The Evening Verdict', `Day ${vd.round}`, vd.victim ? `Town executes ${NM(vd.victim)}` : 'Town spares all', vd.story)}
-  <button class="btn sm" data-a="h:reroll">Different story</button>
-  <div class="panel gm">${vd.victim ? `<p><b>${esc(NM(vd.victim))}</b> was ${mini(st.players[vd.victim].card)} ${roleBadge(st.players[vd.victim].role)}${st.settings.revealOnDeath ? ' <span class="small muted">(everyone sees this)</span>' : ' <span class="small muted">(only you know)</span>'}</p>` : ''}${bars(vd.counts, vd.options)}</div>
+  <button class="btn sm" data-a="h:reroll">New story</button>
+  <div class="panel gm">${vd.victim ? `<p><b>${esc(NM(vd.victim))}</b> was ${mini(st.players[vd.victim].card)} ${roleBadge(st.players[vd.victim].role)}</p>` : ''}${bars(vd.counts, vd.options)}</div>
   ${winBanner() || `<button class="btn red big" data-a="h:night">Night falls</button>`}`;
 }
 function hOver() {
   const st = H.st;
-  return overHTML(st.winner, st.history, st.players, st.order) + `<button class="btn gold big" data-a="h:rematch">Play again, same table</button><button class="btn ghost" data-a="h:newroom">${H.armed === 'newroom' ? 'Tap again to close the room' : 'Close this room'}</button>`;
+  return overHTML(st.winner, st.history, st.players, st.order) + `<button class="btn gold big" data-a="h:rematch">Play again</button><button class="btn ghost" data-a="h:newroom">${H.armed === 'newroom' ? 'Tap again to close' : 'Close this game'}</button>`;
 }
 
 // ============================================================
@@ -1027,7 +1020,7 @@ function onView(prev) {
     if (prev && needsMe) { try { navigator.vibrate && navigator.vibrate(80); } catch (e) {} beep(740, 0.12); }
   }
 }
-function pAct(a, x) { if (P.conn && P.conn.open) { try { P.conn.send({ t: 'act', a, x }); } catch (e) { toast('Not connected. Reconnecting…'); } } else toast('Not connected. Reconnecting…'); }
+function pAct(a, x) { if (P.conn && P.conn.open) { try { P.conn.send({ t: 'act', a, x }); } catch (e) { toast('Reconnecting…'); } } else toast('Reconnecting…'); }
 function pLeave() {
   P.stopped = true; P.att++; try { P.conn && P.conn.close(); } catch (e) {} try { P.peer && P.peer.destroy(); } catch (e) {}
   store.del('mafia-seat-' + P.room); Object.assign(P, { conn: null, peer: null, v: null, pid: null, token: null, msg: '', connecting: false });
@@ -1058,7 +1051,7 @@ function playerAct(cmd, v) {
     }
     case 'ready': return pAct('ready', {});
     case 'sheet': P.sheet = !P.sheet; return render();
-    case 'leave': if (!P.armed) { P.armed = true; toast('Tap Leave again to give up your seat.'); setTimeout(() => { P.armed = false; }, 4000); return; } P.armed = false; return pLeave();
+    case 'leave': if (!P.armed) { P.armed = true; toast('Tap again to leave'); setTimeout(() => { P.armed = false; }, 4000); return; } P.armed = false; return pLeave();
     case 'retry': P.stopped = false; P.msg = ''; return pStart();
   }
 }
@@ -1066,109 +1059,105 @@ function pNomNeed(v) { const n = v.players.filter(p => p.alive).length; return M
 
 function playerHTML() {
   const v = P.v;
-  const banner = P.status === 'open' ? '' : `<div class="status">${{ connecting: 'Connecting to the table…', reconnecting: 'Reconnecting…', hostdown: "Can't reach the narrator's phone. Retrying…", waiting: esc(P.msg || 'Waiting for the narrator…'), nolib: "Couldn't load the game's network code. Check your internet and reload." }[P.status] || 'Connecting…'}</div>`;
-  if (!v) return `${banner}<div class="logo sm">MAFIA</div><p class="center muted">Room ${esc(P.room)}${P.name ? ' · ' + esc(P.name) : ''}</p>${P.status === 'waiting' ? '' : '<div class="spinner"></div>'}<button class="btn ghost" data-a="p:leave">Leave</button>`;
-  if (P.sheet) return `<div class="ov"><div class="in"><h2 class="center">Your card</h2>${cardPeek(v.me)}<button class="btn" data-a="p:sheet">Close</button></div></div>`;
+  const banner = P.status === 'open' ? '' : `<div class="status">${{ connecting: 'Connecting…', reconnecting: 'Reconnecting…', hostdown: 'Narrator offline. Retrying…', waiting: esc(P.msg || 'Waiting for the narrator…'), nolib: 'No connection. Reload.' }[P.status] || 'Connecting…'}</div>`;
+  if (!v) return `${banner}<div class="logo sm">MAFIA</div>${P.status === 'waiting' ? '' : '<div class="spinner"></div>'}<button class="btn ghost" data-a="p:leave">Leave</button>`;
+  if (P.sheet) return `<div class="ov"><div class="in">${cardPeek(v.me)}<button class="btn" data-a="p:sheet">Close</button></div></div>`;
   const me = v.me;
-  let h = banner + `<div class="pbar"><span>ROOM ${esc(v.room)}</span><span class="me">${av(me.name)}${esc(me.name)}${me.alive || !me.role ? '' : ' <span class="muted">(dead)</span>'}</span></div>`;
+  let h = banner + `<div class="pbar"><span></span><span class="me">${av(me.name)}${esc(me.name)}${me.alive || !me.role ? '' : ' ☠︎'}</span></div>`;
   const f = { lobby: pLobby, deal: pDeal, night: pNight, dawn: pDawn, day: pDay, nominate: pNom, trial: pTrial, vote: pVote, verdict: pVerdict, over: pOver }[v.phase];
   h += f ? f(v) : '';
   if (me.card && !['deal', 'over'].includes(v.phase)) h += `<button class="fab" data-a="p:sheet">My card</button>`;
   return h;
 }
-function ghost(v, line) {
+function ghost(v) {
   const d = v.me.death;
-  return `<div class="ghost"><div class="g">☠︎</div><h2>You're dead</h2><p class="muted">${d ? (d.how === 'night' ? `The mafia got you on night ${d.round}.` : d.how === 'town' ? `The town executed you on day ${d.round}.` : 'The narrator took you out.') : ''}</p><p>${line || 'No talking from the grave. Enjoy the show.'}</p></div>`;
+  return `<div class="ghost"><div class="g">☠︎</div><h2>You're dead</h2><p class="muted">${d ? deathText(d) : ''} · no talking</p></div>`;
 }
 function pLobby(v) {
-  return `<div class="logo sm">MAFIA</div><h2 class="center">You're at the table.</h2><p class="center muted">Waiting for the narrator to deal.</p>
-  <div class="panel"><h3>Here so far (${v.players.length})</h3>${v.players.map(p => `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}${p.id === v.me.id ? ' <span class="muted">(you)</span>' : ''}</span></div>`).join('')}</div>
-  ${rulesHTML()}<button class="btn ghost" data-a="p:leave">Leave the table</button>`;
+  return `<div class="logo sm">MAFIA</div><h2 class="center">You're in</h2><p class="center muted">Waiting for the narrator…</p>
+  <div class="panel">${v.players.map(p => `<div class="prow">${av(p.name)}<span class="tn">${esc(p.name)}${p.id === v.me.id ? ' <span class="muted">(you)</span>' : ''}</span></div>`).join('')}</div>
+  ${rulesHTML()}<button class="btn ghost" data-a="p:leave">Leave</button>`;
 }
 function pDeal(v) {
-  return `<h2 class="center">Your card</h2>${cardPeek(v.me)}
-  ${v.me.ready ? '<p class="center muted">Put your phone face down. Night is coming.</p>' : '<button class="btn gold" data-a="p:ready">Got it</button>'}
-  <p class="center small muted">${v.deal.ready}/${v.deal.total} have looked</p>`;
+  return `${cardPeek(v.me)}
+  ${v.me.ready ? '<p class="center muted">Phone face down.</p>' : '<button class="btn gold" data-a="p:ready">Got it</button>'}`;
 }
 function pNight(v) {
   const me = v.me, n = v.night, role = me.role, pl = v.players.filter(p => p.alive);
-  if (!me.alive) return ghost(v, 'Night falls. Stay quiet and keep your eyes to yourself.');
+  if (!me.alive) return ghost(v);
   let ids;
   if (role === 'mafia') ids = pl.filter(p => p.id !== me.id && !(me.crew || []).includes(p.id)).map(p => p.id);
   else if (role === 'angel') ids = pl.map(p => p.id);
   else ids = pl.filter(p => p.id !== me.id).map(p => p.id);
   const disabled = role === 'angel' && v.settings.angelNoRepeat && me.lastSaved ? [me.lastSaved] : [];
   const locked = !!n.mine && !P.editing;
-  let orders = `<p>${ROLES[role].night}</p>`;
-  if (role === 'angel' && disabled.length) orders += `<p>You protected ${esc(NM(me.lastSaved))} last night, so not them tonight.</p>`;
+  let orders = `<p><b>${ROLES[role].night}</b></p>`;
+  if (role === 'angel' && disabled.length) orders += `<p>Not ${esc(NM(me.lastSaved))} again.</p>`;
   if (role === 'mafia') {
     const cp = n.crewPicks || {};
-    orders += `<p><b>Your crew right now:</b><br>${Object.entries(cp).map(([id, t]) => `${esc(NM(id))}${id === me.id ? ' (you)' : ''} → ${t ? '<b>' + esc(NM(t)) + '</b>' : '<span class="muted">choosing</span>'}`).join('<br>')}</p>`;
-    orders += n.killFinal ? `<p class="tred"><b>Agreed: ${esc(NM(n.killFinal))} dies tonight.</b></p>` : Object.keys(cp).length > 1 ? `<p class="warn">Not agreed yet. Land on the same name.</p>` : '';
+    orders += `<p>${Object.entries(cp).map(([id, t]) => `${esc(NM(id))}${id === me.id ? ' (you)' : ''} → ${t ? '<b>' + esc(NM(t)) + '</b>' : '…'}`).join('<br>')}</p>`;
+    orders += n.killFinal ? `<p class="tred"><b>Agreed: ${esc(NM(n.killFinal))}</b></p>` : Object.keys(cp).length > 1 ? `<p class="warn">Not agreed yet</p>` : '';
   }
-  let h = `<div class="moon"></div><h2 class="center">Night ${v.round}</h2><p class="center muted">Heads down. Look only at your own screen.</p>`;
+  let h = `<div class="moon"></div><h2 class="center">Night ${v.round}</h2>`;
   if (locked) {
-    let res = `<p>You chose <b>${esc(NM(n.mine))}</b>.</p>`;
+    let res = `<p>You picked <b>${esc(NM(n.mine))}</b></p>`;
     if (role === 'sheriff' && n.check) res = `<p>${resultText(n.check.target, n.check.result)}</p>`;
-    h += `<div class="locked">Locked in.</div><p class="center muted">Keep your head down until the narrator wakes the town.</p>`;
-    h += secret('res', 'Press and hold to see your choice', res + (role === 'mafia' ? orders : ''));
-    if (role !== 'sheriff') h += `<button class="btn" data-a="p:change">Change my pick</button>`;
+    h += `<div class="locked">Locked ✓</div>` + secret('res', 'Hold to see', res + (role === 'mafia' ? orders : ''));
+    if (role !== 'sheriff') h += `<button class="btn" data-a="p:change">Change</button>`;
   } else {
-    h += secret('orders', 'Press and hold to read your orders', orders);
-    h += tiles(ids, { sel: P.sel, disabled }) + `<button class="btn gold" data-a="p:lock" ${P.sel.length ? '' : 'disabled'}>Lock it in</button>`;
+    h += secret('orders', 'Hold for your orders', orders);
+    h += tiles(ids, { sel: P.sel, disabled }) + `<button class="btn gold" data-a="p:lock" ${P.sel.length ? '' : 'disabled'}>Lock in</button>`;
   }
-  h += `<p class="center small muted">${n.done}/${n.total} locked in</p>`;
-  return h;
+  return h + `<p class="center small muted">${n.done}/${n.total} in</p>`;
 }
-function deathNote(v) { return v.dawn && v.dawn.died === v.me.id ? `<div class="panel warnp"><b>That's you.</b> You're dead. No talking from the grave.</div>` : ''; }
+function deathNote(v) { return v.dawn && v.dawn.died === v.me.id ? `<div class="panel warnp center"><b>That's you.</b> No talking.</div>` : ''; }
 function pDawn(v) {
   const d = v.dawn;
-  return `${paperHTML('The Morning Ledger', `Morning ${d.round}`, d.died ? `${NM(d.died)} found dead` : 'A quiet night', d.story)}${deathNote(v)}<p class="center muted">The narrator will read it out.</p>`;
+  return `${paperHTML('The Morning Ledger', `Morning ${d.round}`, d.died ? `${NM(d.died)} found dead` : 'A quiet night', d.story)}${deathNote(v)}`;
 }
 function pDay(v) {
   const d = v.dawn;
-  return `<h2 class="center">Day ${v.round}</h2>${v.timer ? '<div class="timer" data-timer></div>' : ''}<p class="center">Who did it? Talk it out.</p>
-  ${d ? paperHTML('The Morning Ledger', `Morning ${d.round}`, d.died ? `${NM(d.died)} found dead` : 'A quiet night', d.story) : ''}${deathNote(v)}
-  ${!v.me.alive ? ghost(v) : ''}`;
+  return `<h2 class="center">Day ${v.round}</h2>${v.timer ? '<div class="timer" data-timer></div>' : ''}
+  ${d ? paperHTML('The Morning Ledger', `Morning ${d.round}`, d.died ? `${NM(d.died)} found dead` : 'A quiet night', d.story) : ''}${!v.me.alive ? ghost(v) : ''}`;
 }
 function pNom(v) {
-  if (!v.me.alive) return ghost(v, 'The living are writing their nominations.');
+  if (!v.me.alive) return ghost(v);
   const nm = v.nom, k = pNomNeed(v);
   const ids = v.players.filter(p => p.alive && (v.settings.selfNominate || p.id !== v.me.id)).map(p => p.id);
-  let h = `<h2>Write ${k === 1 ? 'one name' : k + ' names'}</h2><p class="muted">The ${v.settings.trialSize} most-named go on trial. Only the narrator sees your ballot.</p>`;
-  if (nm.mine && !P.editing) h += `<div class="locked">Your ballot is in the hat.</div>${secret('nom', 'Press and hold to see what you wrote', `<p>You wrote <b>${nm.mine.map(id => esc(NM(id))).join(' & ')}</b>.</p>`)}<button class="btn" data-a="p:change">Change my ballot</button>`;
-  else h += tiles(ids, { sel: P.sel }) + `<button class="btn red" data-a="p:lock" ${P.sel.length === k ? '' : 'disabled'}>Fold it into the hat</button>`;
-  return h + `<p class="center small muted">${nm.count}/${nm.total} ballots in</p>`;
+  let h = `<h2 class="center">Pick ${k}</h2><p class="center small muted">Secret. Top ${v.settings.trialSize} go on trial.</p>`;
+  if (nm.mine && !P.editing) h += `<div class="locked">In ✓</div>${secret('nom', 'Hold to see', `<p>${nm.mine.map(id => '<b>' + esc(NM(id)) + '</b>').join(' & ')}</p>`)}<button class="btn" data-a="p:change">Change</button>`;
+  else h += tiles(ids, { sel: P.sel }) + `<button class="btn red" data-a="p:lock" ${P.sel.length === k ? '' : 'disabled'}>Submit</button>`;
+  return h + `<p class="center small muted">${nm.count}/${nm.total} in</p>`;
 }
 function onTrialHTML(v, ids) {
   const t = v.timer;
   return `<div class="kicker">On trial</div><div class="versus">${ids.map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>
-  ${t && t.pid ? `<div class="center"><div class="muted">${esc(t.label)}: <b>${esc(NM(t.pid))}</b></div><div class="timer" data-timer></div><p class="muted">No interruptions.</p></div>` : `<p class="center muted">Each gets ${v.settings.defenseSec} seconds to defend themselves. No interruptions.</p>`}`;
+  ${t && t.pid ? `<div class="center"><div class="muted">${esc(NM(t.pid))}</div><div class="timer" data-timer></div></div>` : ''}`;
 }
 function pTrial(v) {
   const mine = v.trial.defendants.includes(v.me.id);
-  return onTrialHTML(v, v.trial.defendants) + (mine ? `<div class="panel warnp center"><b>You're on trial.</b> Make it count.</div>` : '') + (!v.me.alive ? ghost(v) : '');
+  return onTrialHTML(v, v.trial.defendants) + (mine ? `<div class="panel warnp center"><b>You're on trial.</b></div>` : '') + (!v.me.alive ? ghost(v) : '');
 }
 function pVote(v) {
   const vt = v.vote;
-  let h = `<div class="kicker">The vote</div><div class="versus">${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>`;
-  if (!v.me.alive) return h + ghost(v, 'The living are voting.');
-  if (vt.closed) return h + `<div class="locked">${vt.tie && vt.tie.length ? "It's a tie." : 'Counting…'}</div><p class="center muted">The narrator is deciding what happens.</p>`;
-  if (vt.mine && !P.editing) h += `<div class="locked">Your vote is in.</div>${secret('vote', 'Press and hold to see your vote', `<p>You voted to ${vt.mine === '__spare' ? '<b>spare them</b>' : `kill <b>${esc(NM(vt.mine))}</b>`}.</p>`)}<button class="btn" data-a="p:change">Change my vote</button>`;
-  else h += `<p class="center">One vote. Who dies?</p>${tiles(vt.options, { sel: P.sel })}<button class="btn red" data-a="p:lock" ${P.sel.length ? '' : 'disabled'}>Cast my vote</button>`;
-  return h + `<p class="center small muted">${vt.count}/${vt.total} votes in${v.settings.finalVote === 'public' ? '. Votes are shown to everyone after.' : '. Votes stay secret.'}</p>`;
+  let h = `<div class="kicker">Vote</div><div class="versus">${vt.options.filter(o => o !== '__spare').map(id => esc(NM(id))).join('<span class="vs">vs</span>')}</div>`;
+  if (!v.me.alive) return h + ghost(v);
+  if (vt.closed) return h + `<div class="locked">${vt.tie && vt.tie.length ? 'Tie' : 'Counting…'}</div><p class="center muted">Narrator decides.</p>`;
+  if (vt.mine && !P.editing) h += `<div class="locked">Voted ✓</div>${secret('vote', 'Hold to see', `<p>${vt.mine === '__spare' ? 'Spare' : 'Kill <b>' + esc(NM(vt.mine)) + '</b>'}</p>`)}<button class="btn" data-a="p:change">Change</button>`;
+  else h += `${tiles(vt.options, { sel: P.sel })}<button class="btn red" data-a="p:lock" ${P.sel.length ? '' : 'disabled'}>Vote</button>`;
+  return h + `<p class="center small muted">${vt.count}/${vt.total} in</p>`;
 }
 function pVerdict(v) {
   const vd = v.verdict;
   let h = paperHTML('The Evening Verdict', `Day ${vd.round}`, vd.victim ? `Town executes ${NM(vd.victim)}` : 'Town spares all', vd.story);
-  if (vd.victim === v.me.id) h += `<div class="panel warnp"><b>That's you.</b> You're dead. No talking from the grave.</div>`;
+  if (vd.victim === v.me.id) h += `<div class="panel warnp center"><b>That's you.</b> No talking.</div>`;
   if (vd.role) h += `<p class="center">${esc(NM(vd.victim))} was ${roleBadge(vd.role)}</p>`;
-  h += `<div class="panel"><h3>The count</h3>${bars(vd.counts, vd.options)}${vd.ballots ? `<div style="margin-top:10px">${Object.entries(vd.ballots).map(([who, t]) => `<div class="prow small"><span class="tn">${esc(NM(who))}</span><span>→ <b>${esc(NM(t))}</b></span></div>`).join('')}</div>` : '<p class="small muted">Votes were secret.</p>'}</div>`;
+  h += `<div class="panel">${bars(vd.counts, vd.options)}${vd.ballots ? `<div style="margin-top:10px">${Object.entries(vd.ballots).map(([who, t]) => `<div class="prow small"><span class="tn">${esc(NM(who))}</span><span>→ <b>${esc(NM(t))}</b></span></div>`).join('')}</div>` : ''}</div>`;
   return h;
 }
 function pOver(v) {
   const pl = {}; for (const p of v.players) pl[p.id] = p;
-  return overHTML(v.over.winner, v.over.history, pl, v.players.map(p => p.id)) + `<p class="center muted">Waiting to see if the narrator starts another round.</p><button class="btn ghost" data-a="p:leave">Leave the table</button>`;
+  return overHTML(v.over.winner, v.over.history, pl, v.players.map(p => p.id)) + `<button class="btn ghost" data-a="p:leave">Leave</button>`;
 }
 
 // ============================================================
@@ -1176,24 +1165,22 @@ function pOver(v) {
 // ============================================================
 function homeHTML(joinOnly) {
   const saved = store.get('mafia-host');
-  const err = P.msg ? `<p class="err">${esc(P.msg)}</p>` : '';
-  const join = `<div class="panel"><h3>Join a table</h3><form data-f="home:join">
-    <label class="lb" for="codeIn">Room code</label><input class="in code" id="codeIn" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" value="${esc(P.room || '')}">
-    <label class="lb" for="nameIn">Your name</label><input class="in" id="nameIn" maxlength="20" autocomplete="off" placeholder="What the table calls you" value="${esc(P.name || '')}">
-    ${err}<button class="btn red" type="submit">Take a seat</button></form></div>`;
-  if (joinOnly) return `<div class="logo">MAFIA</div><div class="tag">A game of lies, for a table of friends.</div>${join}${rulesHTML()}`;
-  return `<div class="logo">MAFIA</div><div class="tag">A game of lies, for a table of friends.</div>${join}
-  <div class="panel"><h3>Run the game</h3><p class="muted small">You're the narrator. You don't get a card. You see every role, every ballot, and who goes on trial.</p>
-    <button class="btn gold" data-a="home:host">Open a new table</button>
-    ${saved ? `<button class="btn ghost" data-a="home:resume">Resume narrating room ${esc(saved.room)}</button>` : ''}</div>${rulesHTML()}`;
+  const err = P.msg ? `<p class="err center">${esc(P.msg)}</p>` : '';
+  if (joinOnly) return `<div class="logo">MAFIA</div>
+    <form data-f="home:join" class="panel"><input class="in" id="nameIn" maxlength="20" autocomplete="off" placeholder="Your name" value="${esc(P.name || '')}">${err}<button class="btn red" type="submit">Join</button></form>${rulesHTML()}`;
+  return `<div class="logo">MAFIA</div><div class="tag">A game of lies.</div>
+    <button class="btn gold big" data-a="home:host">Start a game</button>
+    ${saved ? `<button class="btn" data-a="home:resume">Back to my game</button>` : ''}
+    <p class="center small muted">Joining? Scan the narrator's QR.</p>${err}${rulesHTML()}`;
 }
 function homeAct(cmd) {
   if (cmd === 'host') { P.msg = ''; return hostCreate(); }
   if (cmd === 'resume') return hostResume();
+  if (cmd === 'rules') { RULES_OPEN = !RULES_OPEN; return render(); }
   if (cmd === 'join') {
-    const code = ($('#codeIn').value || '').toUpperCase().replace(/[^A-Z]/g, ''); const name = ($('#nameIn').value || '').replace(/\s+/g, ' ').trim().slice(0, 20);
-    if (code.length !== 4) return toast('Room codes are four letters.');
-    if (!name) return toast('Type your name.');
+    const code = (P.room || '').toUpperCase(); const name = ($('#nameIn').value || '').replace(/\s+/g, ' ').trim().slice(0, 20);
+    if (code.length !== 4) return toast('Scan the narrator\'s QR to join.');
+    if (!name) return toast('Type your name');
     if (P.conn && P.conn.open && P.room === code && !P.stopped) { P.name = name; P.msg = ''; P.status = 'connecting'; MODE = 'player'; render(); P.conn.send({ t: 'hello', token: P.token, name }); return; }
     if (P.room !== code || !P.token) P.token = rid(16);
     P.room = code; P.name = name; P.msg = '';
