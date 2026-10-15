@@ -410,8 +410,9 @@ function buzz() { beep(196, 0.6, 'sawtooth', 0.12); try { navigator.vibrate && n
 // a revolver cylinder spins and cocks, a low brass stab, then a mandolin tremolo
 // down A-G-F-E over vinyl crackle. All synthesized, no audio files.
 let introDone = false;
+const INTRO_ON = false; // off until a real recording replaces the synth sting
 function playIntro() {
-  if (!AC || introDone) return; introDone = true;
+  if (!INTRO_ON || !AC || introDone) return; introDone = true;
   try { if (sessionStorage.getItem('mafia-intro' + NS)) return; sessionStorage.setItem('mafia-intro' + NS, '1'); } catch (e) {}
   try {
     const out = AC.createGain(); out.gain.value = 0.55; out.connect(AC.destination);
