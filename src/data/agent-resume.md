@@ -7,7 +7,7 @@
 # while the URLs still work for a preview. Flip to true when it is ready to share.
 # updated: the date shown on the page and substituted for {{updated}} below.
 published: false
-updated: "2026-09-18"
+updated: "2026-11-20"
 ---
 
 # Abhivir Singh
@@ -39,7 +39,6 @@ Give me one hard problem you already have and two weeks. I will send back workin
 - span.abhivir.com is the software running a steel forging factory in Faridabad. It can draft a reply to a customer and cannot send one, because a test fails the build if any file touches Gmail's send API. The OAuth scope that writes a draft also permits sending, so the scope cannot carry that guarantee and the test does.
 - I had an agent check every claim on my resume against primary sources. Eighteen were wrong and I cut all eighteen. "Best First Year Project of 235" traced to nothing, and the transcript shows 58.04 for that module. A SemEval F1 I had quoted for months as 0.61 settled at 0.59.
 - MEng Computing (Artificial Intelligence and Machine Learning), Imperial College London, 2022 to 2026, First Class Honours. Before it, a seat at IIT Delhi I gave up after one year. Every module and mark is in Education.
-- Remote AI engineer work, full time, starting now, and San Francisco as soon as I can get there. What it costs to hire me is at the bottom, under What I am looking for.
 
 ## Summary
 
@@ -418,19 +417,3 @@ The other two are the site's launch note, https://abhivir.com/blog/hello-world/ 
 It also serves https://abhivir.com/llms.txt, the raw markdown of this document at https://abhivir.com/resume.md, and JSON at /api/projects, /api/now and /api/reading.
 
 **Talks.** I have given some and kept no record of which or to whom, so there is nothing here to list.
-
-## What I am looking for
-
-Remote AI engineer work, starting now. San Francisco as soon as I can get there.
-
-Small team, on the context and memory layer under agents. The specific thing I want to work on is permissions on summaries built from documents that carried different access rules, which is the open question in the context layer entry under Projects. I care more about who I'd be arguing with every day than what the role is called.
-
-Hiring me this year costs you no immigration work. I'm an Indian citizen with no US status, so it's a remote contract with me as an Indian contractor, or an employer of record if you'd rather payroll handled it. You pay an invoice. Getting to the US is mine to solve. O-1 later, and I'll bring you the petition already built rather than ask you to build it.
-
-Available now. No notice period to work out, so I can start within a week of signing. I'll work your morning, which is my evening. I'm open on rate, so tell me what the role is worth to you and I'll tell you if it works.
-
-### What I have not done, so you don't find out in week three
-
-- Never built software on a team bigger than six.
-- Never had to keep a system up under load I didn't cause myself.
-- Shipped things used by hundreds of people, nothing used by millions.
